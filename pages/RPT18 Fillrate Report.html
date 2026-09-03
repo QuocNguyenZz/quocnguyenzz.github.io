@@ -3,156 +3,313 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>RPT18 Fill Rate Report · FSD50</title>
+<title>RPT18 · Item Line Fill Rate Report · FSD50</title>
 <style>
   :root{
-    --red:#C62828; --red2:#B71C1C; --gold:#D4A72C; --cream:#FFF8EC;
-    --bg:#F5F0E8; --card:#FFFFFF; --line:#E8DFD0; --text:#33302B; --muted:#8A8378;
+    --bg:#070709; --bg-2:#0C0C10; --panel:#101014; --panel-2:#15151B;
+    --gold-1:#F0D68A; --gold-2:#C9A227; --gold-3:#98720F; --gold-deep:#A9841C;
+    --line:#23232D; --line-soft:#191920;
+    --text:#EDE6D8; --muted:#8F8877; --hdH:0px;
+    --shadow-sm:0 1px 3px rgba(0,0,0,.5);
+    --shadow-md:0 6px 20px rgba(0,0,0,.55);
+    --shadow-lg:0 12px 40px rgba(0,0,0,.7);
+    --radius:14px;
   }
-  *{box-sizing:border-box}
-  body{margin:0;font-family:'Segoe UI',Tahoma,Arial,sans-serif;background:var(--bg);color:var(--text)}
-  header{background:linear-gradient(120deg,#B71C1C 0%,#C62828 55%,#A41212 100%);color:#fff;height:60px;
-    box-shadow:0 3px 12px rgba(0,0,0,.25);position:sticky;top:0;z-index:20;
-    display:flex;align-items:center;justify-content:space-between;gap:12px;padding:0 46px;overflow:hidden}
-  header::before{content:''; position:absolute; inset:0; background:radial-gradient(circle at 88% -30%, rgba(255,222,173,.30), transparent 55%), radial-gradient(circle at 8% -30%, rgba(255,222,173,.18), transparent 50%);}
-  .hd-lantern{position:absolute; top:0; z-index:2; width:26px; height:46px; transform-origin:50% 0; animation:lanternSwing 6.5s ease-in-out infinite;}
-  .hd-lantern-l{left:14px;}
-  .hd-lantern-r{right:14px; animation-delay:-3.2s;}
-  .hd-lantern .hl-cap{position:absolute; top:0; left:50%; transform:translateX(-50%); width:20px; height:5px; border-radius:2px; background:linear-gradient(180deg,#E9C979,#B98F1F);}
-  .hd-lantern .hl-body{position:absolute; top:5px; left:50%; transform:translateX(-50%); width:24px; height:34px; border-radius:50% 50% 46% 54% / 58% 58% 42% 42%; background:radial-gradient(circle at 32% 26%, #F2A7A7, #C62828 62%, #8E1414); box-shadow:inset -3px -5px 8px rgba(110,10,10,.55);}
-  .hd-lantern .hl-tassel{position:absolute; top:39px; left:50%; transform:translateX(-50%); width:1.5px; height:9px; background:var(--gold);}
-  @keyframes lanternSwing{0%,100%{transform:rotate(-4deg);}50%{transform:rotate(4deg);}}
-  .hd-cloud{position:absolute; z-index:1; border-radius:40px; background:rgba(255,255,255,.16); animation:hdDrift 28s ease-in-out infinite alternate;}
-  .hd-cloud::before,.hd-cloud::after{content:''; position:absolute; border-radius:50%; background:rgba(255,255,255,.16);}
-  .hd-cloud.c1{width:150px; height:42px; left:-40px; top:8px;}
-  .hd-cloud.c1::before{width:54px; height:54px; left:24px; top:-22px;}
-  .hd-cloud.c1::after{width:76px; height:76px; left:76px; top:-34px;}
-  .hd-cloud.c2{width:104px; height:30px; right:120px; top:10px; animation-delay:-12s;}
-  .hd-cloud.c2::before{width:40px; height:40px; left:20px; top:-17px;}
-  .hd-cloud.c2::after{width:58px; height:58px; left:58px; top:-26px;}
-  @keyframes hdDrift{from{transform:translateX(0);}to{transform:translateX(130px);}}
-  .header-left-group{position:relative; z-index:3; display:flex; align-items:center; gap:12px; min-width:0;}
-  .brand{display:flex; align-items:center; gap:11px; cursor:pointer; min-width:0;}
-  .brand:hover .brand-name{color:#FFE9C0;}
-  .brand:hover .logo{transform:scale(1.1) rotate(-8deg); box-shadow:0 0 22px rgba(212,167,44,.8);}
-  .logo{width:34px; height:34px; border-radius:50%; background:radial-gradient(circle at 35% 30%, #FFE9C0, var(--gold) 70%); color:#fff; display:flex; align-items:center; justify-content:center; font-size:17px; flex-shrink:0; box-shadow:0 0 16px rgba(212,167,44,.5); transition:transform .18s, box-shadow .18s;}
-  .brand-text{line-height:1.25; min-width:0;}
-  .brand-name{color:#fff; font-weight:800; font-size:14px; letter-spacing:.5px; white-space:nowrap; overflow:hidden; text-overflow:ellipsis;}
-  .brand-sub{color:rgba(255,255,255,.62); font-size:9px; letter-spacing:.2px;}
-  .header-tabs{position:relative; z-index:3; display:flex; gap:6px;}
-  .tab{color:rgba(255,255,255,.78); font-size:12px; padding:8px 14px; cursor:pointer; border-radius:8px; transition:all .2s; user-select:none; font-weight:600; white-space:nowrap;}
-  .tab:hover{color:#fff; background:rgba(255,255,255,.12);}
-  .tab.active{background:#fff; color:var(--red2); box-shadow:0 2px 10px rgba(0,0,0,.18); font-weight:700;}
-  .tab b{color:#fff;}
-  .tab.active b{color:var(--red2);}
-  .header-right{position:relative; z-index:3; display:flex; align-items:center; gap:8px;}
-  .mid-fest{color:rgba(255,255,255,.6); font-size:11px; margin-right:6px; letter-spacing:.3px; white-space:nowrap;}
-  .r18-count{color:rgba(255,255,255,.82); font-size:11px; margin-right:4px; max-width:340px; white-space:nowrap; overflow:hidden; text-overflow:ellipsis;}
-  .r18-count b{color:#fff;}
-  .r18-meta{color:rgba(255,255,255,.82); font-size:11px; white-space:nowrap; overflow:hidden; text-overflow:ellipsis; max-width:380px;}
-  .r18-meta b{color:#fff;}
-  .r18-back{background:#fff; color:var(--red2); border:none; border-radius:8px; padding:8px 14px; font-size:11px; cursor:pointer; font-weight:700; transition:all .15s; box-shadow:0 2px 8px rgba(0,0,0,.16); flex-shrink:0;}
-  .r18-back:hover{background:#FCE4E4; box-shadow:0 3px 12px rgba(0,0,0,.2);}
-  @media (max-width:1280px){ .mid-fest{display:none;} }
-  @media (max-width:960px){ .header-tabs{display:none;} }
-  @media (max-width:640px){ .hd-lantern{display:none;} .r18-count{display:none;} .brand-sub{display:none;} header{padding:0 16px;} }
-  .wrap{max-width:1200px;margin:22px auto;padding:0 18px}
-  .toolbar{display:flex;gap:10px;align-items:center;flex-wrap:wrap;margin-bottom:14px}
-  .search{flex:1;min-width:280px;display:flex;border:2px solid var(--gold);border-radius:10px;overflow:hidden;background:#fff}
-  .search input{flex:1;border:0;outline:0;padding:11px 14px;font-size:14px}
-  .search button{border:0;background:linear-gradient(135deg,var(--red),var(--red2));color:#fff;padding:0 20px;
-    font-weight:600;cursor:pointer;font-size:14px}
-  .search button:hover{background:var(--red2)}
-  .btn{border:2px solid var(--gold);background:#fff;color:var(--red2);border-radius:10px;padding:11px 16px;
-    cursor:pointer;font-weight:600;font-size:14px}
-  .btn:hover{background:#FFF4DC}
-  .stat{font-size:13px;color:var(--muted);margin:6px 2px 10px}
-  .stat b{color:var(--red2)}
-  .tbl{background:var(--card);border:1px solid var(--line);border-radius:12px;box-shadow:0 2px 8px rgba(60,40,10,.08)}
-  table{width:100%;border-collapse:collapse;font-size:13.5px}
-  thead th{background:linear-gradient(135deg,#3A3630,#2C2925);color:#FFE9C0;text-align:left;padding:11px 14px;
-    position:sticky;top:var(--hdH,0px);z-index:5;white-space:nowrap;box-shadow:0 2px 6px rgba(0,0,0,.18)}
-  tbody td{padding:10px 14px;border-top:1px solid var(--line);vertical-align:top}
-  tbody tr:nth-child(even){background:#FBF7EF}
-  tbody tr:hover{background:#FFF2D7}
-  tfoot td{padding:12px 14px;border-top:3px solid var(--gold);background:linear-gradient(135deg,#3A3630,#2C2925);
-    color:#FFE9C0;font-weight:700;white-space:nowrap}
-  tfoot td:last-child{text-align:right}
-  td.ano{font-weight:700;color:var(--red2);white-space:nowrap}
-  td.qty{text-align:right;font-weight:600;white-space:nowrap}
-  td.cust{white-space:nowrap}
-  .empty{text-align:center;padding:46px 20px;color:var(--muted)}
-  .empty .ic{font-size:40px;display:block;margin-bottom:8px}
-  .pager{display:flex;align-items:center;justify-content:center;gap:14px;margin:16px 0 30px}
-  .pager button{border:1px solid var(--line);background:#fff;border-radius:8px;padding:8px 16px;cursor:pointer;font-weight:600;color:var(--text)}
-  .pager button:disabled{opacity:.4;cursor:default}
-  .pager span{font-size:13px;color:var(--muted)}
-  footer{text-align:center;font-size:12px;color:var(--muted);padding:18px;border-top:1px solid var(--line)}
+  *{box-sizing:border-box;margin:0;padding:0}
+  html{scroll-behavior:smooth}
+  body{margin:0;font-family:'Segoe UI',Tahoma,Arial,sans-serif;background:
+    radial-gradient(1100px 460px at 50% -8%, rgba(201,162,39,.10), transparent 60%),
+    var(--bg);
+    color:var(--text);min-height:100vh;-webkit-font-smoothing:antialiased;text-rendering:optimizeLegibility}
+
+  /* ---------- Header ---------- */
+  header{background:linear-gradient(120deg,#050506 0%,#0A0A0D 45%,#0D0D12 100%);color:var(--gold-1);
+    box-shadow:0 4px 20px rgba(0,0,0,.6);position:sticky;top:0;z-index:40;
+    display:flex;align-items:center;justify-content:space-between;gap:12px;padding:0 46px;height:64px;overflow:hidden;
+    border-bottom:1px solid rgba(201,162,39,.25)}
+  header::before{content:'';position:absolute;inset:0;pointer-events:none;
+    background:radial-gradient(640px 70px at 12% -30%,rgba(240,214,138,.14),transparent 60%),
+               radial-gradient(540px 60px at 60% -35%,rgba(240,214,138,.08),transparent 55%)}
+  header::after{content:'';position:absolute;left:0;right:0;bottom:0;height:2px;
+    background:linear-gradient(90deg,transparent,rgba(240,214,138,.9) 15%,var(--gold-2) 50%,rgba(240,214,138,.9) 85%,transparent)}
+  .header-inner{position:relative;z-index:1;width:100%;max-width:1440px;margin:0 auto;
+    display:flex;align-items:center;justify-content:space-between;gap:14px}
+  .header-left{display:flex;align-items:center;gap:13px;min-width:0}
+  .brand{display:flex;align-items:center;gap:13px;cursor:pointer;min-width:0;border-radius:10px}
+  .brand:focus-visible{outline:2px solid var(--gold-1);outline-offset:2px}
+  .seal{width:40px;height:40px;border-radius:50%;flex-shrink:0;display:flex;align-items:center;justify-content:center;
+    font-family:Georgia,'Times New Roman',serif;font-size:13px;font-weight:700;letter-spacing:.5px;color:#0B0B0E;
+    background:radial-gradient(circle at 32% 28%,#FBF1D6,var(--gold-1) 38%,var(--gold-2) 70%,var(--gold-3));
+    box-shadow:0 0 0 2px rgba(240,214,138,.30),0 3px 14px rgba(0,0,0,.6);transition:box-shadow .18s}
+  .brand:hover .seal{box-shadow:0 0 0 3px rgba(240,214,138,.55),0 4px 18px rgba(0,0,0,.7)}
+  .brand-text{line-height:1.25;min-width:0}
+  .brand-name{font-family:Georgia,'Times New Roman',serif;font-size:17px;font-weight:700;letter-spacing:.5px;
+    background:linear-gradient(180deg,#FBF1D6 0%,var(--gold-1) 45%,var(--gold-3) 100%);
+    -webkit-background-clip:text;background-clip:text;-webkit-text-fill-color:transparent;color:var(--gold-1);
+    white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+  .brand-name .dot{color:var(--gold-2)}
+  .brand-sub{color:rgba(237,230,216,.45);font-size:9.5px;letter-spacing:.4px}
+  .header-right{display:flex;align-items:center;gap:10px}
+  .chip{display:inline-flex;align-items:center;gap:6px;background:rgba(255,255,255,.04);
+    border:1px solid rgba(240,214,138,.22);border-radius:999px;padding:6px 13px;font-size:11px;
+    color:rgba(237,230,216,.8);white-space:nowrap}
+  .chip b{color:var(--gold-1);font-weight:700}
+  .chip .tagicon{opacity:.7}
+  .back-btn{background:linear-gradient(180deg,var(--gold-1),var(--gold-2));color:#0B0B0E;border:none;border-radius:9px;
+    padding:9px 16px;font-size:11.5px;font-weight:700;cursor:pointer;white-space:nowrap;
+    box-shadow:0 2px 10px rgba(0,0,0,.5);transition:filter .15s}
+  .back-btn:hover{filter:brightness(1.1)}
+  .back-btn:focus-visible{outline:2px solid #FFF;outline-offset:2px}
+
+  /* ---------- Layout ---------- */
+  .wrap{max-width:1280px;margin:0 auto;padding:26px 20px 10px}
+
+  /* ---------- KPI band ---------- */
+  .kpis{display:grid;grid-template-columns:repeat(5,1fr);gap:14px;margin-bottom:20px}
+  .kpi{background:linear-gradient(180deg,var(--panel-2),var(--panel));border:1px solid var(--line);border-radius:var(--radius);
+    box-shadow:var(--shadow-sm);padding:16px 18px;position:relative;overflow:hidden}
+  .kpi::before{content:'';position:absolute;left:0;top:14px;bottom:14px;width:3px;border-radius:3px;
+    background:linear-gradient(180deg,var(--gold-1),var(--gold-3))}
+  .kpi-label{font-size:11px;letter-spacing:1.1px;text-transform:uppercase;color:var(--muted);font-weight:600}
+  .kpi-value{font-family:Georgia,'Times New Roman',serif;font-size:26px;font-weight:700;margin-top:4px;
+    background:linear-gradient(180deg,#F6E9C2,var(--gold-2));-webkit-background-clip:text;background-clip:text;
+    -webkit-text-fill-color:transparent;color:var(--gold-1);font-variant-numeric:tabular-nums}
+  .kpi-sub{font-size:11px;color:var(--muted);margin-top:2px}
+
+  /* ---------- Panel / toolbar ---------- */
+  .panel{background:var(--panel);border:1px solid var(--line);border-radius:var(--radius);
+    box-shadow:var(--shadow-md);overflow:hidden}
+  .toolbar{display:flex;gap:12px;align-items:center;flex-wrap:wrap;padding:16px 18px;
+    border-bottom:1px solid var(--line-soft);background:linear-gradient(180deg,var(--panel-2),var(--panel))}
+  .search{flex:1;min-width:270px;display:flex;border:1.5px solid var(--gold-2);border-radius:10px;overflow:hidden;background:#0A0A0E}
+  .search input{flex:1;border:0;outline:0;padding:11px 14px;font-size:14px;color:var(--text);min-width:0;background:transparent}
+  .search input::placeholder{color:var(--muted)}
+  .search button{border:0;background:linear-gradient(180deg,var(--gold-1),var(--gold-2));color:#0B0B0E;
+    padding:0 22px;font-weight:700;cursor:pointer;font-size:14px;transition:filter .15s;white-space:nowrap}
+  .search button:hover{filter:brightness(1.08)}
+  .chips{display:flex;gap:8px;flex-wrap:wrap;padding:0 18px 16px;align-items:center}
+  .chips-label{font-size:11px;color:var(--muted);letter-spacing:1px;text-transform:uppercase;font-weight:600;margin-right:4px}
+  .fchip{border:1.5px solid var(--line);background:var(--bg-2);color:var(--text);border-radius:999px;padding:7px 15px;
+    cursor:pointer;font-size:12.5px;font-weight:600;transition:all .15s;white-space:nowrap}
+  .fchip:hover{border-color:var(--gold-2);color:var(--gold-1)}
+  .fchip.active{background:linear-gradient(180deg,var(--gold-1),var(--gold-2));color:#0B0B0E;
+    border-color:var(--gold-2);box-shadow:0 2px 10px rgba(201,162,39,.25)}
+  .fchip .cnt{opacity:.6;font-weight:600;font-size:11px}
+  .fchip.active .cnt{opacity:.75}
+  .clr{border:1px solid var(--line);background:var(--bg-2);color:var(--muted);border-radius:10px;padding:11px 16px;
+    cursor:pointer;font-weight:600;font-size:13.5px;transition:all .15s}
+  .clr:hover{color:var(--gold-1);border-color:var(--gold-2)}
+
+  /* ---------- Stat bar ---------- */
+  .bar{display:flex;align-items:center;gap:8px;flex-wrap:wrap;padding:0 18px 16px;font-size:12.5px;color:var(--muted)}
+  .bar b{color:var(--gold-1);font-weight:700}
+  .bar .sep{margin:0 2px;color:var(--line)}
+
+  /* ---------- Table ---------- */
+  .tbl{overflow-x:auto}
+  table{width:100%;border-collapse:collapse;font-size:13.5px;min-width:760px}
+  thead th{background:linear-gradient(180deg,#0D0D12,#08080B);color:var(--gold-1);text-align:left;padding:13px 16px;
+    position:sticky;top:0;z-index:5;white-space:nowrap;font-size:11px;font-weight:700;letter-spacing:.7px;
+    text-transform:uppercase;box-shadow:inset 0 1px 0 rgba(240,214,138,.12)}
+  thead th.num, tbody td.num, tfoot td.num{text-align:right}
+  tbody td{padding:11px 16px;border-top:1px solid var(--line-soft);vertical-align:top}
+  tbody tr:nth-child(even){background:var(--bg-2)}
+  tbody tr{transition:background .12s}
+  tbody tr:hover{background:#18150D}
+  tbody tr.clickable{cursor:pointer}
+  tbody tr.clickable:hover{box-shadow:inset 3px 0 0 var(--gold-2)}
+  td.ano{white-space:nowrap}
+  .ano-btn{background:none;border:none;padding:0;margin:0;cursor:pointer;font:inherit;color:var(--gold-1);
+    font-weight:700;letter-spacing:.3px;border-bottom:1px dashed rgba(240,214,138,.5);font-variant-numeric:tabular-nums;
+    transition:color .12s}
+  .ano-btn:hover{color:#fff;border-bottom-color:#fff}
+  .ano-btn:focus-visible{outline:2px solid var(--gold-1);outline-offset:3px;border-radius:3px}
+  td.cust{white-space:nowrap;font-variant-numeric:tabular-nums;color:#CFC8B8}
+  td.div{white-space:nowrap}
+  .tag{display:inline-block;padding:3px 10px;border-radius:999px;font-size:11px;font-weight:600;letter-spacing:.3px}
+  .tag.fresh{background:rgba(44,107,63,.16);color:#7BD89C;border:1px solid rgba(44,107,63,.5)}
+  .tag.dry{background:rgba(201,162,39,.12);color:var(--gold-1);border:1px solid rgba(201,162,39,.4)}
+  td.qty{white-space:nowrap;font-weight:700;font-variant-numeric:tabular-nums;color:#EDE6D8}
+  tfoot td{padding:13px 16px;border-top:2px solid var(--gold-3);background:linear-gradient(180deg,#0C0C11,#08080B);
+    color:var(--gold-1);font-weight:700;white-space:nowrap;font-size:13px;letter-spacing:.2px}
+  tfoot td.num{font-size:14px}
+  .empty{text-align:center;padding:56px 20px;color:var(--muted)}
+  .empty .ic{font-size:42px;display:block;margin-bottom:12px}
+  .empty .t-text{font-size:15px;font-weight:600;color:#CFC8B8;margin-bottom:4px}
+  .empty .s-text{font-size:12.5px}/* ---------- Pager ---------- */
+  .pager{display:flex;align-items:center;justify-content:space-between;gap:14px;flex-wrap:wrap;padding:14px 18px;
+    border-top:1px solid var(--line-soft);background:linear-gradient(180deg,var(--panel),var(--panel-2))}
+  .pager-left{display:flex;align-items:center;gap:10px;font-size:12.5px;color:var(--muted);white-space:nowrap}
+  .pager-right{display:flex;align-items:center;gap:8px}
+  .pg-btn{border:1px solid var(--line);background:var(--bg-2);border-radius:9px;padding:9px 16px;cursor:pointer;font-weight:600;
+    font-size:13px;color:var(--text);transition:all .15s;box-shadow:var(--shadow-sm);min-width:44px;text-align:center}
+  .pg-btn:hover:not(:disabled){border-color:var(--gold-2);color:var(--gold-1)}
+  .pg-btn:disabled{opacity:.35;cursor:default}
+  .pg-info{font-size:13px;color:var(--muted);white-space:nowrap;margin:0 4px}
+  .pg-info b{color:var(--gold-1)}
+  select.ps{border:1px solid var(--line);border-radius:8px;padding:8px 8px;font-size:12.5px;color:var(--text);background:var(--bg-2);cursor:pointer}
+  select.ps:focus-visible{outline:2px solid var(--gold-3);outline-offset:2px}
+  select.ps option{background:#0B0B0E}
+
+  /* ---------- Detail overlay ---------- */
+  .overlay{position:fixed;inset:0;z-index:100;display:none;align-items:center;justify-content:center;padding:20px}
+  .overlay.open{display:flex}
+  .backdrop{position:absolute;inset:0;background:rgba(0,0,0,.8);backdrop-filter:blur(6px);animation:fadeIn .2s ease}
+  @keyframes fadeIn{from{opacity:0}to{opacity:1}}
+  .detail{position:relative;width:min(980px,100%);max-height:92vh;overflow:auto;border-radius:18px;
+    background:linear-gradient(180deg,var(--panel-2),var(--panel));border:1px solid rgba(201,162,39,.35);
+    box-shadow:var(--shadow-lg);animation:pop .22s cubic-bezier(.2,.9,.3,1.2)}
+  @keyframes pop{from{transform:translateY(10px) scale(.97);opacity:0}to{transform:none;opacity:1}}
+  .detail::-webkit-scrollbar{width:10px;height:10px}
+  .detail::-webkit-scrollbar-thumb{background:var(--gold-3);border-radius:6px;border:2px solid var(--panel)}
+  .detail::-webkit-scrollbar-track{background:transparent}
+  .detail-head{display:flex;align-items:center;justify-content:space-between;gap:14px;padding:20px 22px 16px;
+    border-bottom:1px solid var(--line-soft);position:sticky;top:0;background:linear-gradient(180deg,var(--panel-2),var(--panel));z-index:2}
+  .d-title{min-width:0}
+  .d-ano{font-family:Georgia,'Times New Roman',serif;font-size:15px;letter-spacing:.5px;color:var(--muted)}
+  .d-name{font-family:Georgia,'Times New Roman',serif;font-size:22px;font-weight:700;margin-top:3px;
+    background:linear-gradient(180deg,#F6E9C2,var(--gold-2));-webkit-background-clip:text;background-clip:text;
+    -webkit-text-fill-color:transparent;color:var(--gold-1);overflow-wrap:anywhere}
+  .d-close{flex-shrink:0;width:36px;height:36px;border-radius:10px;border:1px solid var(--line);cursor:pointer;
+    background:var(--bg-2);color:var(--gold-1);font-size:19px;line-height:1;display:flex;align-items:center;justify-content:center;
+    transition:all .15s}
+  .d-close:hover{background:var(--gold-2);color:#0B0B0E;border-color:var(--gold-2)}
+  .d-close:focus-visible{outline:2px solid var(--gold-1);outline-offset:2px}
+  .d-body{padding:18px 22px 22px}
+  .d-embed{padding:18px 22px 22px}
+  .d-badge{display:inline-block;padding:4px 12px;border-radius:999px;font-size:11.5px;font-weight:700;letter-spacing:.3px}
+  .d-thumbs{display:grid;grid-template-columns:repeat(4,1fr);gap:12px;margin-top:16px}
+  .d-t{background:linear-gradient(180deg,var(--bg-2),var(--panel));border:1px solid var(--line);border-radius:12px;padding:13px 15px}
+  .d-t-label{font-size:10.5px;letter-spacing:.9px;text-transform:uppercase;color:var(--muted);font-weight:600;white-space:nowrap}
+  .d-t-val{font-size:19px;font-weight:700;margin-top:3px;color:var(--gold-1);font-variant-numeric:tabular-nums}
+  .d-t .d-t-note{font-size:10.5px;color:var(--muted);margin-top:2px}
+
+  /* ---------- Charts ---------- */
+  .charts{display:grid;grid-template-columns:1fr 1fr;gap:16px;margin-top:18px}
+  .chart-card{background:var(--bg-2);border:1px solid var(--line);border-radius:12px;padding:16px}
+  .chart-title{font-size:12px;font-weight:700;letter-spacing:.6px;text-transform:uppercase;color:var(--gold-1);margin-bottom:12px}
+  .legend{display:flex;flex-direction:column;gap:7px;margin-top:12px;font-size:12px;color:var(--text)}
+  .legend-row{display:flex;align-items:center;gap:8px}
+  .legend-swatch{width:11px;height:11px;border-radius:3px;flex-shrink:0}
+  .legend-name{flex:1;color:var(--muted);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+  .legend-val{font-weight:600;color:var(--gold-1);font-variant-numeric:tabular-nums}
+
+  /* ---------- Responsive ---------- */
+  @media (max-width:1080px){.kpis{grid-template-columns:repeat(3,1fr)}}
+  @media (max-width:900px){.kpis{grid-template-columns:repeat(3,1fr)}.charts{grid-template-columns:1fr}}
+  @media (max-width:760px){
+    .wrap{padding:16px 12px}
+    header{padding:0 16px}
+    .kpis{grid-template-columns:repeat(2,1fr);gap:10px}
+    .kpi{border-radius:12px}
+    .charts{grid-template-columns:1fr}
+    .d-thumbs{grid-template-columns:repeat(2,1fr)}
+    thead th{position:static}
+    .bar{flex-direction:column;align-items:flex-start}
+    .pager{flex-direction:column;align-items:flex-start}
+  }
+  @media print{
+    body{background:#111 !important;-webkit-print-color-adjust:exact;print-color-adjust:exact}
+    .search,.chips,.pager-right,.back-btn,.overlay,.tagicon{display:none !important}
+    header{position:static !important}
+    table{font-size:11px}
+    tbody tr, tfoot td{break-inside:avoid}
+  }
+  @media (prefers-reduced-motion:reduce){
+    *{animation:none !important; transition:none !important}
+    html{scroll-behavior:auto}
+  }
 </style>
+
 </head>
 <body>
-<header id="topHeader">
-  <span class="hd-lantern hd-lantern-l"><span class="hl-cap"></span><span class="hl-body"></span><span class="hl-tassel"></span></span>
-  <span class="hd-lantern hd-lantern-r"><span class="hl-cap"></span><span class="hl-body"></span><span class="hl-tassel"></span></span>
-  <span class="hd-cloud c1"></span>
-  <span class="hd-cloud c2"></span>
-
-  <div class="header-left-group">
-    <div class="brand" title="Quay về trang 1" onclick="r18BackGo()">
-      <div class="logo">🌙</div>
-      <div class="brand-text">
-        <div class="brand-name">RPT18 · Item Line Fill Rate Report</div>
-        <div class="brand-sub">Báo cáo tỷ lệ giao đầy đủ theo mặt hàng — Tra cứu Article No / Article Name</div>
+<header id="r18Header">
+  <div class="header-inner">
+    <div class="header-left">
+      <div class="brand" id="brandGo" title="Về trang chủ" tabindex="0" role="link">
+        <div class="seal">FSD</div>
+        <div class="brand-text">
+          <div class="brand-name">Fill Rate Report <span class="dot">·</span> RPT18</div>
+          <div class="brand-sub">Item Line Fill Rate — Mega Market Khu Vực Kh ph<span>&nbsp;</span></div>
+        </div>
       </div>
     </div>
-  </div>
-  <div class="header-tabs">
-    <div class="tab active">RPT18 · Item Line Fill Rate Report</div>
-  </div>
-  <div class="header-right">
-    <span class="r18-meta">Đơn vị: <b>Mega Market</b> · Cửa hàng: <b>10050-MMDP50</b> · Ngày: <b>02-Sep-26</b></span>
-    <span class="r18-count">Số dòng dữ liệu: <b id="srcCount">0</b></span>
-    <button class="r18-back" id="r18Back" onclick="r18BackGo()">← Quay về trang 1</button>
+    <div class="header-right">
+      <span class="chip"><span class="tagicon">📅</span> Kỳ báo cáo&nbsp;<b>02-Sep-26</b></span>
+      <span class="chip"><span class="tagicon">🌕</span> <b>Mid-Autumn 2026</b></span>
+      <div class="hdr-pager" style="display:flex;align-items:center;gap:8px;background:rgba(255,255,255,.06);border:1px solid rgba(240,214,138,.22);border-radius:9px;padding:4px 8px">
+        <span style="font-size:11px;color:rgba(237,230,216,.6);white-space:nowrap">Hiển thị</span>
+        <select class="ps" id="ps" aria-label="Số dòng mỗi trang" style="padding:4px 6px;font-size:11px;min-width:52px"><option value="25">25</option><option value="50">50</option><option value="100">100</option><option value="0">Tất cả</option></select>
+        <span class="pg-info" id="pageInfo" style="font-size:11px"></span>
+        <button class="pg-btn" id="prev" style="padding:5px 10px;font-size:11px">←</button>
+        <button class="pg-btn" id="next" style="padding:5px 10px;font-size:11px">→</button>
+      </div>
+      <button class="back-btn" id="backBtn">Dashboard FSD50</button>
+      <button class="back-btn" id="toDashboard" style="background:linear-gradient(180deg,#F0D68A,#C9A227);color:#0B0B0E;border:1px solid #C9A227">RPT18-dashboard →</button>
+    </div>
   </div>
 </header>
 
 <div class="wrap">
-  <div class="toolbar">
-    <div class="search">
-      <input id="q" type="text" placeholder="Nhập Article No hoặc Article Name…" autocomplete="off">
-      <button id="btnSearch">🔍 Tìm kiếm</button>
+  <div class="kpis" id="kpis">
+    <div class="kpi"><div class="kpi-label">Dòng dữ liệu</div><div class="kpi-value" id="kpiLines">0</div><div class="kpi-sub">Items lines</div></div>
+    <div class="kpi"><div class="kpi-label">Tổng số lượng</div><div class="kpi-value" id="kpiQty">0</div><div class="kpi-sub">Delivered qty</div></div>
+    <div class="kpi"><div class="kpi-label">Khách hàng</div><div class="kpi-value" id="kpiCust">0</div><div class="kpi-sub">Customers</div></div>
+    <div class="kpi"><div class="kpi-label">Ngành hàng</div><div class="kpi-value" id="kpiDiv">0</div><div class="kpi-sub">Divisions</div></div>
+    <div class="kpi"><div class="kpi-label">Mặt hàng</div><div class="kpi-value" id="kpiAno">0</div><div class="kpi-sub">Articles</div></div>
+  </div>
+
+  <div class="panel">
+    <div class="toolbar">
+      <div class="search">
+        <input id="q" type="text" placeholder="Tìm Art No, Art Name…"" aria-label="Tìm kiếm">
+        <button id="btnSearch" aria-label="Tìm">Tìm</button>
+      </div>
+      <button class="clr" id="btnClear">↺ Xóa lọc</button>
     </div>
-    <button class="btn" id="btnClear">Xóa bộ lọc</button>
+    <div class="chips" id="chiptray"></div>
+    <div class="bar" id="bar"></div>
+    <div class="tbl">
+      <table id="r18Table">
+        <thead><tr>
+          <th>Customer No</th><th>Division Name</th><th>Article No</th><th>Article Name</th><th class="num">Delivered Quantity</th>
+        </tr></thead>
+        <tbody id="tbody"></tbody>
+        <tfoot id="tfoot"></tfoot>
+      </table>
+    </div>
+    
   </div>
-  <div class="stat" id="stat"></div>
-  <div class="tbl"><table>
-    <thead><tr>
-      <th>Customer No</th><th>Division Name</th><th>Article No</th><th>Article Name</th><th style="text-align:right">Delivered Quantity</th>
-    </tr></thead>
-    <tbody id="tbody"></tbody>
-    <tfoot id="tfoot"></tfoot>
-  </table></div>
-  <div class="pager">
-    <button id="prev">« Trang trước</button>
-    <span id="pageInfo"></span>
-    <button id="next">Trang sau »</button>
-  </div>
+  
+        <span style="font-size:11px;color:var(--muted)">Theo tổng Delivered Qty</span>
+    </div>
+    </div>
+
+      <footer style="padding:20px 2px 26px;color:var(--muted);font-size:12px;display:flex;gap:18px;flex-wrap:wrap;align-items:center;justify-content:space-between;border-top:1px solid var(--line-soft)">
+    <span>Thống kê được lọc từ <b id="srcCount">0</b> dòng dữ liệu nguồn (SRC) &nbsp;·&nbsp; FSD50</span>
+    <a href="file:///C:/Users/Quoc%20Nguyen/Documents/RPT18_Fillrate_report.xls" download style="font-size:11px;color:var(--gold-1);text-decoration:none;border:1px solid var(--gold-2);padding:4px 8px;border-radius:6px;margin-right:8px">📎 RPT18_Fillrate_report.xls (embedded)</a><span class="chip"><b>FSD50</b>&nbsp;· MEGA MARKET</span>
+  </footer>
 </div>
 
-<footer>FSD50 · dữ liệu nguồn: RPT18_Fillrate_report.xls · Mid-Autumn 2026 🌕</footer>
+<div class="overlay" id="overlay" role="dialog" aria-modal="true" aria-hidden="true">
+  <div class="backdrop" id="backdrop"></div>
+  <div class="detail" id="detail"></div>
+</div>
 
 <script>
-const ALL = [{"cust":"1117122340475","div":"FRESH FOOD","ano":"135104","aname":"CA TRE (LS) 2-5 CON/KG","qty":5.0},{"cust":"1117122340475","div":"FRESH FOOD","ano":"170624","aname":"CA NUC GAI (LS) 8-10 CON/KG","qty":5.0},{"cust":"1117122340475","div":"DRY FOOD","ano":"233864","aname":"NUOCCHAM NAMNGU SIEUTIETKIEM 4.8L","qty":4.0},{"cust":"1117122340475","div":"DRY FOOD","ano":"346204","aname":"TUONG DEN CHOLIMEX 2.1KG","qty":2.0},{"cust":"1117122340475","div":"DRY FOOD","ano":"402486","aname":"N.CHAM SEN HONG DAU BEP470ML*6","qty":2.0},{"cust":"1117122340475","div":"DRY FOOD","ano":"420087","aname":"MUOI TINH IOD VIETSALT 1KG","qty":5.0},{"cust":"1117122340475","div":"DRY FOOD","ano":"202419","aname":"MI TRUNG THUONG HANG SAFOCO 400G","qty":3.0},{"cust":"1117122340525","div":"FRESH FOOD","ano":"145517","aname":"CA DONG (LS) 5-10 CON/KG","qty":66.0},{"cust":"1117122340525","div":"DRY FOOD","ano":"152610","aname":"NAM MEO DEN NGUYEN TAI-H.NAM-250G","qty":3.0},{"cust":"1117122340525","div":"DRY FOOD","ano":"196944","aname":"TAO KHO  DD.THUAN  100 GR","qty":3.0},{"cust":"1117122340525","div":"DRY FOOD","ano":"233864","aname":"NUOCCHAM NAMNGU SIEUTIETKIEM 4.8L","qty":4.0},{"cust":"1117122340525","div":"DRY FOOD","ano":"255602","aname":"MUOI BIEN HAPPY PRICE 1KG","qty":50.0},{"cust":"1117122340525","div":"DRY FOOD","ano":"318545","aname":"KY TU DD.THUAN 100G","qty":3.0},{"cust":"1117122340525","div":"FRESH FOOD","ano":"347731","aname":"TR.GA HAPPY EGG SO 2 HOP 10","qty":182.0},{"cust":"1117122340525","div":"FRESH FOOD","ano":"356137","aname":"TOM THE (TUOI) 90-110 CON/KG","qty":5.5},{"cust":"1117122340525","div":"FRESH FOOD","ano":"403980","aname":"NAC VAI HEO WRF-CT","qty":135.0},{"cust":"1117122340525","div":"DRY FOOD","ano":"420087","aname":"MUOI TINH IOD VIETSALT 1KG","qty":50.0},{"cust":"1117122340525","div":"DRY FOOD","ano":"449044","aname":"LAC SEN EZ LIFE CAN KG","qty":1.5},{"cust":"1117122340525","div":"DRY FOOD","ano":"165098","aname":"ME TRANG DD.THUAN -300G","qty":1.0},{"cust":"1117122340525","div":"DRY FOOD","ano":"168049","aname":"NAM MEODEN CATSOI DD.THUAN-100G","qty":1.0},{"cust":"1117122340525","div":"FRESH FOOD","ano":"171262","aname":"HANH TAY DA LAT WRF","qty":2.0},{"cust":"1117122340525","div":"FRESH FOOD","ano":"186583","aname":"CA LOC DEN(FILLET CDA) 100G UP","qty":10.0},{"cust":"1117122340525","div":"DRY FOOD","ano":"18943","aname":"NGU VI HUONG VIANCO 500G","qty":1.0},{"cust":"1117122340525","div":"DRY FOOD","ano":"205729","aname":"BOT NANG TAI KY 1KG","qty":3.0},{"cust":"1117122340525","div":"FRESH FOOD","ano":"2237","aname":"MO HEO LOAI I (MO LUNG)","qty":1.0},{"cust":"1117122340525","div":"FRESH FOOD","ano":"314818","aname":"TRUNG BAC THAO VTD HOP4 60-62G","qty":8.0},{"cust":"1117122340525","div":"FRESH FOOD","ano":"32286","aname":"DAU HU MEM OME 300G/330G*2","qty":10.0},{"cust":"1117122340525","div":"FRESH FOOD","ano":"347731","aname":"TR.GA HAPPY EGG SO 2 HOP 10","qty":54.0},{"cust":"1117122340525","div":"DRY FOOD","ano":"37137","aname":"MAT ONG L-X 500ML*1","qty":1.0},{"cust":"1117122340525","div":"DRY FOOD","ano":"401589","aname":"BOT CHIEN XU TAI KY 1KG","qty":5.0},{"cust":"1117122340525","div":"FRESH FOOD","ano":"403961","aname":"THIT VAI HEO WRF-CT","qty":11.0},{"cust":"1117122340525","div":"FRESH FOOD","ano":"403980","aname":"NAC VAI HEO WRF-CT","qty":58.0},{"cust":"1117122340525","div":"FRESH FOOD","ano":"418527","aname":"L.DO T.VIT MUOI VTD 50C 600G","qty":2.0},{"cust":"1117122340525","div":"DRY FOOD","ano":"431242","aname":"MIEN DONG THUDUNG 500G","qty":1.0},{"cust":"1117122340525","div":"FRESH FOOD","ano":"474437","aname":"GIO SONG VISSAN 1KG","qty":2.0},{"cust":"1117122340525","div":"FRESH FOOD","ano":"478006","aname":"CA BASA FILLET TUOI 120G UP","qty":35.0},{"cust":"1117122340525","div":"DRY FOOD","ano":"54450","aname":"TOMATO PASTE HEINZ 3KG/3.15KG","qty":1.0},{"cust":"1117122340525","div":"FRESH FOOD","ano":"76426","aname":"CU SAN 200-400G","qty":2.4},{"cust":"1117122341606","div":"FRESH FOOD","ano":"356137","aname":"TOM THE (TUOI) 90-110 CON/KG","qty":0.2},{"cust":"1117122341606","div":"FRESH FOOD","ano":"144062","aname":"NAM D.CO TUOI 195G/TRUNG QUOC","qty":1.0},{"cust":"1117122341606","div":"FRESH FOOD","ano":"191950","aname":"UC PHI LE GA CN 1KG-WRF","qty":1.0},{"cust":"1117122341606","div":"DRY FOOD","ano":"204453","aname":"MI TRUNG SOI NHO SAFOCO500G","qty":1.0},{"cust":"1117122341606","div":"DRY FOOD","ano":"228276","aname":"XOT MAYONNAISE AJI-MAYO 430GR","qty":1.0},{"cust":"1117122341606","div":"DRY FOOD","ano":"249865","aname":"GAO LUT HUYET RONG BAO MINH1KG","qty":3.0},{"cust":"1117122341606","div":"DRY FOOD","ano":"421390","aname":"BANH RAM HA TINH 250G","qty":1.0},{"cust":"1117122341606","div":"FRESH FOOD","ano":"191950","aname":"UC PHI LE GA CN 1KG-WRF","qty":1.0},{"cust":"1117122341606","div":"DRY FOOD","ano":"196944","aname":"TAO KHO  DD.THUAN  100 GR","qty":1.0},{"cust":"1117122341606","div":"DRY FOOD","ano":"211455","aname":"MAM RUOC HUE NGOC LIEN 250GR","qty":1.0},{"cust":"1117122341606","div":"FRESH FOOD","ano":"225743","aname":"NAC HEO XAY","qty":0.3},{"cust":"1117122341606","div":"FRESH FOOD","ano":"240953","aname":"NAC BO XAY XX UC","qty":0.2},{"cust":"1117122341606","div":"FRESH FOOD","ano":"252388","aname":"SUA CHUA VNM TRAI CAY 100G*4","qty":3.0},{"cust":"1117122341606","div":"FRESH FOOD","ano":"258969","aname":"BAP NGOT DONG LANH WRF 1KG","qty":1.0},{"cust":"1117122341606","div":"FRESH FOOD","ano":"356137","aname":"TOM THE (TUOI) 90-110 CON/KG","qty":0.1},{"cust":"1117122341606","div":"DRY FOOD","ano":"399609","aname":"SAM HAM GA DDT 70G","qty":1.0},{"cust":"1117122341606","div":"FRESH FOOD","ano":"403961","aname":"THIT VAI HEO WRF-CT","qty":0.4},{"cust":"1117122341606","div":"FRESH FOOD","ano":"403980","aname":"NAC VAI HEO WRF-CT","qty":1.1},{"cust":"1117122341606","div":"DRY FOOD","ano":"258564","aname":"BOT NANG MM 400G","qty":3.0},{"cust":"1117122341606","div":"DRY FOOD","ano":"338003","aname":"GAO THIEN KIM 1 VPHAT BAO 25KG","qty":1.0},{"cust":"1117122341606","div":"FRESH FOOD","ano":"356137","aname":"TOM THE (TUOI) 90-110 CON/KG","qty":0.5},{"cust":"1117122341606","div":"FRESH FOOD","ano":"191950","aname":"UC PHI LE GA CN 1KG-WRF","qty":14.0},{"cust":"1117122341606","div":"FRESH FOOD","ano":"203831","aname":"XUONG ONG HEO DL NK","qty":1.0},{"cust":"1117122341606","div":"FRESH FOOD","ano":"240953","aname":"NAC BO XAY XX UC","qty":3.1},{"cust":"1117122341606","div":"DRY FOOD","ano":"244810","aname":"DAU HAO MABIN 1000G*1TUI","qty":1.0},{"cust":"1117122341606","div":"DRY FOOD","ano":"258564","aname":"BOT NANG MM 400G","qty":2.0},{"cust":"1117122341606","div":"DRY FOOD","ano":"338003","aname":"GAO THIEN KIM 1 VPHAT BAO 25KG","qty":2.0},{"cust":"1117122341606","div":"DRY FOOD","ano":"370378","aname":"XI DAU DAC BIET LKK 1.75L","qty":1.0},{"cust":"1117122341606","div":"FRESH FOOD","ano":"191950","aname":"UC PHI LE GA CN 1KG-WRF","qty":4.0},{"cust":"1117122341606","div":"FRESH FOOD","ano":"240953","aname":"NAC BO XAY XX UC","qty":1.1},{"cust":"1117122341606","div":"DRY FOOD","ano":"431247","aname":"BUN KHO THUDUNG 500G","qty":4.0},{"cust":"1117122341606","div":"FRESH FOOD","ano":"225743","aname":"NAC HEO XAY","qty":1.3},{"cust":"1117122341606","div":"DRY FOOD","ano":"338003","aname":"GAO THIEN KIM 1 VPHAT BAO 25KG","qty":3.0},{"cust":"1117122341606","div":"FRESH FOOD","ano":"137957","aname":"XUONG UC GA C.P VN 1KG","qty":2.0},{"cust":"1117122341606","div":"DRY FOOD","ano":"152610","aname":"NAM MEO DEN NGUYEN TAI-H.NAM-250G","qty":1.0},{"cust":"1117122341606","div":"FRESH FOOD","ano":"191950","aname":"UC PHI LE GA CN 1KG-WRF","qty":1.0},{"cust":"1117122341606","div":"FRESH FOOD","ano":"203831","aname":"XUONG ONG HEO DL NK","qty":1.0},{"cust":"1117122341606","div":"FRESH FOOD","ano":"257341","aname":"CHA CA CHAY AN NHIEN 500G","qty":2.0},{"cust":"1117122341606","div":"DRY FOOD","ano":"258409","aname":"TUONG CA MM PROFESSIONAL 2.1KG","qty":1.0},{"cust":"1117122341606","div":"FRESH FOOD","ano":"332857","aname":"CU CAI MUOI (XX VN)","qty":0.3},{"cust":"1117122341606","div":"FRESH FOOD","ano":"372423","aname":"KHOAI TAY LUTOSA SOI LON 2.5KG","qty":14.0},{"cust":"1117122341606","div":"FRESH FOOD","ano":"403596","aname":"CHA CA VI HAN QUOC T.AN 500G","qty":28.0},{"cust":"1117122341606","div":"DRY FOOD","ano":"411083","aname":"BNC KELLOGGS CORN FLAKE 500G*H","qty":2.0},{"cust":"1117122341606","div":"FRESH FOOD","ano":"416573","aname":"TR.CUT LUOC TH.TRUNG 400GX50C","qty":7.0},{"cust":"1117122341606","div":"FRESH FOOD","ano":"65110","aname":"TRUNG VIT VTD SIZE L HOP 10","qty":24.0},{"cust":"1117122341606","div":"FRESH FOOD","ano":"315136","aname":"SUA TT VINAMILK IT DUONG 110ML*4","qty":7.0},{"cust":"1117122341606","div":"FRESH FOOD","ano":"446939","aname":"DUI TOI GA CN TUI-CP","qty":13.0},{"cust":"1117122341606","div":"FRESH FOOD","ano":"446939","aname":"DUI TOI GA CN TUI-CP","qty":25.0},{"cust":"1117122341606","div":"DRY FOOD","ano":"211174","aname":"SOT THIT NUONG BBQ A/GARDEN 510G","qty":3.0},{"cust":"1117122341606","div":"FRESH FOOD","ano":"356137","aname":"TOM THE (TUOI) 90-110 CON/KG","qty":3.5},{"cust":"1117122341606","div":"FRESH FOOD","ano":"169259","aname":"BAP BO DONG LANH NK XX UC-WRF","qty":15.4},{"cust":"1117122341606","div":"FRESH FOOD","ano":"169259","aname":"BAP BO DONG LANH NK XX UC-WRF","qty":10.0},{"cust":"1117122341606","div":"FRESH FOOD","ano":"225743","aname":"NAC HEO XAY","qty":3.0},{"cust":"1117122341606","div":"FRESH FOOD","ano":"2360","aname":"XUONG BO WRF","qty":3.0},{"cust":"1117122341606","div":"FRESH FOOD","ano":"258969","aname":"BAP NGOT DONG LANH WRF 1KG","qty":2.0},{"cust":"1117122341606","div":"DRY FOOD","ano":"29092","aname":"OLIU DEN K.HAT FRAGATA 150G","qty":2.0},{"cust":"1117122341606","div":"DRY FOOD","ano":"308840","aname":"MAM RUOC HUE NGOC LIEN 500G","qty":2.0},{"cust":"1117122341606","div":"FRESH FOOD","ano":"32286","aname":"DAU HU MEM OME 300G/330G*2","qty":4.0},{"cust":"1117122341606","div":"FRESH FOOD","ano":"402387","aname":"NAC DAM HEO VIETGAP-WRF","qty":5.0},{"cust":"1117122341606","div":"DRY FOOD","ano":"407163","aname":"CA NGU MUOI SEASPI 185G*2","qty":6.0},{"cust":"1117122341606","div":"FRESH FOOD","ano":"401917","aname":"CHAN GIO HEO VIETGAP-WRF","qty":8.0},{"cust":"1117122341606","div":"FRESH FOOD","ano":"137955","aname":"DUI GOC TU GA CN C.P VN 1KG","qty":20.0},{"cust":"1117122341606","div":"DRY FOOD","ano":"158638","aname":"LAP XUONG VISSAN 3 BONG MAI500G*1","qty":8.0},{"cust":"1117122341606","div":"FRESH FOOD","ano":"191950","aname":"UC PHI LE GA CN 1KG-WRF","qty":21.0},{"cust":"1117122341606","div":"FRESH FOOD","ano":"258982","aname":"BAP NGOT DONG LANH MMPRO 2KG","qty":2.0},{"cust":"1117122341606","div":"FRESH FOOD","ano":"304407","aname":"DAU HA LAN WRF 1KG","qty":2.0},{"cust":"1117122341606","div":"DRY FOOD","ano":"352985","aname":"BANH GAO HAN QUOC O FOOD 1KG","qty":15.0},{"cust":"1117122341606","div":"FRESH FOOD","ano":"483925","aname":"CHA CA MIENG BUSAN SAMJIN 800G","qty":5.0},{"cust":"1117122341606","div":"FRESH FOOD","ano":"125730","aname":"DUI GOC TU GA DL XX MY-WRF","qty":15.0},{"cust":"1117122341606","div":"FRESH FOOD","ano":"142227","aname":"BAP CAI TRANG DALAT WRF","qty":15.0},{"cust":"1117122341606","div":"FRESH FOOD","ano":"169259","aname":"BAP BO DONG LANH NK XX UC-WRF","qty":18.83},{"cust":"1117122341606","div":"FRESH FOOD","ano":"174370","aname":"CA TRABE FILETTUOI 120G UPCORE","qty":1.0},{"cust":"1117122341606","div":"FRESH FOOD","ano":"191950","aname":"UC PHI LE GA CN 1KG-WRF","qty":36.0},{"cust":"1117122341606","div":"FRESH FOOD","ano":"225743","aname":"NAC HEO XAY","qty":8.0},{"cust":"1117122341606","div":"FRESH FOOD","ano":"2360","aname":"XUONG BO WRF","qty":5.0},{"cust":"1117122341606","div":"FRESH FOOD","ano":"258969","aname":"BAP NGOT DONG LANH WRF 1KG","qty":2.0},{"cust":"1117122341606","div":"DRY FOOD","ano":"29092","aname":"OLIU DEN K.HAT FRAGATA 150G","qty":2.0},{"cust":"1117122341606","div":"FRESH FOOD","ano":"401917","aname":"CHAN GIO HEO VIETGAP-WRF","qty":6.0},{"cust":"1117122341606","div":"DRY FOOD","ano":"435753","aname":"BNC KELLOGGS CORN FLAKES 1.2KG","qty":1.0},{"cust":"1117122341606","div":"FRESH FOOD","ano":"728","aname":"HA CAO CAU TRE 500GR","qty":10.0},{"cust":"1117122341606","div":"FRESH FOOD","ano":"759","aname":"XIU MAI CAU TRE 500GR","qty":10.0},{"cust":"1117122341606","div":"DRY FOOD","ano":"308840","aname":"MAM RUOC HUE NGOC LIEN 500G","qty":3.0},{"cust":"1117122341606","div":"DRY FOOD","ano":"124115","aname":"HAT NEM KNORR 5KG","qty":1.0},{"cust":"1117122341606","div":"FRESH FOOD","ano":"125868","aname":"SUA TT CGHL K.DUONG 965ML","qty":12.0},{"cust":"1117122341606","div":"DRY FOOD","ano":"196938","aname":"BOT NGHE  DD.THUAN 100 GR","qty":2.0},{"cust":"1117122341606","div":"DRY FOOD","ano":"202022","aname":"TRA COZY DAO 2G*25GOI","qty":6.0},{"cust":"1117122341606","div":"DRY FOOD","ano":"258408","aname":"TUONG OT MM PROFESSIONAL 2.1KG","qty":1.0},{"cust":"1117122341606","div":"DRY FOOD","ano":"258409","aname":"TUONG CA MM PROFESSIONAL 2.1KG","qty":1.0},{"cust":"1117122341606","div":"DRY FOOD","ano":"316988","aname":"NEP SAP DSAN LONG AN MEIZAN1KG","qty":5.0},{"cust":"1117122341606","div":"DRY FOOD","ano":"383850","aname":"GIAM BALSAMICO METRO CHEF500ML","qty":0.0},{"cust":"1117122341606","div":"DRY FOOD","ano":"407163","aname":"CA NGU MUOI SEASPI 185G*2","qty":2.0},{"cust":"1117122341606","div":"DRY FOOD","ano":"482001","aname":"D.AN TUONGAN PROFESSIONAL27.4L","qty":1.0},{"cust":"1117122341606","div":"DRY FOOD","ano":"81485","aname":"TUONG NGOT LKK 2270G*1LON","qty":1.0},{"cust":"1117122341606","div":"DRY FOOD","ano":"111894","aname":"SUADAC NSPN NHAN XANH1284GR","qty":24.0},{"cust":"1117122341606","div":"FRESH FOOD","ano":"125868","aname":"SUA TT CGHL K.DUONG 965ML","qty":12.0},{"cust":"1117122341606","div":"DRY FOOD","ano":"187876","aname":"DUONG MIA THUONG HANG BH 1KG","qty":20.0},{"cust":"1117122341606","div":"HOME LINE","ano":"115371","aname":"KIMBAM PLUS30-112VN SO10 20H/L","qty":1.0},{"cust":"1117122341606","div":"DRY FOOD","ano":"120833","aname":"NLS GIFT BAC HA 3.8/4KG","qty":3.0},{"cust":"1117122341606","div":"FRESH FOOD","ano":"137952","aname":"MA DUI GA CN C.P VN 1 KG","qty":43.0},{"cust":"1117122341606","div":"FRESH FOOD","ano":"137957","aname":"XUONG UC GA C.P VN 1KG","qty":25.0},{"cust":"1117122341606","div":"DRY FOOD","ano":"165504","aname":"THIT HEO CHA BONG TNP 250G","qty":11.0},{"cust":"1117122341606","div":"DRY FOOD","ano":"179836","aname":"THIT HEO CHA BONG TNP 150G","qty":2.0},{"cust":"1117122341606","div":"FRESH FOOD","ano":"191950","aname":"UC PHI LE GA CN 1KG-WRF","qty":26.0},{"cust":"1117122341606","div":"FRESH FOOD","ano":"403961","aname":"THIT VAI HEO WRF-CT","qty":44.0},{"cust":"1117122341606","div":"FRESH FOOD","ano":"403980","aname":"NAC VAI HEO WRF-CT","qty":61.5},{"cust":"1117122341606","div":"FRESH FOOD","ano":"414083","aname":"THANH CUA DL WRF 1KG","qty":13.0},{"cust":"1117122341606","div":"FRESH FOOD","ano":"403961","aname":"THIT VAI HEO WRF-CT","qty":20.0},{"cust":"1117122341606","div":"FRESH FOOD","ano":"403980","aname":"NAC VAI HEO WRF-CT","qty":34.0},{"cust":"1117122341606","div":"DRY FOOD","ano":"17135","aname":"GIAM T.LUYEN MC 4% 2L","qty":2.0},{"cust":"1117122341606","div":"DRY FOOD","ano":"184628","aname":"NUOC MAM NGU VI HH 4.9L","qty":6.0},{"cust":"1117122341606","div":"DRY FOOD","ano":"196405","aname":"RUOU HA NOI CAN PET 35% 4L","qty":2.0},{"cust":"1117122341606","div":"DRY FOOD","ano":"244810","aname":"DAU HAO MABIN 1000G*1TUI","qty":12.0},{"cust":"1117122341606","div":"DRY FOOD","ano":"258564","aname":"BOT NANG MM 400G","qty":10.0},{"cust":"1117122341606","div":"DRY FOOD","ano":"258588","aname":"BUN GAO NANG THOM MM 200G","qty":2.0},{"cust":"1117122341606","div":"DRY FOOD","ano":"258594","aname":"MIEN DAU XANH MM 200G","qty":2.0},{"cust":"1117122341606","div":"DRY FOOD","ano":"346199","aname":"N.TUONG H.VIET CHOLIMEX 4.9L","qty":3.0},{"cust":"1117122341606","div":"DRY FOOD","ano":"352243","aname":"BOT BAP MEIZAN 1KG","qty":10.0},{"cust":"1117122341606","div":"DRY FOOD","ano":"402204","aname":"HAT NEM NAM HUONG BEP VIET 5KG","qty":1.0},{"cust":"1117122341606","div":"DRY FOOD","ano":"45036","aname":"QUE CAY VIANCO 500G","qty":2.0},{"cust":"1117122341606","div":"FRESH FOOD","ano":"142227","aname":"BAP CAI TRANG DALAT WRF","qty":153.0},{"cust":"1117122341606","div":"DRY FOOD","ano":"165098","aname":"ME TRANG DD.THUAN -300G","qty":2.0},{"cust":"1117122341606","div":"FRESH FOOD","ano":"18546","aname":"CHA LUA C.P 500GR","qty":43.0},{"cust":"1117122341606","div":"FRESH FOOD","ano":"190273","aname":"NUOC MAT-500 GR","qty":76.0},{"cust":"1117122341606","div":"DRY FOOD","ano":"209307","aname":"BANH DA ME DEN DDT 20CM 300GR","qty":10.0},{"cust":"1117122341606","div":"DRY FOOD","ano":"228276","aname":"XOT MAYONNAISE AJI-MAYO 430GR","qty":1.0},{"cust":"1117122341606","div":"FRESH FOOD","ano":"257312","aname":"CHA LUA CHAY AN NHIEN 500G","qty":4.0},{"cust":"1117122341606","div":"DRY FOOD","ano":"316390","aname":"BOT CHIEN GION MEIZAN 1KG","qty":35.0},{"cust":"1117122341606","div":"DRY FOOD","ano":"462253","aname":"DAU PHONG MMPRO 2KG","qty":1.0},{"cust":"1117122341606","div":"FRESH FOOD","ano":"76408","aname":"HANH PARO DALAT","qty":2.4},{"cust":"1117122341606","div":"FRESH FOOD","ano":"76469","aname":"XA LACH LOLO XANH DALAT","qty":7.0},{"cust":"1117122341606","div":"HOME LINE","ano":"255742","aname":"MANG PVC MMPRO K.HOP 0.45*500M","qty":4.0},{"cust":"1117122341606","div":"DRY FOOD","ano":"258707","aname":"NLS HAPPY PRICE BAC HA 5L","qty":2.0},{"cust":"1117122341606","div":"HOME LINE","ano":"3824","aname":"BKEO GIAY 4.8*25Y 6CUON/LOC","qty":5.0},{"cust":"1117122341606","div":"HOME LINE","ano":"406039","aname":"GANG TAY CS NEPNHAN 37CM-M*2D","qty":5.0},{"cust":"1117122341606","div":"DRY FOOD","ano":"410995","aname":"NRC HAPPYPRICE HUONGCHANH 20KG","qty":4.0},{"cust":"1117122341606","div":"DRY FOOD","ano":"52528","aname":"BOT GIAT OMO DO 4.3KG","qty":1.0},{"cust":"1117122341606","div":"HOME LINE","ano":"254024","aname":"BUT LONG DAU TL PM09 2DAU 2C/V","qty":5.0},{"cust":"1117122341606","div":"DRY FOOD","ano":"316390","aname":"BOT CHIEN GION MEIZAN 1KG","qty":5.0},{"cust":"1117122341838","div":"FRESH FOOD","ano":"340249","aname":"TRUNG GA HP (S2) 55G CAY 300","qty":1.0},{"cust":"1117122341838","div":"FRESH FOOD","ano":"137957","aname":"XUONG UC GA C.P VN 1KG","qty":5.0},{"cust":"1117122341838","div":"FRESH FOOD","ano":"224727","aname":"NAC VAI HEO DLNK-WRF","qty":20.79},{"cust":"1117122341838","div":"FRESH FOOD","ano":"151292","aname":"MA DUI GA CN S.HA 1KG","qty":6.0},{"cust":"1117122341838","div":"DRY FOOD","ano":"204453","aname":"MI TRUNG SOI NHO SAFOCO500G","qty":6.0},{"cust":"1117122341838","div":"DRY FOOD","ano":"259682","aname":"DAU AN HAPPY PRICE 25KG","qty":1.0},{"cust":"1117122341838","div":"FRESH FOOD","ano":"368423","aname":"BANH PHO BA KHANH KG","qty":12.0},{"cust":"1117122341838","div":"FRESH FOOD","ano":"151292","aname":"MA DUI GA CN S.HA 1KG","qty":77.0},{"cust":"1117122341838","div":"FRESH FOOD","ano":"151292","aname":"MA DUI GA CN S.HA 1KG","qty":40.0},{"cust":"1117122341838","div":"DRY FOOD","ano":"179834","aname":"MI SOI 3 SPAGHETTI FIAMMA 500G","qty":28.0},{"cust":"1117122341838","div":"FRESH FOOD","ano":"340249","aname":"TRUNG GA HP (S2) 55G CAY 300","qty":1.0},{"cust":"1117122341838","div":"FRESH FOOD","ano":"340249","aname":"TRUNG GA HP (S2) 55G CAY 300","qty":1.0},{"cust":"1117122341838","div":"FRESH FOOD","ano":"340249","aname":"TRUNG GA HP (S2) 55G CAY 300","qty":1.0},{"cust":"1117122341838","div":"FRESH FOOD","ano":"340249","aname":"TRUNG GA HP (S2) 55G CAY 300","qty":1.0},{"cust":"1117122341838","div":"FRESH FOOD","ano":"340249","aname":"TRUNG GA HP (S2) 55G CAY 300","qty":2.0},{"cust":"1117122342117","div":"FRESH FOOD","ano":"171258","aname":"OT CHUONG XANH DALAT WRF","qty":17.0},{"cust":"1117122342117","div":"FRESH FOOD","ano":"315380","aname":"NGO TAY- PARLEY (LOCAL)","qty":3.0},{"cust":"1117122342117","div":"FRESH FOOD","ano":"315396","aname":"QUE TAY-BASIL (LOCAL)","qty":1.0},{"cust":"1117122342117","div":"FRESH FOOD","ano":"76399","aname":"OT CHUONG DO DALAT WRF","qty":25.0},{"cust":"1117122342117","div":"FRESH FOOD","ano":"76402","aname":"BI NGOI VANG DA LAT","qty":20.0},{"cust":"1117122342117","div":"FRESH FOOD","ano":"76472","aname":"XA LACH ROMAINE GREEN DALAT","qty":4.0},{"cust":"1117122342117","div":"FRESH FOOD","ano":"89081","aname":"OT CHUONG VANG DALAT WRF","qty":8.0},{"cust":"1117122342117","div":"FRESH FOOD","ano":"148341","aname":"DUA HAU HMN-TH.HANG","qty":100.0},{"cust":"1117122342117","div":"FRESH FOOD","ano":"206901","aname":"THANH LONG LOAI 1 (500-800G)-VNA","qty":100.0},{"cust":"1117122342117","div":"FRESH FOOD","ano":"400114","aname":"DU DU RUOT VANG LOAI 1","qty":67.0},{"cust":"1117122342117","div":"FRESH FOOD","ano":"424497","aname":"CHANH VANG NK TQ WRF","qty":10.0},{"cust":"1117122342117","div":"HARD LINE","ano":"424539","aname":"B.DUN ST BESICO7053700187 1.8L","qty":1.0},{"cust":"1117122342117","div":"FRESH FOOD","ano":"171266","aname":"CHANH KHONG HAT","qty":15.0},{"cust":"1117122342117","div":"DRY FOOD","ano":"346204","aname":"TUONG DEN CHOLIMEX 2.1KG","qty":10.0},{"cust":"1117122342117","div":"FRESH FOOD","ano":"76609","aname":"XA LACH COROL DALAT","qty":30.0},{"cust":"2221001927953","div":"DRY FOOD","ano":"103490","aname":"BOT NGOT AJINOMOTO (R) 2KG","qty":1.0},{"cust":"2221001927953","div":"DRY FOOD","ano":"184203","aname":"NT TAMTHAITU NHICA CHINSU500ML","qty":12.0},{"cust":"2221001927953","div":"DRY FOOD","ano":"230338","aname":"MI TRAN THIEN HUONG 1 KG","qty":2.0},{"cust":"2221001927953","div":"FRESH FOOD","ano":"340249","aname":"TRUNG GA HP (S2) 55G CAY 300","qty":1.0},{"cust":"2221001927953","div":"FRESH FOOD","ano":"368437","aname":"DUI GOC TU DLNK CT","qty":30.0},{"cust":"2221001927953","div":"DRY FOOD","ano":"416625","aname":"HAT NEM MAGGI NAM HUONG 2KG","qty":1.0},{"cust":"2221001927953","div":"DRY FOOD","ano":"420087","aname":"MUOI TINH IOD VIETSALT 1KG","qty":6.0},{"cust":"2221001927953","div":"DRY FOOD","ano":"466056","aname":"BUN GAO LUT FUMA 400G","qty":8.0},{"cust":"2221001927953","div":"FRESH FOOD","ano":"163037","aname":"CHA CA TUOI THOAI AN 500G","qty":2.0},{"cust":"2221001927953","div":"DRY FOOD","ano":"230338","aname":"MI TRAN THIEN HUONG 1 KG","qty":6.0},{"cust":"2221001927953","div":"DRY FOOD","ano":"230338","aname":"MI TRAN THIEN HUONG 1 KG","qty":2.0},{"cust":"2221002347151","div":"DRY FOOD","ano":"114028","aname":"BOT NGOT AJINOMOTO (R) 5KG*4","qty":2.0},{"cust":"2221002347151","div":"DRY FOOD","ano":"133832","aname":"HAT NEM KNORR 5KG*3","qty":2.0},{"cust":"2221002347151","div":"FRESH FOOD","ano":"135404","aname":"HR-HANH LA LAM SACH","qty":5.2},{"cust":"2221002347151","div":"FRESH FOOD","ano":"141343","aname":"CA CHUA DALAT","qty":3.0},{"cust":"2221002347151","div":"DRY FOOD","ano":"163885","aname":"GIAM GAO LEN MEN AJI-LISA 4.9L","qty":1.0},{"cust":"2221002347151","div":"DRY FOOD","ano":"168049","aname":"NAM MEODEN CATSOI DD.THUAN-100G","qty":2.0},{"cust":"2221002347151","div":"FRESH FOOD","ano":"168814","aname":"BI NGO","qty":8.2},{"cust":"2221002347151","div":"FRESH FOOD","ano":"182540","aname":"DUA LEO (DUA CHUOT)","qty":3.0},{"cust":"2221002347151","div":"FRESH FOOD","ano":"19485","aname":"GIA SONG/HCM","qty":2.6},{"cust":"2221002347151","div":"FRESH FOOD","ano":"401083","aname":"DUI TOI GA CN-3F","qty":16.0},{"cust":"2221002347151","div":"DRY FOOD","ano":"485748","aname":"BOT GAO TAI KY 1KG","qty":10.0},{"cust":"2221002347151","div":"FRESH FOOD","ano":"76469","aname":"XA LACH LOLO XANH DALAT","qty":2.6},{"cust":"2222006014151","div":"FRESH FOOD","ano":"141343","aname":"CA CHUA DALAT","qty":8.0},{"cust":"2222006014151","div":"FRESH FOOD","ano":"171260","aname":"CU CAI TRANG DALAT","qty":5.0},{"cust":"2222006014151","div":"FRESH FOOD","ano":"171261","aname":"KHOAI TAY DALAT WRF","qty":10.0},{"cust":"2222006014151","div":"FRESH FOOD","ano":"347731","aname":"TR.GA HAPPY EGG SO 2 HOP 10","qty":12.0},{"cust":"2222006014151","div":"FRESH FOOD","ano":"400114","aname":"DU DU RUOT VANG LOAI 1","qty":5.0},{"cust":"2222006014151","div":"FRESH FOOD","ano":"400114","aname":"DU DU RUOT VANG LOAI 1","qty":5.0},{"cust":"2224012883397","div":"FRESH FOOD","ano":"107994","aname":"DUA HAU HMN","qty":306.6},{"cust":"2224012883397","div":"FRESH FOOD","ano":"143732","aname":"SU SU DALAT","qty":35.0},{"cust":"2224012883397","div":"FRESH FOOD","ano":"169843","aname":"CA ROT DALAT WRF","qty":39.0},{"cust":"2224012883397","div":"FRESH FOOD","ano":"171260","aname":"CU CAI TRANG DALAT","qty":1.5},{"cust":"2224012883397","div":"FRESH FOOD","ano":"171266","aname":"CHANH KHONG HAT","qty":2.7},{"cust":"2224012883397","div":"FRESH FOOD","ano":"177969","aname":"BAU XANH","qty":49.0},{"cust":"2224012883397","div":"FRESH FOOD","ano":"181635","aname":"DAU COVE DALAT","qty":3.0},{"cust":"2224012883397","div":"FRESH FOOD","ano":"181852","aname":"CHANH DAY DALAT","qty":1.0},{"cust":"2224012883397","div":"DRY FOOD","ano":"18209","aname":"TUONG CA CHOLIMEX CHAI 2.1KG","qty":15.0},{"cust":"2224012883397","div":"FRESH FOOD","ano":"186213","aname":"OT HIEM DO","qty":1.0},{"cust":"2224012883397","div":"FRESH FOOD","ano":"187343","aname":"TRAI TAC (QUAT XANH)/ BEN TRE","qty":8.0},{"cust":"2224012883397","div":"DRY FOOD","ano":"233864","aname":"NUOCCHAM NAMNGU SIEUTIETKIEM 4.8L","qty":8.0},{"cust":"2224012883397","div":"FRESH FOOD","ano":"258969","aname":"BAP NGOT DONG LANH WRF 1KG","qty":1.0},{"cust":"2224012883397","div":"FRESH FOOD","ano":"258982","aname":"BAP NGOT DONG LANH MMPRO 2KG","qty":1.0},{"cust":"2224012883397","div":"DRY FOOD","ano":"259682","aname":"DAU AN HAPPY PRICE 25KG","qty":4.0},{"cust":"2224012883397","div":"FRESH FOOD","ano":"31976","aname":"DAU HU MOMEN 300G/330G*2","qty":7.0},{"cust":"2224012883397","div":"FRESH FOOD","ano":"37084","aname":"HR-SA XAY NHUYEN","qty":1.0},{"cust":"2224012883397","div":"FRESH FOOD","ano":"394043","aname":"HANH TAY TIM DALAT-1KG","qty":1.0},{"cust":"2224012883397","div":"FRESH FOOD","ano":"394367","aname":"OT SUNG DO DALAT-500G","qty":1.0},{"cust":"2224012883397","div":"FRESH FOOD","ano":"75896","aname":"KHOAI MON CAO","qty":0.5},{"cust":"2224012883397","div":"FRESH FOOD","ano":"75905","aname":"MUOP HUONG","qty":50.0},{"cust":"2224012883397","div":"FRESH FOOD","ano":"76426","aname":"CU SAN 200-400G","qty":4.0},{"cust":"2224012883397","div":"FRESH FOOD","ano":"76434","aname":"GUNG","qty":0.3},{"cust":"2224012883397","div":"FRESH FOOD","ano":"76601","aname":"SU HAO DALAT","qty":14.0},{"cust":"2224012883397","div":"FRESH FOOD","ano":"171262","aname":"HANH TAY DA LAT WRF","qty":3.4},{"cust":"2224012883397","div":"FRESH FOOD","ano":"143732","aname":"SU SU DALAT","qty":9.0},{"cust":"2224012883397","div":"FRESH FOOD","ano":"155077","aname":"HR-HANH TIM(HANH CU DO)LOT VO","qty":1.2},{"cust":"2224012883397","div":"FRESH FOOD","ano":"169843","aname":"CA ROT DALAT WRF","qty":26.9},{"cust":"2224012883397","div":"FRESH FOOD","ano":"171260","aname":"CU CAI TRANG DALAT","qty":1.0},{"cust":"2224012883397","div":"FRESH FOOD","ano":"177969","aname":"BAU XANH","qty":150.0},{"cust":"2224012883397","div":"FRESH FOOD","ano":"182541","aname":"BI DAO XANH","qty":7.5},{"cust":"2224012883397","div":"FRESH FOOD","ano":"248430","aname":"BO LAT TN TH TRUEBUTTER 200G","qty":5.0},{"cust":"2224012883397","div":"FRESH FOOD","ano":"258969","aname":"BAP NGOT DONG LANH WRF 1KG","qty":3.0},{"cust":"2224012883397","div":"FRESH FOOD","ano":"31976","aname":"DAU HU MOMEN 300G/330G*2","qty":2.0},{"cust":"2224012883397","div":"FRESH FOOD","ano":"37053","aname":"DU DU XANH / TIEN GIANG","qty":9.0},{"cust":"2224012883397","div":"FRESH FOOD","ano":"371897","aname":"TRUNG GA HP (S3) 54-60G CAY300","qty":2.0},{"cust":"2224012883397","div":"FRESH FOOD","ano":"410878","aname":"HR-TOI LOT VO (XX VN)","qty":1.5},{"cust":"2224012883397","div":"FRESH FOOD","ano":"65285","aname":"TRUNG CUT VTD HOP 30","qty":14.0},{"cust":"2224012883397","div":"FRESH FOOD","ano":"65634","aname":"XOAI KEO 300G UP / AN GIANG","qty":0.0},{"cust":"2224012883397","div":"FRESH FOOD","ano":"75896","aname":"KHOAI MON CAO","qty":7.2},{"cust":"2224012883397","div":"FRESH FOOD","ano":"76401","aname":"BI NGOI XANH DA LAT","qty":6.0},{"cust":"2224012883397","div":"FRESH FOOD","ano":"76662","aname":"XOAI DAI LOAN DAI","qty":2.4},{"cust":"2224012883397","div":"FRESH FOOD","ano":"171261","aname":"KHOAI TAY DALAT WRF","qty":18.3},{"cust":"2224012883397","div":"DRY FOOD","ano":"17135","aname":"GIAM T.LUYEN MC 4% 2L","qty":6.0},{"cust":"2224012883397","div":"DRY FOOD","ano":"258409","aname":"TUONG CA MM PROFESSIONAL 2.1KG","qty":12.0},{"cust":"2224012883397","div":"DRY FOOD","ano":"259682","aname":"DAU AN HAPPY PRICE 25KG","qty":4.0},{"cust":"2224012883397","div":"DRY FOOD","ano":"415217","aname":"H.NEM ORCHID THIT XO &TUY 10KG","qty":3.0},{"cust":"2224012883397","div":"FRESH FOOD","ano":"49142","aname":"CA BAC MA (LS) 8-10 CON/KG","qty":10.0},{"cust":"2224012883397","div":"FRESH FOOD","ano":"171269","aname":"T.LONG R.TRANG 400G","qty":1.59},{"cust":"2224012883397","div":"FRESH FOOD","ano":"87719","aname":"CUC NHANH HASFARM","qty":1.0},{"cust":"2225021115192","div":"DRY FOOD","ano":"255581","aname":"SUA DAC CD NSPN XANH BIEN1284G","qty":5.0},{"cust":"2225021115192","div":"DRY FOOD","ano":"417764","aname":"CAFE G7 HOA TAN DEN 2GX100GOI","qty":1.0},{"cust":"2225021115192","div":"FRESH FOOD","ano":"163041","aname":"CA VIEN THOAI AN 500G","qty":8.0},{"cust":"2225021115192","div":"FRESH FOOD","ano":"168814","aname":"BI NGO","qty":1.5},{"cust":"2225021115192","div":"FRESH FOOD","ano":"169843","aname":"CA ROT DALAT WRF","qty":5.0},{"cust":"2225021115192","div":"FRESH FOOD","ano":"171260","aname":"CU CAI TRANG DALAT","qty":2.0},{"cust":"2225021115192","div":"FRESH FOOD","ano":"171261","aname":"KHOAI TAY DALAT WRF","qty":3.0},{"cust":"2225021115192","div":"FRESH FOOD","ano":"171262","aname":"HANH TAY DA LAT WRF","qty":2.0},{"cust":"2225021115192","div":"FRESH FOOD","ano":"191953","aname":"XUONG UC GA 1KG-WRF","qty":2.0},{"cust":"2225021115192","div":"FRESH FOOD","ano":"31976","aname":"DAU HU MOMEN 300G/330G*2","qty":59.0},{"cust":"2225021115192","div":"FRESH FOOD","ano":"347731","aname":"TR.GA HAPPY EGG SO 2 HOP 10","qty":25.0},{"cust":"2225021115192","div":"FRESH FOOD","ano":"356137","aname":"TOM THE (TUOI) 90-110 CON/KG","qty":6.5},{"cust":"2225021115192","div":"FRESH FOOD","ano":"371897","aname":"TRUNG GA HP (S3) 54-60G CAY300","qty":1.0},{"cust":"2225021115192","div":"FRESH FOOD","ano":"393794","aname":"TOI PHAN RANG-500G","qty":2.0},{"cust":"2225021115192","div":"FRESH FOOD","ano":"403961","aname":"THIT VAI HEO WRF-CT","qty":22.5},{"cust":"2225021115192","div":"FRESH FOOD","ano":"403980","aname":"NAC VAI HEO WRF-CT","qty":26.5},{"cust":"2225021115192","div":"FRESH FOOD","ano":"4660","aname":"PHO MAI VINAMILK 120GR","qty":29.0},{"cust":"2225021115192","div":"FRESH FOOD","ano":"65285","aname":"TRUNG CUT VTD HOP 30","qty":7.0},{"cust":"2225021115192","div":"FRESH FOOD","ano":"76426","aname":"CU SAN 200-400G","qty":0.5},{"cust":"2225021115192","div":"FRESH FOOD","ano":"91352","aname":"HANH CU DO (TIM) VN","qty":1.5},{"cust":"2225021115192","div":"FRESH FOOD","ano":"169259","aname":"BAP BO DONG LANH NK XX UC-WRF","qty":18.48},{"cust":"2225021115192","div":"FRESH FOOD","ano":"191953","aname":"XUONG UC GA 1KG-WRF","qty":2.0},{"cust":"2225021115192","div":"FRESH FOOD","ano":"31976","aname":"DAU HU MOMEN 300G/330G*2","qty":103.0},{"cust":"2225021115192","div":"FRESH FOOD","ano":"347731","aname":"TR.GA HAPPY EGG SO 2 HOP 10","qty":15.0},{"cust":"2225021115192","div":"FRESH FOOD","ano":"356137","aname":"TOM THE (TUOI) 90-110 CON/KG","qty":6.0},{"cust":"2225021115192","div":"FRESH FOOD","ano":"371897","aname":"TRUNG GA HP (S3) 54-60G CAY300","qty":6.0},{"cust":"2225021115192","div":"FRESH FOOD","ano":"393794","aname":"TOI PHAN RANG-500G","qty":10.0},{"cust":"2225021115192","div":"FRESH FOOD","ano":"402388","aname":"SUON NON HEO VIETGAP-WRF","qty":5.0},{"cust":"2225021115192","div":"FRESH FOOD","ano":"403980","aname":"NAC VAI HEO WRF-CT","qty":61.0},{"cust":"2225021115192","div":"DRY FOOD","ano":"431242","aname":"MIEN DONG THUDUNG 500G","qty":16.0},{"cust":"2225021115192","div":"FRESH FOOD","ano":"6688","aname":"P.MAI MOZZARELLA ANCHOR KHOI 5KG","qty":1.0},{"cust":"2225021115192","div":"FRESH FOOD","ano":"91352","aname":"HANH CU DO (TIM) VN","qty":5.0}];
-const PAGE = 25;
+// DATA EMBEDDED DIRECTLY FROM C:\Users\Quoc Nguyen\Documents\RPT18_Fillrate_report.xls (317 rows, 02-Sep-26)
+const ALL = [{"cust": "1117122340475", "div": "FRESH FOOD", "ano": "135104", "aname": "CA TRE (LS) 2-5 CON/KG", "qty": 5.0}, {"cust": "1117122340475", "div": "FRESH FOOD", "ano": "170624", "aname": "CA NUC GAI (LS) 8-10 CON/KG", "qty": 5.0}, {"cust": "1117122340475", "div": "DRY FOOD", "ano": "233864", "aname": "NUOCCHAM NAMNGU SIEUTIETKIEM 4.8L", "qty": 4.0}, {"cust": "1117122340475", "div": "DRY FOOD", "ano": "346204", "aname": "TUONG DEN CHOLIMEX 2.1KG", "qty": 2.0}, {"cust": "1117122340475", "div": "DRY FOOD", "ano": "402486", "aname": "N.CHAM SEN HONG DAU BEP470ML*6", "qty": 2.0}, {"cust": "1117122340475", "div": "DRY FOOD", "ano": "420087", "aname": "MUOI TINH IOD VIETSALT 1KG", "qty": 5.0}, {"cust": "1117122340475", "div": "DRY FOOD", "ano": "202419", "aname": "MI TRUNG THUONG HANG SAFOCO 400G", "qty": 3.0}, {"cust": "1117122340525", "div": "FRESH FOOD", "ano": "145517", "aname": "CA DONG (LS) 5-10 CON/KG", "qty": 66.0}, {"cust": "1117122340525", "div": "DRY FOOD", "ano": "152610", "aname": "NAM MEO DEN NGUYEN TAI-H.NAM-250G", "qty": 3.0}, {"cust": "1117122340525", "div": "DRY FOOD", "ano": "196944", "aname": "TAO KHO  DD.THUAN  100 GR", "qty": 3.0}, {"cust": "1117122340525", "div": "DRY FOOD", "ano": "233864", "aname": "NUOCCHAM NAMNGU SIEUTIETKIEM 4.8L", "qty": 4.0}, {"cust": "1117122340525", "div": "DRY FOOD", "ano": "255602", "aname": "MUOI BIEN HAPPY PRICE 1KG", "qty": 50.0}, {"cust": "1117122340525", "div": "DRY FOOD", "ano": "318545", "aname": "KY TU DD.THUAN 100G", "qty": 3.0}, {"cust": "1117122340525", "div": "FRESH FOOD", "ano": "347731", "aname": "TR.GA HAPPY EGG SO 2 HOP 10", "qty": 182.0}, {"cust": "1117122340525", "div": "FRESH FOOD", "ano": "356137", "aname": "TOM THE (TUOI) 90-110 CON/KG", "qty": 5.5}, {"cust": "1117122340525", "div": "FRESH FOOD", "ano": "403980", "aname": "NAC VAI HEO WRF-CT", "qty": 135.0}, {"cust": "1117122340525", "div": "DRY FOOD", "ano": "420087", "aname": "MUOI TINH IOD VIETSALT 1KG", "qty": 50.0}, {"cust": "1117122340525", "div": "DRY FOOD", "ano": "449044", "aname": "LAC SEN EZ LIFE CAN KG", "qty": 1.5}, {"cust": "1117122340525", "div": "DRY FOOD", "ano": "165098", "aname": "ME TRANG DD.THUAN -300G", "qty": 1.0}, {"cust": "1117122340525", "div": "DRY FOOD", "ano": "168049", "aname": "NAM MEODEN CATSOI DD.THUAN-100G", "qty": 1.0}, {"cust": "1117122340525", "div": "FRESH FOOD", "ano": "171262", "aname": "HANH TAY DA LAT WRF", "qty": 2.0}, {"cust": "1117122340525", "div": "FRESH FOOD", "ano": "186583", "aname": "CA LOC DEN(FILLET CDA) 100G UP", "qty": 10.0}, {"cust": "1117122340525", "div": "DRY FOOD", "ano": "18943", "aname": "NGU VI HUONG VIANCO 500G", "qty": 1.0}, {"cust": "1117122340525", "div": "DRY FOOD", "ano": "205729", "aname": "BOT NANG TAI KY 1KG", "qty": 3.0}, {"cust": "1117122340525", "div": "FRESH FOOD", "ano": "2237", "aname": "MO HEO LOAI I (MO LUNG)", "qty": 1.0}, {"cust": "1117122340525", "div": "FRESH FOOD", "ano": "314818", "aname": "TRUNG BAC THAO VTD HOP4 60-62G", "qty": 8.0}, {"cust": "1117122340525", "div": "FRESH FOOD", "ano": "32286", "aname": "DAU HU MEM OME 300G/330G*2", "qty": 10.0}, {"cust": "1117122340525", "div": "FRESH FOOD", "ano": "347731", "aname": "TR.GA HAPPY EGG SO 2 HOP 10", "qty": 54.0}, {"cust": "1117122340525", "div": "DRY FOOD", "ano": "37137", "aname": "MAT ONG L-X 500ML*1", "qty": 1.0}, {"cust": "1117122340525", "div": "DRY FOOD", "ano": "401589", "aname": "BOT CHIEN XU TAI KY 1KG", "qty": 5.0}, {"cust": "1117122340525", "div": "FRESH FOOD", "ano": "403961", "aname": "THIT VAI HEO WRF-CT", "qty": 11.0}, {"cust": "1117122340525", "div": "FRESH FOOD", "ano": "403980", "aname": "NAC VAI HEO WRF-CT", "qty": 58.0}, {"cust": "1117122340525", "div": "FRESH FOOD", "ano": "418527", "aname": "L.DO T.VIT MUOI VTD 50C 600G", "qty": 2.0}, {"cust": "1117122340525", "div": "DRY FOOD", "ano": "431242", "aname": "MIEN DONG THUDUNG 500G", "qty": 1.0}, {"cust": "1117122340525", "div": "FRESH FOOD", "ano": "474437", "aname": "GIO SONG VISSAN 1KG", "qty": 2.0}, {"cust": "1117122340525", "div": "FRESH FOOD", "ano": "478006", "aname": "CA BASA FILLET TUOI 120G UP", "qty": 35.0}, {"cust": "1117122340525", "div": "DRY FOOD", "ano": "54450", "aname": "TOMATO PASTE HEINZ 3KG/3.15KG", "qty": 1.0}, {"cust": "1117122340525", "div": "FRESH FOOD", "ano": "76426", "aname": "CU SAN 200-400G", "qty": 2.4}, {"cust": "1117122341606", "div": "FRESH FOOD", "ano": "356137", "aname": "TOM THE (TUOI) 90-110 CON/KG", "qty": 0.2}, {"cust": "1117122341606", "div": "FRESH FOOD", "ano": "144062", "aname": "NAM D.CO TUOI 195G/TRUNG QUOC", "qty": 1.0}, {"cust": "1117122341606", "div": "FRESH FOOD", "ano": "191950", "aname": "UC PHI LE GA CN 1KG-WRF", "qty": 1.0}, {"cust": "1117122341606", "div": "DRY FOOD", "ano": "204453", "aname": "MI TRUNG SOI NHO SAFOCO500G", "qty": 1.0}, {"cust": "1117122341606", "div": "DRY FOOD", "ano": "228276", "aname": "XOT MAYONNAISE AJI-MAYO 430GR", "qty": 1.0}, {"cust": "1117122341606", "div": "DRY FOOD", "ano": "249865", "aname": "GAO LUT HUYET RONG BAO MINH1KG", "qty": 3.0}, {"cust": "1117122341606", "div": "DRY FOOD", "ano": "421390", "aname": "BANH RAM HA TINH 250G", "qty": 1.0}, {"cust": "1117122341606", "div": "FRESH FOOD", "ano": "191950", "aname": "UC PHI LE GA CN 1KG-WRF", "qty": 1.0}, {"cust": "1117122341606", "div": "DRY FOOD", "ano": "196944", "aname": "TAO KHO  DD.THUAN  100 GR", "qty": 1.0}, {"cust": "1117122341606", "div": "DRY FOOD", "ano": "211455", "aname": "MAM RUOC HUE NGOC LIEN 250GR", "qty": 1.0}, {"cust": "1117122341606", "div": "FRESH FOOD", "ano": "225743", "aname": "NAC HEO XAY", "qty": 0.3}, {"cust": "1117122341606", "div": "FRESH FOOD", "ano": "240953", "aname": "NAC BO XAY XX UC", "qty": 0.2}, {"cust": "1117122341606", "div": "FRESH FOOD", "ano": "252388", "aname": "SUA CHUA VNM TRAI CAY 100G*4", "qty": 3.0}, {"cust": "1117122341606", "div": "FRESH FOOD", "ano": "258969", "aname": "BAP NGOT DONG LANH WRF 1KG", "qty": 1.0}, {"cust": "1117122341606", "div": "FRESH FOOD", "ano": "356137", "aname": "TOM THE (TUOI) 90-110 CON/KG", "qty": 0.1}, {"cust": "1117122341606", "div": "DRY FOOD", "ano": "399609", "aname": "SAM HAM GA DDT 70G", "qty": 1.0}, {"cust": "1117122341606", "div": "FRESH FOOD", "ano": "403961", "aname": "THIT VAI HEO WRF-CT", "qty": 0.4}, {"cust": "1117122341606", "div": "FRESH FOOD", "ano": "403980", "aname": "NAC VAI HEO WRF-CT", "qty": 1.1}, {"cust": "1117122341606", "div": "DRY FOOD", "ano": "258564", "aname": "BOT NANG MM 400G", "qty": 3.0}, {"cust": "1117122341606", "div": "DRY FOOD", "ano": "338003", "aname": "GAO THIEN KIM 1 VPHAT BAO 25KG", "qty": 1.0}, {"cust": "1117122341606", "div": "FRESH FOOD", "ano": "356137", "aname": "TOM THE (TUOI) 90-110 CON/KG", "qty": 0.5}, {"cust": "1117122341606", "div": "FRESH FOOD", "ano": "191950", "aname": "UC PHI LE GA CN 1KG-WRF", "qty": 14.0}, {"cust": "1117122341606", "div": "FRESH FOOD", "ano": "203831", "aname": "XUONG ONG HEO DL NK", "qty": 1.0}, {"cust": "1117122341606", "div": "FRESH FOOD", "ano": "240953", "aname": "NAC BO XAY XX UC", "qty": 3.1}, {"cust": "1117122341606", "div": "DRY FOOD", "ano": "244810", "aname": "DAU HAO MABIN 1000G*1TUI", "qty": 1.0}, {"cust": "1117122341606", "div": "DRY FOOD", "ano": "258564", "aname": "BOT NANG MM 400G", "qty": 2.0}, {"cust": "1117122341606", "div": "DRY FOOD", "ano": "338003", "aname": "GAO THIEN KIM 1 VPHAT BAO 25KG", "qty": 2.0}, {"cust": "1117122341606", "div": "DRY FOOD", "ano": "370378", "aname": "XI DAU DAC BIET LKK 1.75L", "qty": 1.0}, {"cust": "1117122341606", "div": "FRESH FOOD", "ano": "191950", "aname": "UC PHI LE GA CN 1KG-WRF", "qty": 4.0}, {"cust": "1117122341606", "div": "FRESH FOOD", "ano": "240953", "aname": "NAC BO XAY XX UC", "qty": 1.1}, {"cust": "1117122341606", "div": "DRY FOOD", "ano": "431247", "aname": "BUN KHO THUDUNG 500G", "qty": 4.0}, {"cust": "1117122341606", "div": "FRESH FOOD", "ano": "225743", "aname": "NAC HEO XAY", "qty": 1.3}, {"cust": "1117122341606", "div": "DRY FOOD", "ano": "338003", "aname": "GAO THIEN KIM 1 VPHAT BAO 25KG", "qty": 3.0}, {"cust": "1117122341606", "div": "FRESH FOOD", "ano": "137957", "aname": "XUONG UC GA C.P VN 1KG", "qty": 2.0}, {"cust": "1117122341606", "div": "DRY FOOD", "ano": "152610", "aname": "NAM MEO DEN NGUYEN TAI-H.NAM-250G", "qty": 1.0}, {"cust": "1117122341606", "div": "FRESH FOOD", "ano": "191950", "aname": "UC PHI LE GA CN 1KG-WRF", "qty": 1.0}, {"cust": "1117122341606", "div": "FRESH FOOD", "ano": "203831", "aname": "XUONG ONG HEO DL NK", "qty": 1.0}, {"cust": "1117122341606", "div": "FRESH FOOD", "ano": "257341", "aname": "CHA CA CHAY AN NHIEN 500G", "qty": 2.0}, {"cust": "1117122341606", "div": "DRY FOOD", "ano": "258409", "aname": "TUONG CA MM PROFESSIONAL 2.1KG", "qty": 1.0}, {"cust": "1117122341606", "div": "FRESH FOOD", "ano": "332857", "aname": "CU CAI MUOI (XX VN)", "qty": 0.3}, {"cust": "1117122341606", "div": "FRESH FOOD", "ano": "372423", "aname": "KHOAI TAY LUTOSA SOI LON 2.5KG", "qty": 14.0}, {"cust": "1117122341606", "div": "FRESH FOOD", "ano": "403596", "aname": "CHA CA VI HAN QUOC T.AN 500G", "qty": 28.0}, {"cust": "1117122341606", "div": "DRY FOOD", "ano": "411083", "aname": "BNC KELLOGGS CORN FLAKE 500G*H", "qty": 2.0}, {"cust": "1117122341606", "div": "FRESH FOOD", "ano": "416573", "aname": "TR.CUT LUOC TH.TRUNG 400GX50C", "qty": 7.0}, {"cust": "1117122341606", "div": "FRESH FOOD", "ano": "65110", "aname": "TRUNG VIT VTD SIZE L HOP 10", "qty": 24.0}, {"cust": "1117122341606", "div": "FRESH FOOD", "ano": "315136", "aname": "SUA TT VINAMILK IT DUONG 110ML*4", "qty": 7.0}, {"cust": "1117122341606", "div": "FRESH FOOD", "ano": "446939", "aname": "DUI TOI GA CN TUI-CP", "qty": 13.0}, {"cust": "1117122341606", "div": "FRESH FOOD", "ano": "446939", "aname": "DUI TOI GA CN TUI-CP", "qty": 25.0}, {"cust": "1117122341606", "div": "DRY FOOD", "ano": "211174", "aname": "SOT THIT NUONG BBQ A/GARDEN 510G", "qty": 3.0}, {"cust": "1117122341606", "div": "FRESH FOOD", "ano": "356137", "aname": "TOM THE (TUOI) 90-110 CON/KG", "qty": 3.5}, {"cust": "1117122341606", "div": "FRESH FOOD", "ano": "169259", "aname": "BAP BO DONG LANH NK XX UC-WRF", "qty": 15.4}, {"cust": "1117122341606", "div": "FRESH FOOD", "ano": "169259", "aname": "BAP BO DONG LANH NK XX UC-WRF", "qty": 10.0}, {"cust": "1117122341606", "div": "FRESH FOOD", "ano": "225743", "aname": "NAC HEO XAY", "qty": 3.0}, {"cust": "1117122341606", "div": "FRESH FOOD", "ano": "2360", "aname": "XUONG BO WRF", "qty": 3.0}, {"cust": "1117122341606", "div": "FRESH FOOD", "ano": "258969", "aname": "BAP NGOT DONG LANH WRF 1KG", "qty": 2.0}, {"cust": "1117122341606", "div": "DRY FOOD", "ano": "29092", "aname": "OLIU DEN K.HAT FRAGATA 150G", "qty": 2.0}, {"cust": "1117122341606", "div": "DRY FOOD", "ano": "308840", "aname": "MAM RUOC HUE NGOC LIEN 500G", "qty": 2.0}, {"cust": "1117122341606", "div": "FRESH FOOD", "ano": "32286", "aname": "DAU HU MEM OME 300G/330G*2", "qty": 4.0}, {"cust": "1117122341606", "div": "FRESH FOOD", "ano": "402387", "aname": "NAC DAM HEO VIETGAP-WRF", "qty": 5.0}, {"cust": "1117122341606", "div": "DRY FOOD", "ano": "407163", "aname": "CA NGU MUOI SEASPI 185G*2", "qty": 6.0}, {"cust": "1117122341606", "div": "FRESH FOOD", "ano": "401917", "aname": "CHAN GIO HEO VIETGAP-WRF", "qty": 8.0}, {"cust": "1117122341606", "div": "FRESH FOOD", "ano": "137955", "aname": "DUI GOC TU GA CN C.P VN 1KG", "qty": 20.0}, {"cust": "1117122341606", "div": "DRY FOOD", "ano": "158638", "aname": "LAP XUONG VISSAN 3 BONG MAI500G*1", "qty": 8.0}, {"cust": "1117122341606", "div": "FRESH FOOD", "ano": "191950", "aname": "UC PHI LE GA CN 1KG-WRF", "qty": 21.0}, {"cust": "1117122341606", "div": "FRESH FOOD", "ano": "258982", "aname": "BAP NGOT DONG LANH MMPRO 2KG", "qty": 2.0}, {"cust": "1117122341606", "div": "FRESH FOOD", "ano": "304407", "aname": "DAU HA LAN WRF 1KG", "qty": 2.0}, {"cust": "1117122341606", "div": "DRY FOOD", "ano": "352985", "aname": "BANH GAO HAN QUOC O FOOD 1KG", "qty": 15.0}, {"cust": "1117122341606", "div": "FRESH FOOD", "ano": "483925", "aname": "CHA CA MIENG BUSAN SAMJIN 800G", "qty": 5.0}, {"cust": "1117122341606", "div": "FRESH FOOD", "ano": "125730", "aname": "DUI GOC TU GA DL XX MY-WRF", "qty": 15.0}, {"cust": "1117122341606", "div": "FRESH FOOD", "ano": "142227", "aname": "BAP CAI TRANG DALAT WRF", "qty": 15.0}, {"cust": "1117122341606", "div": "FRESH FOOD", "ano": "169259", "aname": "BAP BO DONG LANH NK XX UC-WRF", "qty": 18.83}, {"cust": "1117122341606", "div": "FRESH FOOD", "ano": "174370", "aname": "CA TRABE FILETTUOI 120G UPCORE", "qty": 1.0}, {"cust": "1117122341606", "div": "FRESH FOOD", "ano": "191950", "aname": "UC PHI LE GA CN 1KG-WRF", "qty": 36.0}, {"cust": "1117122341606", "div": "FRESH FOOD", "ano": "225743", "aname": "NAC HEO XAY", "qty": 8.0}, {"cust": "1117122341606", "div": "FRESH FOOD", "ano": "2360", "aname": "XUONG BO WRF", "qty": 5.0}, {"cust": "1117122341606", "div": "FRESH FOOD", "ano": "258969", "aname": "BAP NGOT DONG LANH WRF 1KG", "qty": 2.0}, {"cust": "1117122341606", "div": "DRY FOOD", "ano": "29092", "aname": "OLIU DEN K.HAT FRAGATA 150G", "qty": 2.0}, {"cust": "1117122341606", "div": "FRESH FOOD", "ano": "401917", "aname": "CHAN GIO HEO VIETGAP-WRF", "qty": 6.0}, {"cust": "1117122341606", "div": "DRY FOOD", "ano": "435753", "aname": "BNC KELLOGGS CORN FLAKES 1.2KG", "qty": 1.0}, {"cust": "1117122341606", "div": "FRESH FOOD", "ano": "728", "aname": "HA CAO CAU TRE 500GR", "qty": 10.0}, {"cust": "1117122341606", "div": "FRESH FOOD", "ano": "759", "aname": "XIU MAI CAU TRE 500GR", "qty": 10.0}, {"cust": "1117122341606", "div": "DRY FOOD", "ano": "308840", "aname": "MAM RUOC HUE NGOC LIEN 500G", "qty": 3.0}, {"cust": "1117122341606", "div": "DRY FOOD", "ano": "124115", "aname": "HAT NEM KNORR 5KG", "qty": 1.0}, {"cust": "1117122341606", "div": "FRESH FOOD", "ano": "125868", "aname": "SUA TT CGHL K.DUONG 965ML", "qty": 12.0}, {"cust": "1117122341606", "div": "DRY FOOD", "ano": "196938", "aname": "BOT NGHE  DD.THUAN 100 GR", "qty": 2.0}, {"cust": "1117122341606", "div": "DRY FOOD", "ano": "202022", "aname": "TRA COZY DAO 2G*25GOI", "qty": 6.0}, {"cust": "1117122341606", "div": "DRY FOOD", "ano": "258408", "aname": "TUONG OT MM PROFESSIONAL 2.1KG", "qty": 1.0}, {"cust": "1117122341606", "div": "DRY FOOD", "ano": "258409", "aname": "TUONG CA MM PROFESSIONAL 2.1KG", "qty": 1.0}, {"cust": "1117122341606", "div": "DRY FOOD", "ano": "316988", "aname": "NEP SAP DSAN LONG AN MEIZAN1KG", "qty": 5.0}, {"cust": "1117122341606", "div": "DRY FOOD", "ano": "383850", "aname": "GIAM BALSAMICO METRO CHEF500ML", "qty": 0.0}, {"cust": "1117122341606", "div": "DRY FOOD", "ano": "407163", "aname": "CA NGU MUOI SEASPI 185G*2", "qty": 2.0}, {"cust": "1117122341606", "div": "DRY FOOD", "ano": "482001", "aname": "D.AN TUONGAN PROFESSIONAL27.4L", "qty": 1.0}, {"cust": "1117122341606", "div": "DRY FOOD", "ano": "81485", "aname": "TUONG NGOT LKK 2270G*1LON", "qty": 1.0}, {"cust": "1117122341606", "div": "DRY FOOD", "ano": "111894", "aname": "SUADAC NSPN NHAN XANH1284GR", "qty": 24.0}, {"cust": "1117122341606", "div": "FRESH FOOD", "ano": "125868", "aname": "SUA TT CGHL K.DUONG 965ML", "qty": 12.0}, {"cust": "1117122341606", "div": "DRY FOOD", "ano": "187876", "aname": "DUONG MIA THUONG HANG BH 1KG", "qty": 20.0}, {"cust": "1117122341606", "div": "HOME LINE", "ano": "115371", "aname": "KIMBAM PLUS30-112VN SO10 20H/L", "qty": 1.0}, {"cust": "1117122341606", "div": "DRY FOOD", "ano": "120833", "aname": "NLS GIFT BAC HA 3.8/4KG", "qty": 3.0}, {"cust": "1117122341606", "div": "FRESH FOOD", "ano": "137952", "aname": "MA DUI GA CN C.P VN 1 KG", "qty": 43.0}, {"cust": "1117122341606", "div": "FRESH FOOD", "ano": "137957", "aname": "XUONG UC GA C.P VN 1KG", "qty": 25.0}, {"cust": "1117122341606", "div": "DRY FOOD", "ano": "165504", "aname": "THIT HEO CHA BONG TNP 250G", "qty": 11.0}, {"cust": "1117122341606", "div": "DRY FOOD", "ano": "179836", "aname": "THIT HEO CHA BONG TNP 150G", "qty": 2.0}, {"cust": "1117122341606", "div": "FRESH FOOD", "ano": "191950", "aname": "UC PHI LE GA CN 1KG-WRF", "qty": 26.0}, {"cust": "1117122341606", "div": "FRESH FOOD", "ano": "403961", "aname": "THIT VAI HEO WRF-CT", "qty": 44.0}, {"cust": "1117122341606", "div": "FRESH FOOD", "ano": "403980", "aname": "NAC VAI HEO WRF-CT", "qty": 61.5}, {"cust": "1117122341606", "div": "FRESH FOOD", "ano": "414083", "aname": "THANH CUA DL WRF 1KG", "qty": 13.0}, {"cust": "1117122341606", "div": "FRESH FOOD", "ano": "403961", "aname": "THIT VAI HEO WRF-CT", "qty": 20.0}, {"cust": "1117122341606", "div": "FRESH FOOD", "ano": "403980", "aname": "NAC VAI HEO WRF-CT", "qty": 34.0}, {"cust": "1117122341606", "div": "DRY FOOD", "ano": "17135", "aname": "GIAM T.LUYEN MC 4% 2L", "qty": 2.0}, {"cust": "1117122341606", "div": "DRY FOOD", "ano": "184628", "aname": "NUOC MAM NGU VI HH 4.9L", "qty": 6.0}, {"cust": "1117122341606", "div": "DRY FOOD", "ano": "196405", "aname": "RUOU HA NOI CAN PET 35% 4L", "qty": 2.0}, {"cust": "1117122341606", "div": "DRY FOOD", "ano": "244810", "aname": "DAU HAO MABIN 1000G*1TUI", "qty": 12.0}, {"cust": "1117122341606", "div": "DRY FOOD", "ano": "258564", "aname": "BOT NANG MM 400G", "qty": 10.0}, {"cust": "1117122341606", "div": "DRY FOOD", "ano": "258588", "aname": "BUN GAO NANG THOM MM 200G", "qty": 2.0}, {"cust": "1117122341606", "div": "DRY FOOD", "ano": "258594", "aname": "MIEN DAU XANH MM 200G", "qty": 2.0}, {"cust": "1117122341606", "div": "DRY FOOD", "ano": "346199", "aname": "N.TUONG H.VIET CHOLIMEX 4.9L", "qty": 3.0}, {"cust": "1117122341606", "div": "DRY FOOD", "ano": "352243", "aname": "BOT BAP MEIZAN 1KG", "qty": 10.0}, {"cust": "1117122341606", "div": "DRY FOOD", "ano": "402204", "aname": "HAT NEM NAM HUONG BEP VIET 5KG", "qty": 1.0}, {"cust": "1117122341606", "div": "DRY FOOD", "ano": "45036", "aname": "QUE CAY VIANCO 500G", "qty": 2.0}, {"cust": "1117122341606", "div": "FRESH FOOD", "ano": "142227", "aname": "BAP CAI TRANG DALAT WRF", "qty": 153.0}, {"cust": "1117122341606", "div": "DRY FOOD", "ano": "165098", "aname": "ME TRANG DD.THUAN -300G", "qty": 2.0}, {"cust": "1117122341606", "div": "FRESH FOOD", "ano": "18546", "aname": "CHA LUA C.P 500GR", "qty": 43.0}, {"cust": "1117122341606", "div": "FRESH FOOD", "ano": "190273", "aname": "NUOC MAT-500 GR", "qty": 76.0}, {"cust": "1117122341606", "div": "DRY FOOD", "ano": "209307", "aname": "BANH DA ME DEN DDT 20CM 300GR", "qty": 10.0}, {"cust": "1117122341606", "div": "DRY FOOD", "ano": "228276", "aname": "XOT MAYONNAISE AJI-MAYO 430GR", "qty": 1.0}, {"cust": "1117122341606", "div": "FRESH FOOD", "ano": "257312", "aname": "CHA LUA CHAY AN NHIEN 500G", "qty": 4.0}, {"cust": "1117122341606", "div": "DRY FOOD", "ano": "316390", "aname": "BOT CHIEN GION MEIZAN 1KG", "qty": 35.0}, {"cust": "1117122341606", "div": "DRY FOOD", "ano": "462253", "aname": "DAU PHONG MMPRO 2KG", "qty": 1.0}, {"cust": "1117122341606", "div": "FRESH FOOD", "ano": "76408", "aname": "HANH PARO DALAT", "qty": 2.4}, {"cust": "1117122341606", "div": "FRESH FOOD", "ano": "76469", "aname": "XA LACH LOLO XANH DALAT", "qty": 7.0}, {"cust": "1117122341606", "div": "HOME LINE", "ano": "255742", "aname": "MANG PVC MMPRO K.HOP 0.45*500M", "qty": 4.0}, {"cust": "1117122341606", "div": "DRY FOOD", "ano": "258707", "aname": "NLS HAPPY PRICE BAC HA 5L", "qty": 2.0}, {"cust": "1117122341606", "div": "HOME LINE", "ano": "3824", "aname": "BKEO GIAY 4.8*25Y 6CUON/LOC", "qty": 5.0}, {"cust": "1117122341606", "div": "HOME LINE", "ano": "406039", "aname": "GANG TAY CS NEPNHAN 37CM-M*2D", "qty": 5.0}, {"cust": "1117122341606", "div": "DRY FOOD", "ano": "410995", "aname": "NRC HAPPYPRICE HUONGCHANH 20KG", "qty": 4.0}, {"cust": "1117122341606", "div": "DRY FOOD", "ano": "52528", "aname": "BOT GIAT OMO DO 4.3KG", "qty": 1.0}, {"cust": "1117122341606", "div": "HOME LINE", "ano": "254024", "aname": "BUT LONG DAU TL PM09 2DAU 2C/V", "qty": 5.0}, {"cust": "1117122341606", "div": "DRY FOOD", "ano": "316390", "aname": "BOT CHIEN GION MEIZAN 1KG", "qty": 5.0}, {"cust": "1117122341838", "div": "FRESH FOOD", "ano": "340249", "aname": "TRUNG GA HP (S2) 55G CAY 300", "qty": 1.0}, {"cust": "1117122341838", "div": "FRESH FOOD", "ano": "137957", "aname": "XUONG UC GA C.P VN 1KG", "qty": 5.0}, {"cust": "1117122341838", "div": "FRESH FOOD", "ano": "224727", "aname": "NAC VAI HEO DLNK-WRF", "qty": 20.79}, {"cust": "1117122341838", "div": "FRESH FOOD", "ano": "151292", "aname": "MA DUI GA CN S.HA 1KG", "qty": 6.0}, {"cust": "1117122341838", "div": "DRY FOOD", "ano": "204453", "aname": "MI TRUNG SOI NHO SAFOCO500G", "qty": 6.0}, {"cust": "1117122341838", "div": "DRY FOOD", "ano": "259682", "aname": "DAU AN HAPPY PRICE 25KG", "qty": 1.0}, {"cust": "1117122341838", "div": "FRESH FOOD", "ano": "368423", "aname": "BANH PHO BA KHANH KG", "qty": 12.0}, {"cust": "1117122341838", "div": "FRESH FOOD", "ano": "151292", "aname": "MA DUI GA CN S.HA 1KG", "qty": 77.0}, {"cust": "1117122341838", "div": "FRESH FOOD", "ano": "151292", "aname": "MA DUI GA CN S.HA 1KG", "qty": 40.0}, {"cust": "1117122341838", "div": "DRY FOOD", "ano": "179834", "aname": "MI SOI 3 SPAGHETTI FIAMMA 500G", "qty": 28.0}, {"cust": "1117122341838", "div": "FRESH FOOD", "ano": "340249", "aname": "TRUNG GA HP (S2) 55G CAY 300", "qty": 1.0}, {"cust": "1117122341838", "div": "FRESH FOOD", "ano": "340249", "aname": "TRUNG GA HP (S2) 55G CAY 300", "qty": 1.0}, {"cust": "1117122341838", "div": "FRESH FOOD", "ano": "340249", "aname": "TRUNG GA HP (S2) 55G CAY 300", "qty": 1.0}, {"cust": "1117122341838", "div": "FRESH FOOD", "ano": "340249", "aname": "TRUNG GA HP (S2) 55G CAY 300", "qty": 1.0}, {"cust": "1117122341838", "div": "FRESH FOOD", "ano": "340249", "aname": "TRUNG GA HP (S2) 55G CAY 300", "qty": 2.0}, {"cust": "1117122342117", "div": "FRESH FOOD", "ano": "171258", "aname": "OT CHUONG XANH DALAT WRF", "qty": 17.0}, {"cust": "1117122342117", "div": "FRESH FOOD", "ano": "315380", "aname": "NGO TAY- PARLEY (LOCAL)", "qty": 3.0}, {"cust": "1117122342117", "div": "FRESH FOOD", "ano": "315396", "aname": "QUE TAY-BASIL (LOCAL)", "qty": 1.0}, {"cust": "1117122342117", "div": "FRESH FOOD", "ano": "76399", "aname": "OT CHUONG DO DALAT WRF", "qty": 25.0}, {"cust": "1117122342117", "div": "FRESH FOOD", "ano": "76402", "aname": "BI NGOI VANG DA LAT", "qty": 20.0}, {"cust": "1117122342117", "div": "FRESH FOOD", "ano": "76472", "aname": "XA LACH ROMAINE GREEN DALAT", "qty": 4.0}, {"cust": "1117122342117", "div": "FRESH FOOD", "ano": "89081", "aname": "OT CHUONG VANG DALAT WRF", "qty": 8.0}, {"cust": "1117122342117", "div": "FRESH FOOD", "ano": "148341", "aname": "DUA HAU HMN-TH.HANG", "qty": 100.0}, {"cust": "1117122342117", "div": "FRESH FOOD", "ano": "206901", "aname": "THANH LONG LOAI 1 (500-800G)-VNA", "qty": 100.0}, {"cust": "1117122342117", "div": "FRESH FOOD", "ano": "400114", "aname": "DU DU RUOT VANG LOAI 1", "qty": 67.0}, {"cust": "1117122342117", "div": "FRESH FOOD", "ano": "424497", "aname": "CHANH VANG NK TQ WRF", "qty": 10.0}, {"cust": "1117122342117", "div": "HARD LINE", "ano": "424539", "aname": "B.DUN ST BESICO7053700187 1.8L", "qty": 1.0}, {"cust": "1117122342117", "div": "FRESH FOOD", "ano": "171266", "aname": "CHANH KHONG HAT", "qty": 15.0}, {"cust": "1117122342117", "div": "DRY FOOD", "ano": "346204", "aname": "TUONG DEN CHOLIMEX 2.1KG", "qty": 10.0}, {"cust": "1117122342117", "div": "FRESH FOOD", "ano": "76609", "aname": "XA LACH COROL DALAT", "qty": 30.0}, {"cust": "2221001927953", "div": "DRY FOOD", "ano": "103490", "aname": "BOT NGOT AJINOMOTO (R) 2KG", "qty": 1.0}, {"cust": "2221001927953", "div": "DRY FOOD", "ano": "184203", "aname": "NT TAMTHAITU NHICA CHINSU500ML", "qty": 12.0}, {"cust": "2221001927953", "div": "DRY FOOD", "ano": "230338", "aname": "MI TRAN THIEN HUONG 1 KG", "qty": 2.0}, {"cust": "2221001927953", "div": "FRESH FOOD", "ano": "340249", "aname": "TRUNG GA HP (S2) 55G CAY 300", "qty": 1.0}, {"cust": "2221001927953", "div": "FRESH FOOD", "ano": "368437", "aname": "DUI GOC TU DLNK CT", "qty": 30.0}, {"cust": "2221001927953", "div": "DRY FOOD", "ano": "416625", "aname": "HAT NEM MAGGI NAM HUONG 2KG", "qty": 1.0}, {"cust": "2221001927953", "div": "DRY FOOD", "ano": "420087", "aname": "MUOI TINH IOD VIETSALT 1KG", "qty": 6.0}, {"cust": "2221001927953", "div": "DRY FOOD", "ano": "466056", "aname": "BUN GAO LUT FUMA 400G", "qty": 8.0}, {"cust": "2221001927953", "div": "FRESH FOOD", "ano": "163037", "aname": "CHA CA TUOI THOAI AN 500G", "qty": 2.0}, {"cust": "2221001927953", "div": "DRY FOOD", "ano": "230338", "aname": "MI TRAN THIEN HUONG 1 KG", "qty": 6.0}, {"cust": "2221001927953", "div": "DRY FOOD", "ano": "230338", "aname": "MI TRAN THIEN HUONG 1 KG", "qty": 2.0}, {"cust": "2221002347151", "div": "DRY FOOD", "ano": "114028", "aname": "BOT NGOT AJINOMOTO (R) 5KG*4", "qty": 2.0}, {"cust": "2221002347151", "div": "DRY FOOD", "ano": "133832", "aname": "HAT NEM KNORR 5KG*3", "qty": 2.0}, {"cust": "2221002347151", "div": "FRESH FOOD", "ano": "135404", "aname": "HR-HANH LA LAM SACH", "qty": 5.2}, {"cust": "2221002347151", "div": "FRESH FOOD", "ano": "141343", "aname": "CA CHUA DALAT", "qty": 3.0}, {"cust": "2221002347151", "div": "DRY FOOD", "ano": "163885", "aname": "GIAM GAO LEN MEN AJI-LISA 4.9L", "qty": 1.0}, {"cust": "2221002347151", "div": "DRY FOOD", "ano": "168049", "aname": "NAM MEODEN CATSOI DD.THUAN-100G", "qty": 2.0}, {"cust": "2221002347151", "div": "FRESH FOOD", "ano": "168814", "aname": "BI NGO", "qty": 8.2}, {"cust": "2221002347151", "div": "FRESH FOOD", "ano": "182540", "aname": "DUA LEO (DUA CHUOT)", "qty": 3.0}, {"cust": "2221002347151", "div": "FRESH FOOD", "ano": "19485", "aname": "GIA SONG/HCM", "qty": 2.6}, {"cust": "2221002347151", "div": "FRESH FOOD", "ano": "401083", "aname": "DUI TOI GA CN-3F", "qty": 16.0}, {"cust": "2221002347151", "div": "DRY FOOD", "ano": "485748", "aname": "BOT GAO TAI KY 1KG", "qty": 10.0}, {"cust": "2221002347151", "div": "FRESH FOOD", "ano": "76469", "aname": "XA LACH LOLO XANH DALAT", "qty": 2.6}, {"cust": "2222006014151", "div": "FRESH FOOD", "ano": "141343", "aname": "CA CHUA DALAT", "qty": 8.0}, {"cust": "2222006014151", "div": "FRESH FOOD", "ano": "171260", "aname": "CU CAI TRANG DALAT", "qty": 5.0}, {"cust": "2222006014151", "div": "FRESH FOOD", "ano": "171261", "aname": "KHOAI TAY DALAT WRF", "qty": 10.0}, {"cust": "2222006014151", "div": "FRESH FOOD", "ano": "347731", "aname": "TR.GA HAPPY EGG SO 2 HOP 10", "qty": 12.0}, {"cust": "2222006014151", "div": "FRESH FOOD", "ano": "400114", "aname": "DU DU RUOT VANG LOAI 1", "qty": 5.0}, {"cust": "2222006014151", "div": "FRESH FOOD", "ano": "400114", "aname": "DU DU RUOT VANG LOAI 1", "qty": 5.0}, {"cust": "2224012883397", "div": "FRESH FOOD", "ano": "107994", "aname": "DUA HAU HMN", "qty": 306.6}, {"cust": "2224012883397", "div": "FRESH FOOD", "ano": "143732", "aname": "SU SU DALAT", "qty": 35.0}, {"cust": "2224012883397", "div": "FRESH FOOD", "ano": "169843", "aname": "CA ROT DALAT WRF", "qty": 39.0}, {"cust": "2224012883397", "div": "FRESH FOOD", "ano": "171260", "aname": "CU CAI TRANG DALAT", "qty": 1.5}, {"cust": "2224012883397", "div": "FRESH FOOD", "ano": "171266", "aname": "CHANH KHONG HAT", "qty": 2.7}, {"cust": "2224012883397", "div": "FRESH FOOD", "ano": "177969", "aname": "BAU XANH", "qty": 49.0}, {"cust": "2224012883397", "div": "FRESH FOOD", "ano": "181635", "aname": "DAU COVE DALAT", "qty": 3.0}, {"cust": "2224012883397", "div": "FRESH FOOD", "ano": "181852", "aname": "CHANH DAY DALAT", "qty": 1.0}, {"cust": "2224012883397", "div": "DRY FOOD", "ano": "18209", "aname": "TUONG CA CHOLIMEX CHAI 2.1KG", "qty": 15.0}, {"cust": "2224012883397", "div": "FRESH FOOD", "ano": "186213", "aname": "OT HIEM DO", "qty": 1.0}, {"cust": "2224012883397", "div": "FRESH FOOD", "ano": "187343", "aname": "TRAI TAC (QUAT XANH)/ BEN TRE", "qty": 8.0}, {"cust": "2224012883397", "div": "DRY FOOD", "ano": "233864", "aname": "NUOCCHAM NAMNGU SIEUTIETKIEM 4.8L", "qty": 8.0}, {"cust": "2224012883397", "div": "FRESH FOOD", "ano": "258969", "aname": "BAP NGOT DONG LANH WRF 1KG", "qty": 1.0}, {"cust": "2224012883397", "div": "FRESH FOOD", "ano": "258982", "aname": "BAP NGOT DONG LANH MMPRO 2KG", "qty": 1.0}, {"cust": "2224012883397", "div": "DRY FOOD", "ano": "259682", "aname": "DAU AN HAPPY PRICE 25KG", "qty": 4.0}, {"cust": "2224012883397", "div": "FRESH FOOD", "ano": "31976", "aname": "DAU HU MOMEN 300G/330G*2", "qty": 7.0}, {"cust": "2224012883397", "div": "FRESH FOOD", "ano": "37084", "aname": "HR-SA XAY NHUYEN", "qty": 1.0}, {"cust": "2224012883397", "div": "FRESH FOOD", "ano": "394043", "aname": "HANH TAY TIM DALAT-1KG", "qty": 1.0}, {"cust": "2224012883397", "div": "FRESH FOOD", "ano": "394367", "aname": "OT SUNG DO DALAT-500G", "qty": 1.0}, {"cust": "2224012883397", "div": "FRESH FOOD", "ano": "75896", "aname": "KHOAI MON CAO", "qty": 0.5}, {"cust": "2224012883397", "div": "FRESH FOOD", "ano": "75905", "aname": "MUOP HUONG", "qty": 50.0}, {"cust": "2224012883397", "div": "FRESH FOOD", "ano": "76426", "aname": "CU SAN 200-400G", "qty": 4.0}, {"cust": "2224012883397", "div": "FRESH FOOD", "ano": "76434", "aname": "GUNG", "qty": 0.3}, {"cust": "2224012883397", "div": "FRESH FOOD", "ano": "76601", "aname": "SU HAO DALAT", "qty": 14.0}, {"cust": "2224012883397", "div": "FRESH FOOD", "ano": "171262", "aname": "HANH TAY DA LAT WRF", "qty": 3.4}, {"cust": "2224012883397", "div": "FRESH FOOD", "ano": "143732", "aname": "SU SU DALAT", "qty": 9.0}, {"cust": "2224012883397", "div": "FRESH FOOD", "ano": "155077", "aname": "HR-HANH TIM(HANH CU DO)LOT VO", "qty": 1.2}, {"cust": "2224012883397", "div": "FRESH FOOD", "ano": "169843", "aname": "CA ROT DALAT WRF", "qty": 26.9}, {"cust": "2224012883397", "div": "FRESH FOOD", "ano": "171260", "aname": "CU CAI TRANG DALAT", "qty": 1.0}, {"cust": "2224012883397", "div": "FRESH FOOD", "ano": "177969", "aname": "BAU XANH", "qty": 150.0}, {"cust": "2224012883397", "div": "FRESH FOOD", "ano": "182541", "aname": "BI DAO XANH", "qty": 7.5}, {"cust": "2224012883397", "div": "FRESH FOOD", "ano": "248430", "aname": "BO LAT TN TH TRUEBUTTER 200G", "qty": 5.0}, {"cust": "2224012883397", "div": "FRESH FOOD", "ano": "258969", "aname": "BAP NGOT DONG LANH WRF 1KG", "qty": 3.0}, {"cust": "2224012883397", "div": "FRESH FOOD", "ano": "31976", "aname": "DAU HU MOMEN 300G/330G*2", "qty": 2.0}, {"cust": "2224012883397", "div": "FRESH FOOD", "ano": "37053", "aname": "DU DU XANH / TIEN GIANG", "qty": 9.0}, {"cust": "2224012883397", "div": "FRESH FOOD", "ano": "371897", "aname": "TRUNG GA HP (S3) 54-60G CAY300", "qty": 2.0}, {"cust": "2224012883397", "div": "FRESH FOOD", "ano": "410878", "aname": "HR-TOI LOT VO (XX VN)", "qty": 1.5}, {"cust": "2224012883397", "div": "FRESH FOOD", "ano": "65285", "aname": "TRUNG CUT VTD HOP 30", "qty": 14.0}, {"cust": "2224012883397", "div": "FRESH FOOD", "ano": "65634", "aname": "XOAI KEO 300G UP / AN GIANG", "qty": 0.0}, {"cust": "2224012883397", "div": "FRESH FOOD", "ano": "75896", "aname": "KHOAI MON CAO", "qty": 7.2}, {"cust": "2224012883397", "div": "FRESH FOOD", "ano": "76401", "aname": "BI NGOI XANH DA LAT", "qty": 6.0}, {"cust": "2224012883397", "div": "FRESH FOOD", "ano": "76662", "aname": "XOAI DAI LOAN DAI", "qty": 2.4}, {"cust": "2224012883397", "div": "FRESH FOOD", "ano": "171261", "aname": "KHOAI TAY DALAT WRF", "qty": 18.3}, {"cust": "2224012883397", "div": "DRY FOOD", "ano": "17135", "aname": "GIAM T.LUYEN MC 4% 2L", "qty": 6.0}, {"cust": "2224012883397", "div": "DRY FOOD", "ano": "258409", "aname": "TUONG CA MM PROFESSIONAL 2.1KG", "qty": 12.0}, {"cust": "2224012883397", "div": "DRY FOOD", "ano": "259682", "aname": "DAU AN HAPPY PRICE 25KG", "qty": 4.0}, {"cust": "2224012883397", "div": "DRY FOOD", "ano": "415217", "aname": "H.NEM ORCHID THIT XO &TUY 10KG", "qty": 3.0}, {"cust": "2224012883397", "div": "FRESH FOOD", "ano": "49142", "aname": "CA BAC MA (LS) 8-10 CON/KG", "qty": 10.0}, {"cust": "2224012883397", "div": "FRESH FOOD", "ano": "171269", "aname": "T.LONG R.TRANG 400G", "qty": 1.59}, {"cust": "2224012883397", "div": "FRESH FOOD", "ano": "87719", "aname": "CUC NHANH HASFARM", "qty": 1.0}, {"cust": "2225021115192", "div": "DRY FOOD", "ano": "255581", "aname": "SUA DAC CD NSPN XANH BIEN1284G", "qty": 5.0}, {"cust": "2225021115192", "div": "DRY FOOD", "ano": "417764", "aname": "CAFE G7 HOA TAN DEN 2GX100GOI", "qty": 1.0}, {"cust": "2225021115192", "div": "FRESH FOOD", "ano": "163041", "aname": "CA VIEN THOAI AN 500G", "qty": 8.0}, {"cust": "2225021115192", "div": "FRESH FOOD", "ano": "168814", "aname": "BI NGO", "qty": 1.5}, {"cust": "2225021115192", "div": "FRESH FOOD", "ano": "169843", "aname": "CA ROT DALAT WRF", "qty": 5.0}, {"cust": "2225021115192", "div": "FRESH FOOD", "ano": "171260", "aname": "CU CAI TRANG DALAT", "qty": 2.0}, {"cust": "2225021115192", "div": "FRESH FOOD", "ano": "171261", "aname": "KHOAI TAY DALAT WRF", "qty": 3.0}, {"cust": "2225021115192", "div": "FRESH FOOD", "ano": "171262", "aname": "HANH TAY DA LAT WRF", "qty": 2.0}, {"cust": "2225021115192", "div": "FRESH FOOD", "ano": "191953", "aname": "XUONG UC GA 1KG-WRF", "qty": 2.0}, {"cust": "2225021115192", "div": "FRESH FOOD", "ano": "31976", "aname": "DAU HU MOMEN 300G/330G*2", "qty": 59.0}, {"cust": "2225021115192", "div": "FRESH FOOD", "ano": "347731", "aname": "TR.GA HAPPY EGG SO 2 HOP 10", "qty": 25.0}, {"cust": "2225021115192", "div": "FRESH FOOD", "ano": "356137", "aname": "TOM THE (TUOI) 90-110 CON/KG", "qty": 6.5}, {"cust": "2225021115192", "div": "FRESH FOOD", "ano": "371897", "aname": "TRUNG GA HP (S3) 54-60G CAY300", "qty": 1.0}, {"cust": "2225021115192", "div": "FRESH FOOD", "ano": "393794", "aname": "TOI PHAN RANG-500G", "qty": 2.0}, {"cust": "2225021115192", "div": "FRESH FOOD", "ano": "403961", "aname": "THIT VAI HEO WRF-CT", "qty": 22.5}, {"cust": "2225021115192", "div": "FRESH FOOD", "ano": "403980", "aname": "NAC VAI HEO WRF-CT", "qty": 26.5}, {"cust": "2225021115192", "div": "FRESH FOOD", "ano": "4660", "aname": "PHO MAI VINAMILK 120GR", "qty": 29.0}, {"cust": "2225021115192", "div": "FRESH FOOD", "ano": "65285", "aname": "TRUNG CUT VTD HOP 30", "qty": 7.0}, {"cust": "2225021115192", "div": "FRESH FOOD", "ano": "76426", "aname": "CU SAN 200-400G", "qty": 0.5}, {"cust": "2225021115192", "div": "FRESH FOOD", "ano": "91352", "aname": "HANH CU DO (TIM) VN", "qty": 1.5}, {"cust": "2225021115192", "div": "FRESH FOOD", "ano": "169259", "aname": "BAP BO DONG LANH NK XX UC-WRF", "qty": 18.48}, {"cust": "2225021115192", "div": "FRESH FOOD", "ano": "191953", "aname": "XUONG UC GA 1KG-WRF", "qty": 2.0}, {"cust": "2225021115192", "div": "FRESH FOOD", "ano": "31976", "aname": "DAU HU MOMEN 300G/330G*2", "qty": 103.0}, {"cust": "2225021115192", "div": "FRESH FOOD", "ano": "347731", "aname": "TR.GA HAPPY EGG SO 2 HOP 10", "qty": 15.0}, {"cust": "2225021115192", "div": "FRESH FOOD", "ano": "356137", "aname": "TOM THE (TUOI) 90-110 CON/KG", "qty": 6.0}, {"cust": "2225021115192", "div": "FRESH FOOD", "ano": "371897", "aname": "TRUNG GA HP (S3) 54-60G CAY300", "qty": 6.0}, {"cust": "2225021115192", "div": "FRESH FOOD", "ano": "393794", "aname": "TOI PHAN RANG-500G", "qty": 10.0}, {"cust": "2225021115192", "div": "FRESH FOOD", "ano": "402388", "aname": "SUON NON HEO VIETGAP-WRF", "qty": 5.0}, {"cust": "2225021115192", "div": "FRESH FOOD", "ano": "403980", "aname": "NAC VAI HEO WRF-CT", "qty": 61.0}, {"cust": "2225021115192", "div": "DRY FOOD", "ano": "431242", "aname": "MIEN DONG THUDUNG 500G", "qty": 16.0}, {"cust": "2225021115192", "div": "FRESH FOOD", "ano": "6688", "aname": "P.MAI MOZZARELLA ANCHOR KHOI 5KG", "qty": 1.0}, {"cust": "2225021115192", "div": "FRESH FOOD", "ano": "91352", "aname": "HANH CU DO (TIM) VN", "qty": 5.0}];
+const DEFAULT_PAGE = 25;
 let filtered = [];
 let page = 1;
 
 const $q = document.getElementById('q');
-const stat = document.getElementById('stat');
+const stat = document.getElementById('bar');
 const tbody = document.getElementById('tbody');
 const pageInfo = document.getElementById('pageInfo');
 const prev = document.getElementById('prev');
 const next = document.getElementById('next');
+const ps = document.getElementById('ps');
 
 document.getElementById('srcCount').textContent = ALL.length.toLocaleString('vi-VN');
 
@@ -168,72 +325,341 @@ setHd();
 
 function norm(s){ return String(s==null?'':s).toLowerCase(); }
 
+function buildChips(){
+  const counts = {};
+  ALL.forEach(r => { counts[r.div] = (counts[r.div]||0) + 1; });
+  const divs = Object.keys(counts).sort();
+  const tray = document.getElementById('chiptray');
+  let html = '<span class="chips-label">Ngành hàng</span>';
+  html += '<button class="fchip active" data-div="">Tất cả <span class="cnt">'+ALL.length.toLocaleString('vi-VN')+'</span></button>';
+  divs.forEach(d => {
+    html += '<button class="fchip" data-div="'+d+'" data-desc="">'
+      + d + ' <span class="cnt">'+counts[d].toLocaleString('vi-VN')+'</span></button>';
+  });
+  tray.innerHTML = html;
+  tray.addEventListener('click', function(e){
+    const b = e.target.closest('.fchip');
+    if (!b) return;
+    tray.querySelectorAll('.fchip').forEach(x => x.classList.remove('active'));
+    b.classList.add('active');
+    curDiv = b.getAttribute('data-div') || '';
+    runSearch();
+  });
+}
+let curDiv = '';
+
+function pageSize(){ const v = parseInt(ps.value,10); return v>0 ? v : ALL.length; }
+
+function filter_active(){
+  return $q.value.trim() !== '' || curDiv !== '';
+}
+
 function runSearch(){
   const q = norm($q.value.trim());
-  filtered = q ? ALL.filter(r => norm(r.ano).includes(q) || norm(r.aname).includes(q)) : ALL.slice();
+  filtered = ALL.filter(r => {
+    if (curDiv && r.div !== curDiv) return false;
+    if (q && !(norm(r.ano).includes(q) || norm(r.aname).includes(q))) return false;
+    return true;
+  });
   page = 1;
   render();
 }
 
 function render(){
   const total = filtered.length;
-  const pages = Math.max(1, Math.ceil(total / PAGE));
+  const P = pageSize();
+  const pages = Math.max(1, Math.ceil(total / P));
   if (page > pages) page = pages;
-  const i0 = (page - 1) * PAGE;
-  const slice = filtered.slice(i0, i0 + PAGE);
+  const i0 = (page - 1) * P;
 
-  stat.innerHTML = filter_active()
-    ? 'Tìm thấy <b>' + total.toLocaleString('vi-VN') + '</b> dòng' + ($q.value.trim() ? ' cho từ khóa <b>&#8220;' + esc($q.value.trim()) + '&#8221;</b>' : '')
-    : 'Hiển thị toàn bộ <b>' + total.toLocaleString('vi-VN') + '</b> dòng';
-
-  if (!slice.length){
-    tbody.innerHTML = '<tr><td colspan="5"><div class="empty"><span class="ic">🔍</span>Không tìm thấy kết quả nào.</div></td></tr>';
-  } else {
-    const rows = slice.map(r => '<tr>' +
-      '<td class="cust">' + esc(r.cust).replace(/\D/g,'') + '</td>' +
-      '<td>' + esc(r.div) + '</td>' +
-      '<td class="ano">' + esc(r.ano) + '</td>' +
-      '<td>' + esc(r.aname) + '</td>' +
-      '<td class="qty">' + r.qty.toLocaleString('vi-VN') + '</td>' +
-    '</tr>').join('');
-    tbody.innerHTML = rows;
-  }
-
-  pageInfo.textContent = pages <= 1
-    ? 'Trang 1 / 1'
-    : 'Trang ' + page + ' / ' + pages;
-  prev.disabled = page <= 1;
-  next.disabled = page >= pages;
-
+  // KPI
   const custs = new Set(), divs = new Set(), anos = new Set();
   let sumQty = 0;
   filtered.forEach(function(r){
     custs.add(r.cust); divs.add(r.div); anos.add(r.ano);
     sumQty += r.qty;
   });
+  document.getElementById('kpiLines').textContent = total.toLocaleString('vi-VN');
+  document.getElementById('kpiQty').textContent = sumQty.toLocaleString('vi-VN',{minimumFractionDigits:0,maximumFractionDigits:2});
+  document.getElementById('kpiCust').textContent = custs.size.toLocaleString('vi-VN');
+  document.getElementById('kpiDiv').textContent = divs.size.toLocaleString('vi-VN');
+  document.getElementById('kpiAno').textContent = anos.size.toLocaleString('vi-VN');
+
+  // stat bar
+  const searchWord = $q.value.trim();
+  let msg;
+  if (filter_active()){
+    msg = 'Kết quả lọc: <b>' + total.toLocaleString('vi-VN') + '</b> dòng';
+    if (curDiv) msg += ' · Ngành: <b>' + esc(curDiv) + '</b>';
+    if (searchWord) msg += ' · Từ khóa: <b>&#8220;' + esc(searchWord) + '&#8221;</b>';
+    if (total===0) msg += ' — thử từ khóa khác hoặc bỏ ngành hàng';
+  } else {
+    msg = 'Hiển thị <b>' + total.toLocaleString('vi-VN') + '</b> dòng — toàn bộ báo cáo';
+  }
+  stat.innerHTML = msg;
+
+  // rows
+  const slice = pageSize()===0 ? filtered : filtered.slice(i0, i0 + P);
+  if (!slice.length){
+    tbody.innerHTML = '<tr><td colspan="5"><div class="empty"><span class="ic">🔍</span>' +
+      '<div class="t-text">Không tìm thấy kết quả nào</div>' +
+      '<div class="s-text">Điều chỉnh từ khóa tìm kiếm hoặc bỏ ngành hàng đang lọc</div></div></td></tr>';
+  } else {
+    const rows = slice.map(r => {
+      const tagCls = /FRESH/i.test(r.div) ? 'fresh' : 'dry';
+      return '<tr>' +
+        '<td class="cust">' + esc(r.cust).replace(/\D/g,'') + '</td>' +
+        '<td class="div"><span class="tag ' + tagCls + '">' + esc(r.div) + '</span></td>' +
+        '<td class="ano"><button type="button" class="ano-btn" data-ano="' + esc(r.ano) + '">' + esc(r.ano) + '</button></td>' +
+        '<td>' + esc(r.aname) + '</td>' +
+        '<td class="num qty">' + r.qty.toLocaleString('vi-VN') + '</td>' +
+      '</tr>';
+    }).join('');
+    tbody.innerHTML = rows;
+  }
+
+  // pager
+  if (pageSize()===0){
+    pageInfo.innerHTML = 'Toàn bộ <b>' + total.toLocaleString('vi-VN') + '</b> dòng';
+    prev.disabled = true; next.disabled = true;
+  } else {
+    pageInfo.innerHTML = 'Trang <b>' + page + '</b> / ' + pages.toLocaleString('vi-VN');
+    prev.disabled = page <= 1;
+    next.disabled = page >= pages;
+  }
+
   document.getElementById('tfoot').innerHTML = '<tr>' +
+    '<td>Tổng hợp · ' + total.toLocaleString('vi-VN') + ' dòng</td>' +
     '<td>Khách hàng: ' + custs.size.toLocaleString('vi-VN') + '</td>' +
-    '<td>Ngành hàng: ' + divs.size.toLocaleString('vi-VN') + '</td>' +
+    '<td>Ngành: ' + divs.size.toLocaleString('vi-VN') + '</td>' +
     '<td>Mặt hàng: ' + anos.size.toLocaleString('vi-VN') + '</td>' +
-    '<td colspan="1">Tổng cộng ' + total.toLocaleString('vi-VN') + ' dòng tìm thấy</td>' +
-    '<td>' + sumQty.toLocaleString('vi-VN') + '</td>' +
+    '<td class="num">' + sumQty.toLocaleString('vi-VN',{minimumFractionDigits:0,maximumFractionDigits:2}) + '</td>' +
   '</tr>';
 }
-
-function filter_active(){ return $q.value.trim() !== ''; }
 
 function esc(s){ return String(s==null?'':s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;'); }
 
 document.getElementById('btnSearch').addEventListener('click', runSearch);
-document.getElementById('btnClear').addEventListener('click', function(){ $q.value=''; runSearch(); });
+document.getElementById('btnClear').addEventListener('click', function(){
+  $q.value=''; curDiv='';
+  const tray=document.getElementById('chiptray');
+  tray.querySelectorAll('.fchip').forEach(x=>x.classList.remove('active'));
+  tray.querySelector('.fchip[data-div=""]').classList.add('active');
+  runSearch();
+});
 $q.addEventListener('keydown', function(e){ if(e.key==='Enter') runSearch(); });
 $q.addEventListener('input', function(){ runSearch(); });
-prev.addEventListener('click', function(){ if(page>1){page--;render();} });
-next.addEventListener('click', function(){ if(page<Math.ceil(filtered.length/PAGE)){page++;render();} });
+prev.addEventListener('click', function(){ if(pageSize()>0 && page>1){page--;render();} });
+next.addEventListener('click', function(){ if(pageSize()>0 && page<Math.ceil(filtered.length/pageSize())){page++;render();} });
+ps.addEventListener('change', function(){ page=1; render(); });
 
+buildChips();
 runSearch();
+
+// ===== Top 10 Chart (main page) =====
+function renderTop10(){
+  var el=document.getElementById('top10Chart');
+  if(!el) return;
+  var map={};
+  ALL.forEach(function(r){ var k=r.ano+'|'+r.aname; map[k]=(map[k]||0)+ (Number(r.qty)||0); });
+  var arr=Object.keys(map).map(function(k){ var p=k.split('|'); return {ano:p[0], name:p[1], qty:map[k]}; });
+  arr.sort(function(a,b){return b.qty-a.qty});
+  var top=arr.slice(0,10);
+  if(!top.length){ el.innerHTML='<div style="text-align:center;color:var(--muted);padding:24px">Không có dữ liệu</div>'; return; }
+  var max=top[0].qty||1;
+  var rows=top.map(function(it,idx){
+    var pct=Math.round(it.qty/max*100);
+    var barW=Math.max(4,pct);
+    return '<div style="display:flex;align-items:center;gap:10px;padding:7px 0;border-bottom:1px solid var(--line-soft)">'
+      + '<div style="width:26px;height:26px;border-radius:7px;background:linear-gradient(180deg,var(--gold-1),var(--gold-2));color:#0B0B0E;display:flex;align-items:center;justify-content:center;font-weight:800;font-size:11px;flex-shrink:0">'+(idx+1)+'</div>'
+      + '<div style="flex:1;min-width:0">'
+      + '<div style="display:flex;align-items:center;gap:8px;white-space:nowrap;overflow:hidden"><b style="color:var(--gold-1);font-variant-numeric:tabular-nums">'+it.ano+'</b><span style="color:var(--text);font-size:12.5px;overflow:hidden;text-overflow:ellipsis">'+esc(it.name)+'</span></div>'
+      + '<div style="height:7px;background:var(--bg-2);border-radius:999px;overflow:hidden;margin-top:5px"><div style="height:100%;width:'+barW+'%;background:linear-gradient(90deg,var(--gold-1),var(--gold-3));border-radius:999px"></div></div>'
+      + '</div>'
+      + '<div style="text-align:right;min-width:78px"><div style="font-weight:800;color:var(--gold-1);font-variant-numeric:tabular-nums">'+it.qty.toLocaleString('vi-VN')+'</div><div style="font-size:11px;color:var(--muted)">'+pct+'%</div></div>'
+      + '</div>';
+  }).join('');
+  el.innerHTML=rows;
+}
+var _origRender=render;
+render=function(){
+  _origRender.apply(this, arguments);
+  try{ renderTop10(); }catch(e){}
+};
+try{ renderTop10(); }catch(e){}
+
 </script>
+
 <script>
+/* ============ DETAIL OVERLAY + CHARTS (SVG, offline) ============ */
+(function(){
+  var overlay=document.getElementById('overlay');
+  var detail=document.getElementById('detail');
+  var backdrop=document.getElementById('backdrop');
+  if(!overlay||!detail) return;
+
+  var PALETTE=['#F0D68A','#C9A227','#E8B84B','#98720F','#7A5B0D','#F6E9C2','#A9841C','#D9B95C','#8C6A10','#EFD9A0'];
+
+  function esc(s){
+    return String(s==null?'':s).replace(/[&<>"']/g,function(c){
+      return {'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c];
+    });
+  }
+  function fmtNum(n){
+    n=Number(n)||0;
+    var neg=n<0?'-':''; n=Math.abs(n);
+    var s=n.toFixed(2);
+    var parts=s.split('.');
+    var i=parts[0].length-3;
+    while(i>0){parts[0]=parts[0].slice(0,i)+'.'+parts[0].slice(i);i-=3;}
+    return neg+parts.join(',');
+  }
+
+  function polar(cx,cy,r,a0,a1){
+    var p0x=cx+r*Math.cos(a0), p0y=cy+r*Math.sin(a0);
+    var p1x=cx+r*Math.cos(a1), p1y=cy+r*Math.sin(a1);
+    var large=(a1-a0)>Math.PI?1:0;
+    return [p0x,p0y,p1x,p1y,large];
+  }
+
+  function donutSVG(groups,size){
+    size=size||220; var cx=size/2, cy=size/2+4, r=size/2-22, ir=r-34;
+    var total=groups.reduce(function(s,g){return s+g.val;},0);
+    if(total<=0) return '<div style="text-align:center;color:var(--muted);padding:30px 0">Không có dữ liệu</div>';
+    var angle=-Math.PI/2, out='', i=0;
+    groups.forEach(function(g){
+      var frac=g.val/total;
+      var a0=angle, a1=angle+frac*2*Math.PI;
+      var col=PALETTE[i%PALETTE.length];
+      if(frac<=0.0001){return;}
+      var P=polar(cx,cy,r,a0,a1), Q=polar(cx,cy,ir,a0,a1);
+      var larc=(a1-a0)>Math.PI?1:0;
+      var d='M'+cx+','+cy+' ';
+      d='M'+P[0]+','+P[1]+' A'+r+','+r+' 0 '+larc+' 1 '+P[2]+','+P[3]+' L'+Q[2]+','+Q[3]+' A'+ir+','+ir+' 0 '+larc+' 0 '+Q[0]+','+Q[1]+' Z';
+      out+='<path d="'+d+'" fill="'+col+'" stroke="#101014" stroke-width="1.5"><title>'+esc(g.name)+': '+fmtNum(g.val)+' ('+(frac*100).toFixed(1)+'%)</title></path>';
+      angle=a1; i++;
+    });
+    var pct=total?100:0;
+    var html='<svg viewBox="0 0 '+size+' '+size+'" width="100%" role="img" aria-label="Biểu đồ phân bổ">'+out+
+      '<text x="'+cx+'" y="'+cy-4+'" text-anchor="middle" font-size="26" font-weight="700" fill="#F0D68A" font-family="Georgia,serif">'+(total/1)+'</text>'+
+      '<text x="'+cx+'" y="'+cy+16+'" text-anchor="middle" font-size="11" fill="#8F8877">dòng</text></svg>';
+    var legend=groups.map(function(g,idx){
+      var frac=g.val/total;
+      return '<div class="legend-row"><span class="legend-swatch" style="background:'+PALETTE[idx%PALETTE.length]+'"></span><span class="legend-name" title="'+esc(g.name)+'">'+esc(g.name)+'</span><span class="legend-val">'+fmtNum(g.val)+' <span style="color:#8F8877">('+(frac*100).toFixed(1)+'%)</span></span></div>';
+    }).join('');
+    return html+'<div class="legend">'+legend+'</div>';
+  }
+
+  function barSVG(rows,sizeW){
+    sizeW=sizeW||420; var h=230, padL=46, padR=10, padT=16, padB=40;
+    var max=0; rows.forEach(function(r){if(r.val>max)max=r.val;});
+    if(max<=0) return '<div style="text-align:center;color:var(--muted);padding:30px 0">Không có dữ liệu</div>';
+    var plotW=sizeW-padL-padR, plotH=h-padT-padB;
+    var n=rows.length, bw=plotW/n, wbar=Math.max(6,bw*0.5);
+    var out='',lab=4, i=0;
+    rows.forEach(function(r){
+      var bh=Math.max(2,(r.val/max)*plotH);
+      var x=padL+bw*i+(bw-wbar)/2, y=padT+plotH-bh;
+      out+='<rect x="'+x.toFixed(1)+'" y="'+y.toFixed(1)+'" width="'+wbar.toFixed(1)+'" height="'+bh.toFixed(1)+'" rx="3" fill="url(#barGrad)"><title>'+esc(r.name)+': '+fmtNum(r.val)+'</title></rect>';
+      if(r.val>0) out+='<text x="'+(x+wbar/2).toFixed(1)+'" y="'+(y-5).toFixed(1)+'" text-anchor="middle" font-size="10" fill="#F0D68A">'+fmtNum(Math.round(r.val))+'</text>';
+      i++;
+    });
+    var rowDivs='';
+    for(var t=0;t<=4;t++){
+      var val=max*(1-t/4), yy=padT+(t/4)*plotH;
+      rowDivs+='<line x1="'+padL+'" x2="'+(sizeW-padR)+'" y1="'+yy.toFixed(1)+'" y2="'+yy.toFixed(1)+'" stroke="#23232D" stroke-width="1"/>'+
+               '<text x="'+(padL-6)+'" y="'+(yy+3).toFixed(1)+'" text-anchor="end" font-size="9" fill="#8F8877">'+fmtNum(Math.round(val))+'</text>';
+    }
+    var xLab=rows.map(function(r){
+      var l=esc(r.name); if(l.length>8) l=l.slice(0,8)+'…';
+      return '<text x="0" y="0" transform="translate('+ (rows.indexOf(r)*bw+padL+bw/2).toFixed(1) +','+(padT+plotH+16)+')" text-anchor="end" font-size="9.5" fill="#8F8877" transform="rotate(-35,"+ (rows.indexOf(r)*bw+padL+bw/2).toFixed(1)+","+(padT+plotH+16)+")" transform-origin="0 0">'+l+'</text>';
+    }).join('');
+    var totalHtml='<text x="'+padL+'" y="'+(padT-6)+'" font-size="10" fill="#8F8877">Tổng: '+fmtNum(rows.reduce(function(s,r){return s+r.val;},0))+' dòng</text>';
+    return '<svg viewBox="0 0 '+sizeW+' '+h+'" width="100%" role="img" aria-label="Biểu đồ cột" style="min-width:'+Math.min(sizeW, rows.length*60+70)+'px">'+
+      '<defs><linearGradient id="barGrad" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#F6E9C2"/><stop offset="1" stop-color="#98720F"/></linearGradient></defs>'+
+      rowDivs+'<g font-family="Segoe UI,sans-serif">'+
+      xLab+'</g>'+totalHtml+out+'</svg>';
+  }
+
+  function openDetail(ano){
+    var rows=ALL.filter(function(r){return String(r.ano).trim()===String(ano).trim();});
+    if(rows.length===0){return;}
+    var r0=rows[0];
+    var totalQty=rows.reduce(function(s,r){return s+(Number(r.qty)||0);},0);
+    var custCount=new Set(rows.map(function(r){return r.cust;})).size;
+    var avg=rows.length?totalQty/rows.length:0;
+
+    var divGroups={};
+    rows.forEach(function(r){var k=r.div||'—';divGroups[k]=(divGroups[k]||0)+1;});
+    var divArr=Object.keys(divGroups).map(function(k){return {name:k,val:divGroups[k]};}).sort(function(a,b){return b.val-a.val;});
+
+    var custGroups={};
+    rows.forEach(function(r){var k=r.cust||'—';custGroups[k]=(custGroups[k]||0)+1;});
+    var custArr=Object.keys(custGroups).map(function(k){return {name:k,val:custGroups[k]};}).sort(function(a,b){return b.val-a.val;});
+    var custTop=custArr.slice(0,10);
+  // Global Top 10 mặt hàng for detail footer chart
+  var gmap={}; ALL.forEach(function(r){ var k=r.ano+'|'+r.aname; gmap[k]=(gmap[k]||0)+(Number(r.qty)||0); });
+  var gArr=Object.keys(gmap).map(function(k){ var p=k.split('|'); return {name:p[0]+' - '+p[1], val:gmap[k]}; }); gArr.sort(function(a,b){return b.val-a.val}); var globalTop10=gArr.slice(0,10);
+
+    var dos=rows.map(function(r){return Number(r.qty)||0;});
+    var maxQ=Math.max.apply(null,dos), minQ=Math.min.apply(null,dos);
+
+    var badge=divArr[0]? (String(divArr[0].name).toUpperCase().indexOf('FRESH')>-1?'<span class="d-badge" style="background:rgba(44,107,63,.18);color:#7BD89C;border:1px solid rgba(44,107,63,.5)">'+esc(divArr[0].name)+'</span>':'<span class="d-badge" style="background:rgba(201,162,39,.15);color:#F0D68A;border:1px solid rgba(201,162,39,.4)">'+esc(divArr[0].name)+'</span>') : '';
+
+    var html='<div class="detail-head">'+
+      '<div class="d-title"><div class="d-ano">ARTICLE&nbsp;№&nbsp;'+esc(r0.ano)+'</div><div class="d-name">'+esc(r0.aname)+'</div>'+badge+'</div>'+
+      '<button class="d-close" id="dClose" aria-label="Đóng">×</button></div>'+
+      '<div class="d-body">'+
+      '<div class="d-thumbs">'+
+        '<div class="d-t"><div class="d-t-label">Số dòng đơn hàng</div><div class="d-t-val">'+fmtNum(rows.length)+'</div><div class="d-t-note">mã #'+esc(r0.ano)+'</div></div>'+
+        '<div class="d-t"><div class="d-t-label">Tổng số lượng</div><div class="d-t-val">'+fmtNum(totalQty)+'</div><div class="d-t-note">từ '+custCount+' khách</div></div>'+
+        '<div class="d-t"><div class="d-t-label">Số khách hàng</div><div class="d-t-val">'+fmtNum(custCount)+'</div><div class="d-t-note">khách mua mặt hàng</div></div>'+
+        '<div class="d-t"><div class="d-t-label">CL / đơn hàng</div><div class="d-t-val">'+fmtNum(avg)+'</div><div class="d-t-note">trung bình / dòng</div></div>'+
+      '</div>'+
+      '<div class="charts">'+
+        '<div class="chart-card"><div class="chart-title">Phân bổ theo Ngành hàng</div>'+donutSVG(divArr)+'</div>'+
+        '<div class="chart-card"><div class="chart-title">Top 10 mặt hàng (toàn báo cáo · theo tổng Qty)</div>'+barSVG(globalTop10,420)+'</div>'+
+      '</div>'+
+      '</div>';
+    detail.innerHTML=html;
+    var close=document.getElementById('dClose');
+    if(close) close.addEventListener('click',closeOverlay);
+    overlay.classList.add('open');
+    overlay.setAttribute('aria-hidden','false');
+    document.body.style.overflow='hidden';
+  }
+
+  function closeOverlay(){
+    overlay.classList.remove('open');
+    overlay.setAttribute('aria-hidden','true');
+    document.body.style.overflow='';
+  }
+
+  backdrop.addEventListener('click',closeOverlay);
+  document.addEventListener('keydown',function(e){if(e.key==='Escape')closeOverlay();});
+  var tbody=document.getElementById('tbody');
+  if(tbody){
+    tbody.addEventListener('click',function(e){
+      var t=e.target;
+      while(t && t!==tbody){
+        if(t.classList && t.classList.contains('ano-btn')){ if(t.tagName==='A') return; // let link navigate
+
+          openDetail(t.dataset.ano);
+          return;
+        }
+        t=t.parentNode;
+      }
+    });
+  }
+  window.r18OpenDetail=openDetail;
+})();
+
+</script>
+
+<script>
+
+document.getElementById('backBtn')?.addEventListener('click', function(){ window.location.href='dashboard.html'; });
+ document.getElementById('toDashboard')?.addEventListener('click', function(){ window.location.href='RPT18-dashboard.html'; });
 function r18BackGo(){
   try{
     if (window.self !== window.top){
@@ -242,10 +668,12 @@ function r18BackGo(){
       window.opener.focus();
       window.close();
     } else {
-      window.location.href = '/';
+      window.location.href = encodeURI('dashboard.html');
     }
   }catch(e){}
 }
+
 </script>
+
 </body>
 </html>
