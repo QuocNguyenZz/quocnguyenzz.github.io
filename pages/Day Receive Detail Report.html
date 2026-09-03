@@ -2321,7 +2321,7 @@ function renderSc(){
   if (!d) return;
 
   var ng = scDayActive();
-  $('scDayLabel').textContent = fmtDate(ng ? ng.dayDate : d.dayDate);
+  $('scDayLabel').textContent = fmtToday();
   $('scMtdLabel').textContent = d.mtdLabel;
 
   scFilter.dayRows = d.dayRows;
