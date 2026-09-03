@@ -208,7 +208,22 @@
     .bar{flex-direction:column;align-items:flex-start}
     .pager{flex-direction:column;align-items:flex-start}
   }
-  @media print{
+    @media (max-width:600px){
+    header{height:auto; min-height:56px; padding:8px 12px; flex-wrap:wrap; gap:8px; overflow:visible;}
+    .header-inner{flex-direction:column; align-items:stretch; gap:8px;}
+    .header-left{gap:10px;}
+    .header-left a{font-size:13px; line-height:1.2;}
+    .brand-sub{display:none;}
+    .header-right{flex-wrap:wrap; gap:8px; width:100%; justify-content:flex-start;}
+    .header-right > div{flex-wrap:wrap;}
+    .hdr-pager{width:100%; justify-content:space-between;}
+  }
+  @media (max-width:400px){
+    header{padding:6px 10px;}
+    .header-left a{font-size:12px;}
+    .header-right{font-size:11px;}
+  }
+@media print{
     body{background:#111 !important;-webkit-print-color-adjust:exact;print-color-adjust:exact}
     .search,.chips,.pager-right,.back-btn,.overlay,.tagicon{display:none !important}
     header{position:static !important}
