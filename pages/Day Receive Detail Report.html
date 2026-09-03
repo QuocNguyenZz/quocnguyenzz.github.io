@@ -2905,6 +2905,7 @@ window.TOP50_DATA = {"dates":[20260901,20260902],"latestDate":20260902,"dateMeta
     document.body.classList.add('landing-active');
     document.body.style.overflow = 'hidden';
     if (window._pjsResume) try { window._pjsResume(); } catch(e){}
+    try{ var _pjs=window.pJSDom&&window.pJSDom[0]&&window.pJSDom[0].pJS; if(_pjs&&_pjs.fn&&_pjs.fn.vendors&&_pjs.fn.vendors.draw) requestAnimationFrame(function(){ try{ _pjs.fn.vendors.draw(); }catch(e){} }); }catch(e){}
   }
   /* particles.js gold dust */
   function initParticles(){
@@ -2930,7 +2931,7 @@ window.TOP50_DATA = {"dates":[20260901,20260902],"latestDate":20260902,"dateMeta
       var pjs = window.pJSDom && window.pJSDom.length ? window.pJSDom[window.pJSDom.length - 1] : null;
       if (pjs && pjs.pJS){
         window._pjsPause = function(){ pjs.pJS.particles.move.enable = false; };
-        window._pjsResume = function(){ pjs.pJS.particles.move.enable = true; };
+        window._pjsResume = function(){ pjs.pJS.particles.move.enable = true; try{ window.dispatchEvent(new Event('resize')); }catch(e){} try{ pjs.pJS.fn.vendors.densityAutoParticles(); }catch(e){} };
       }
     } catch(e){}
   }
