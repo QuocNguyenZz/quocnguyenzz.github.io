@@ -162,16 +162,18 @@
   .table-wrap::-webkit-scrollbar{width:8px; height:8px;}
   .table-wrap::-webkit-scrollbar-thumb{background:#E9CFCF; border-radius:4px;}
   .table-wrap::-webkit-scrollbar-track{background:#FBF6F6;}
-  table.data{width:100%; border-collapse:collapse; font-size:11px;}
-  table.data thead th{position:sticky; top:0; background:#15151B; color:#F0D68A; text-align:left; padding:8px 9px; font-size:10px; font-weight:700; border-bottom:1px solid #23232D; white-space:nowrap; letter-spacing:.2px;}
-  table.data td{padding:7px 9px; border-bottom:1px solid var(--border); white-space:nowrap;}
+  table.data{width:100%; border-collapse:collapse; font-size:13.5px;}
+  table.data thead th{position:sticky; top:0; background:linear-gradient(180deg,#0D0D12,#08080B); color:var(--gold-1); text-align:left; padding:13px 16px; font-size:11px; font-weight:700; border-bottom:none; white-space:nowrap; letter-spacing:.7px; text-transform:uppercase; box-shadow:inset 0 1px 0 rgba(240,214,138,.12);}
+  table.data td{padding:11px 16px; border-top:1px solid rgba(35,35,45,.55); white-space:nowrap;}
   table.data th.num{text-align:right;}
   table.data td.num{text-align:right; font-variant-numeric:tabular-nums;}
-  table.data tbody tr:hover{background:#15151B;}
-  table.data tbody tr.row-total{background:var(--hl); font-weight:700;}
-  table.data tbody tr.row-sub{background:#191920; font-weight:600;}
-  table.data th.gt-col{background:#98720F !important; color:#F6E9C2;}
-  table.data td.gt-col{background:#191920; font-weight:700; color:#F6E9C2;}
+  table.data tbody tr:nth-child(even){background:var(--bg-2);}
+  table.data tbody tr{transition:background .12s;}
+  table.data tbody tr:hover{background:#18150D;}
+  table.data tbody tr.row-total{background:linear-gradient(90deg,#14120A,#1A160E); color:var(--gold-1); font-weight:700; border-top:2px solid var(--gold-3);}
+  table.data tbody tr.row-sub{background:#12110C; color:var(--gold-1); font-weight:600;}
+  table.data th.gt-col{background:#D9BF8A !important; color:#6B540A;}
+  table.data td.gt-col{background:#E3C36F; font-weight:700; color:#6B540A;}
   .badge{font-weight:700; font-size:9.5px; padding:3px 8px; border-radius:10px; display:inline-block;}
   .badge-warn{color:var(--red-dark); background:rgba(198,40,40,.1);}
   .badge-ok{color:var(--green); background:rgba(22,163,74,.1);}
