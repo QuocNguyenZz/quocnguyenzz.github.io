@@ -674,6 +674,7 @@ try{ renderTop10(); }catch(e){}
 <script>
 
 document.getElementById('backBtn')?.addEventListener('click', function(){ window.location.href='Day Receive Detail Report.html'; });
+(function(){ var bg = document.getElementById('brandGo'); if(!bg) return; function go(){ window.location.href='Day Receive Detail Report.html'; } bg.style.cursor='pointer'; bg.addEventListener('click', go); bg.addEventListener('keydown', function(e){ if(e.key==='Enter'||e.key===' '){ e.preventDefault(); go(); } }); })();
  document.getElementById('toDashboard')?.addEventListener('click', function(){ window.location.href='RPT18-dashboard.html'; });
 function r18BackGo(){
   try{
