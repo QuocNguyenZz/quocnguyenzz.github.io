@@ -2610,7 +2610,12 @@ window.TOP50_DATA = {"dates":[20260901,20260902,20260903,20260904,20260905,20260
     activateTab('sc');
   }
   bl_loadState();
-  var _dataUrls = ['sc-data.json'];
+  var _dataUrls = [];
+  if (location && location.protocol && location.protocol.indexOf('http') === 0){
+    _dataUrls.push('/api/data');
+  }
+  _dataUrls.push('http://10.138.126.148:8080/api/data');
+  _dataUrls.push('http://127.0.0.1:8080/api/data');
   (function _tryFetch(i){
     if (i >= _dataUrls.length){ start(); return; }
     fetch(_dataUrls[i]).then(function(r){ return r.json(); }).then(function(sv){
