@@ -389,7 +389,7 @@ table.data tbody tr.sc-nodata:hover{opacity:.75;}
 
 /* v20260911-whitemodal: Yesterday black, no full-row gold tint */
 #scMtdTable tbody tr.sc-hasdata td:nth-child(3){color:var(--gold-1); font-weight:700;}
-#scDayTable tbody tr.scm-clickable, #scNgayTable tbody tr.scm-clickable{cursor:pointer;}
+#scDayTable tbody tr.scm-clickable, #scNgayTable tbody tr.scm-clickable, #scMtdTable tbody tr.scm-clickable{cursor:pointer;}
 #scDayTable tbody tr.scm-clickable td:nth-child(3){color:var(--gold-1); font-weight:700;}
 #scDayTable tbody tr.sc-hasdata, #scNgayTable tbody tr.sc-hasdata{cursor:default;}
 #scNgayTable tbody tr.sc-hasdata{background:none; box-shadow:none;}
@@ -400,6 +400,9 @@ table.data tbody tr.sc-nodata:hover{opacity:.75;}
 #scDayTable tbody tr.sc-hasdata{background:none; box-shadow:none;}
 #scDayTable tbody tr.sc-hasdata:hover{background:#15151B;}
 #scNgayTable tbody tr.sc-hasdata:hover{background:#15151B;}
+
+#scMtdTable tbody tr.sc-hasdata{background:none; box-shadow:none;}
+#scMtdTable tbody tr.sc-hasdata:hover{background:#15151B;}
 </style>
 <script>
 /* particles.js v2.0.0 embedded inline (offline) - VincentGarreau */
@@ -2777,12 +2780,13 @@ window.TOP50_DATA = {"dates":[20260901,20260902,20260903,20260904,20260905,20260
     var modal = document.getElementById('scDeptModal');
     if (!modal) return;
     var isNgay = (srcKey === 'ngay');
+    var isMtd = (srcKey === 'mtd');
     var ng = (typeof scDayActive === 'function') ? scDayActive() : window.SCDAY_DATA;
     var d = isNgay ? ng : ((typeof scActive === 'function') ? scActive() : window.SC_DATA);
     if (!d) return;
     var sub = document.getElementById('scmSub');
-    if (sub) sub.textContent = isNgay ? 'Stock Correction BY Yesterday \u00b7 chi ti\u1ebft l\u00fd do code 2 / 3 / 6' : 'Stock Correction BY DAY \u00b7 chi ti\u1ebft l\u00fd do code 2 / 3 / 6';
-    var rows = d && d.dayDetail ? d.dayDetail : [];
+    if (sub) sub.textContent = isNgay ? 'Stock Correction BY Yesterday \u00b7 chi ti\u1ebft l\u00fd do code 2 / 3 / 6' : (isMtd ? 'Stock Correction MTD \u00b7 chi ti\u1ebft l\u00fd do code 2 / 3 / 6' : 'Stock Correction BY DAY \u00b7 chi ti\u1ebft l\u00fd do code 2 / 3 / 6');
+    var rows = (isMtd && d && d.mtdDetail) ? d.mtdDetail : (d && d.dayDetail ? d.dayDetail : []);
     var list = rows.filter(function(r){
       if (Number(r.dept) !== Number(deptNo)) return false;
       if (r.reason_code !== 2 && r.reason_code !== 3 && r.reason_code !== 6) return false;
@@ -2879,11 +2883,14 @@ window.TOP50_DATA = {"dates":[20260901,20260902,20260903,20260904,20260905,20260
     if (e.key === 'Escape') closeScDeptModal();
   });
   function scDeptRowsFor(srcKey){
+    var d = (typeof scActive === 'function') ? scActive() : window.SC_DATA;
     if (srcKey === 'ngay'){
       var ng = (typeof scDayActive === 'function') ? scDayActive() : window.SCDAY_DATA;
       return ng ? ng.dayRows || [] : [];
     }
-    var d = (typeof scActive === 'function') ? scActive() : window.SC_DATA;
+    if (srcKey === 'mtd'){
+      return d ? d.mtdRows || [] : [];
+    }
     return d ? d.dayRows || [] : [];
   }
   function wireScModalTable(tblId, srcKey){
@@ -2907,6 +2914,7 @@ window.TOP50_DATA = {"dates":[20260901,20260902,20260903,20260904,20260905,20260
   }
   wireScModalTable('scDayTable', 'day');
   wireScModalTable('scNgayTable', 'ngay');
+  wireScModalTable('scMtdTable', 'mtd');
   var scmLastList = [];
   window.openScDeptModal = openScDeptModal;
   window.closeScDeptModal = closeScDeptModal;
@@ -2926,9 +2934,9 @@ window.TOP50_DATA = {"dates":[20260901,20260902,20260903,20260904,20260905,20260
     return isNaN(n) ? 0 : n;
   }
   function has236(tblId, deptNo){
-    var dd = (tblId === 'scNgayTable')
-      ? (((typeof scDayActive === 'function') ? scDayActive() : window.SCDAY_DATA) || {}).dayDetail || []
-      : (((typeof scActive === 'function') ? scActive() : window.SC_DATA) || {}).dayDetail || [];
+    var scd = ((typeof scActive === 'function') ? scActive() : window.SC_DATA) || {};
+    var ngd = ((typeof scDayActive === 'function') ? scDayActive() : window.SCDAY_DATA) || {};
+    var dd = (tblId === 'scNgayTable') ? (ngd.dayDetail || []) : ((tblId === 'scMtdTable') ? (scd.mtdDetail || []) : (scd.dayDetail || []));
     for (var i = 0; i < dd.length; i++){
       var r = dd[i];
       if (Number(r.dept) !== Number(deptNo)) continue;
@@ -2940,7 +2948,7 @@ window.TOP50_DATA = {"dates":[20260901,20260902,20260903,20260904,20260905,20260
   }
   function paintTable(tbl){
     if (!tbl) return;
-    var clickableTbl = (tbl.id === 'scDayTable' || tbl.id === 'scNgayTable');
+    var clickableTbl = (tbl.id === 'scDayTable' || tbl.id === 'scNgayTable' || tbl.id === 'scMtdTable');
     var rows = tbl.querySelectorAll('tbody tr');
     for (var i = 0; i < rows.length; i++){
       var tr = rows[i];
