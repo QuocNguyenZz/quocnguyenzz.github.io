@@ -367,6 +367,7 @@ body.landing-active #topHeader{display:none !important;}
 #scDeptModal table.scm-table tr.scm-subtotal td{background:#FBEAEA; font-weight:700; color:#B71C1C;}
 #scDeptModal table.scm-table tr.scm-grand td{background:#F8DADA; font-weight:800; color:#8E1414;}
 #scDeptModal .scm-badge{display:inline-block; min-width:26px; text-align:center; background:#C62828; color:#fff; border-radius:999px; padding:2px 9px; font-size:11px; font-weight:700;}
+#scDeptModal table.scm-table td.scm-prod{color:#98720F; font-weight:600;}
 #scDeptModal .scm-empty{padding:34px 10px; text-align:center; color:#999; font-size:13px;}
 #scDeptModal table.scm-table tbody tr.scm-row{cursor:pointer;}
 #scDeptModal table.scm-table tbody tr.scm-row:hover td{background:#FFF8E7;}
@@ -2794,7 +2795,7 @@ window.TOP50_DATA = {"dates":[20260901,20260902,20260903,20260904,20260905,20260
             '<td><span class="scm-badge">' + escHtml(r.reason_code) + '</span></td>' +
             '<td>' + escHtml(rDesc) + '</td>' +
             '<td>' + escHtml(r.root_code) + '</td>' +
-            '<td>' + escHtml(rArt) + '</td>' +
+            '<td class="scm-prod">' + escHtml(rArt) + '</td>' +
             '<td class="num">' + escHtml(scmQty(r.qty)) + '</td>' +
             '<td class="num">' + escHtml(fmtVnd(r.amount)) + '</td></tr>';
         });
