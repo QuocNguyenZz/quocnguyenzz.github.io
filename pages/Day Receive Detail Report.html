@@ -386,34 +386,14 @@ table.data tbody tr.sc-nodata{opacity:.42;}
 table.data tbody tr.sc-nodata:hover{opacity:.75;}
 
 
-/* ============ SC DEPT MODAL DARK v20260911-ngaymodal ============ */
-#scDeptModal .scm-panel{background:#101014; border:1px solid #23232D;}
-#scDeptModal .scm-close{background:#15151B; border-color:#23232D; color:#8F8877;}
-#scDeptModal .scm-close:hover{background:#C62828; color:#fff; border-color:#C62828;}
-#scDeptModal .scm-kicker{color:#8F8877;}
-#scDeptModal .scm-title{color:#F0D68A; text-shadow:0 1px 8px rgba(0,0,0,.5);}
-#scDeptModal .scm-sub{color:rgba(240,214,138,.75);}
-#scDeptModal .scm-kpi{background:#15151B; border-color:#23232D;}
-#scDeptModal .scm-kpi .k{color:#8F8877;}
-#scDeptModal .scm-kpi .v{color:#E57373;}
-#scDeptModal .scm-kpi.total .v{color:#F0D68A;}
-#scDeptModal .scm-kpi .n{color:#6A6A60;}
-#scDeptModal .scm-card{border-color:#23232D;}
-#scDeptModal .scm-card h4{background:#101014; color:#F0D68A;}
-#scDeptModal table.scm-table thead th{background:linear-gradient(180deg,#0D0D12,#08080B); color:#F0D68A;}
-#scDeptModal table.scm-table td{border-bottom-color:rgba(255,255,255,.06); color:#EDE6D8;}
-#scDeptModal table.scm-table tbody tr.scm-row:hover td{background:rgba(201,162,39,.08);}
-#scDeptModal table.scm-table tr.scm-open td{background:rgba(201,162,39,.10);}
-#scDeptModal table.scm-table tr.scm-detail td{background:#0C0C10;}
-#scDeptModal .scm-detailgrid .dk{color:#6A6A60;}
-#scDeptModal .scm-detailgrid .dv{color:#EDE6D8;}
-#scDeptModal table.scm-table tr.scm-subtotal td{background:#1D1809; color:#F0D68A;}
-#scDeptModal table.scm-table tr.scm-grand td{background:#241D0B; color:#F6E9C2;}
-#scDeptModal table.scm-table td.scm-prod{color:#F0D68A;}
-#scDeptModal .scm-empty{color:#8F8877;}
-#scDayTable tbody tr.sc-hasdata td:nth-child(3), #scNgayTable tbody tr.sc-hasdata td:nth-child(3), #scMtdTable tbody tr.sc-hasdata td:nth-child(3){color:var(--gold-1); font-weight:700;}
-#scDayTable tbody tr.sc-hasdata, #scNgayTable tbody tr.sc-hasdata{cursor:pointer;}
-#scDayTable tbody tr.sc-nodata, #scNgayTable tbody tr.sc-nodata{cursor:default;}
+
+/* v20260911-whitemodal: Yesterday black, no full-row gold tint */
+#scMtdTable tbody tr.sc-hasdata td:nth-child(3){color:var(--gold-1); font-weight:700;}
+#scDayTable tbody tr.scm-clickable, #scNgayTable tbody tr.scm-clickable{cursor:pointer;}
+#scDayTable tbody tr.scm-clickable td:nth-child(3), #scNgayTable tbody tr.scm-clickable td:nth-child(3){color:var(--gold-1); font-weight:700;}
+#scDayTable tbody tr.sc-hasdata, #scNgayTable tbody tr.sc-hasdata{cursor:default;}
+#scNgayTable tbody tr.sc-hasdata{background:none; box-shadow:none;}
+#scNgayTable tbody tr.sc-hasdata:hover{background:rgba(201,162,39,.08);}
 
 </style>
 <script>
@@ -2902,7 +2882,7 @@ window.TOP50_DATA = {"dates":[20260901,20260902,20260903,20260904,20260905,20260
     tbl.addEventListener('click', function(e){
       var tr = e.target ? e.target.closest('tbody tr') : null;
       if (!tr || tr.classList.contains('row-total')) return;
-      if (tr.classList.contains('sc-nodata')) return;
+      if (!tr.classList.contains('scm-clickable')) return;
       var tds = tr.querySelectorAll('td');
       if (!tds.length) return;
       var deptNo = Number(String(tds[0].textContent).trim());
@@ -2935,8 +2915,22 @@ window.TOP50_DATA = {"dates":[20260901,20260902,20260903,20260904,20260905,20260
     var n = parseFloat(s);
     return isNaN(n) ? 0 : n;
   }
+  function has236(tblId, deptNo){
+    var dd = (tblId === 'scNgayTable')
+      ? (((typeof scDayActive === 'function') ? scDayActive() : window.SCDAY_DATA) || {}).dayDetail || []
+      : (((typeof scActive === 'function') ? scActive() : window.SC_DATA) || {}).dayDetail || [];
+    for (var i = 0; i < dd.length; i++){
+      var r = dd[i];
+      if (Number(r.dept) !== Number(deptNo)) continue;
+      if (r.reason_code !== 2 && r.reason_code !== 3 && r.reason_code !== 6) continue;
+      if ((Number(r.qty) || 0) === 0 && (Number(r.amount) || 0) === 0) continue;
+      return true;
+    }
+    return false;
+  }
   function paintTable(tbl){
     if (!tbl) return;
+    var clickableTbl = (tbl.id === 'scDayTable' || tbl.id === 'scNgayTable');
     var rows = tbl.querySelectorAll('tbody tr');
     for (var i = 0; i < rows.length; i++){
       var tr = rows[i];
@@ -2947,8 +2941,12 @@ window.TOP50_DATA = {"dates":[20260901,20260902,20260903,20260904,20260905,20260
       for (var j = 0; j < tds.length; j++){
         if (numVal(tds[j].textContent) !== 0){ has = true; break; }
       }
-      tr.classList.remove('sc-hasdata', 'sc-nodata');
+      tr.classList.remove('sc-hasdata', 'sc-nodata', 'scm-clickable');
       tr.classList.add(has ? 'sc-hasdata' : 'sc-nodata');
+      if (clickableTbl){
+        var deptNo = Number(String(tr.cells[0].textContent).trim());
+        if (deptNo && has236(tbl.id, deptNo)) tr.classList.add('scm-clickable');
+      }
     }
   }
   function paintAll(){
