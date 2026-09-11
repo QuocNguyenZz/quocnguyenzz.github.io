@@ -2813,7 +2813,7 @@ window.TOP50_DATA = {"dates":[20260901,20260902,20260903,20260904,20260905,20260
     var d = isNgay ? ng : ((typeof scActive === 'function') ? scActive() : window.SC_DATA);
     if (!d) return;
     var sub = document.getElementById('scmSub');
-    if (sub) sub.textContent = isNgay ? 'Stock Correction BY Yesterday \u00b7 chi ti\u1ebft l\u00fd do code 2 / 3 / 6 / 925' : (isMtd ? 'Stock Correction MTD \u00b7 chi ti\u1ebft l\u00fd do code 2 / 3 / 6 / 925' : 'Stock Correction BY DAY \u00b7 chi ti\u1ebft l\u00fd do code 2 / 3 / 6 / 925');
+    if (sub) sub.textContent = isNgay ? 'Stock Correction BY DAY \u00b7 chi ti\u1ebft l\u00fd do code 2 / 3 / 6 / 925' : (isMtd ? 'Stock Correction MTD \u00b7 chi ti\u1ebft l\u00fd do code 2 / 3 / 6 / 925' : 'Stock Correction BY Yesterday \u00b7 chi ti\u1ebft l\u00fd do code 2 / 3 / 6 / 925');
     var rows = (isMtd && d && d.mtdDetail) ? d.mtdDetail : (d && d.dayDetail ? d.dayDetail : []);
     var list = rows.filter(function(r){
       if (Number(r.dept) !== Number(deptNo)) return false;
