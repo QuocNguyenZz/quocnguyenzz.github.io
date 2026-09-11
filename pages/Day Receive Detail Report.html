@@ -385,6 +385,36 @@ table.data tbody tr.sc-hasdata:hover{background:linear-gradient(90deg,rgba(201,1
 table.data tbody tr.sc-nodata{opacity:.42;}
 table.data tbody tr.sc-nodata:hover{opacity:.75;}
 
+
+/* ============ SC DEPT MODAL DARK v20260911-ngaymodal ============ */
+#scDeptModal .scm-panel{background:#101014; border:1px solid #23232D;}
+#scDeptModal .scm-close{background:#15151B; border-color:#23232D; color:#8F8877;}
+#scDeptModal .scm-close:hover{background:#C62828; color:#fff; border-color:#C62828;}
+#scDeptModal .scm-kicker{color:#8F8877;}
+#scDeptModal .scm-title{color:#F0D68A; text-shadow:0 1px 8px rgba(0,0,0,.5);}
+#scDeptModal .scm-sub{color:rgba(240,214,138,.75);}
+#scDeptModal .scm-kpi{background:#15151B; border-color:#23232D;}
+#scDeptModal .scm-kpi .k{color:#8F8877;}
+#scDeptModal .scm-kpi .v{color:#E57373;}
+#scDeptModal .scm-kpi.total .v{color:#F0D68A;}
+#scDeptModal .scm-kpi .n{color:#6A6A60;}
+#scDeptModal .scm-card{border-color:#23232D;}
+#scDeptModal .scm-card h4{background:#101014; color:#F0D68A;}
+#scDeptModal table.scm-table thead th{background:linear-gradient(180deg,#0D0D12,#08080B); color:#F0D68A;}
+#scDeptModal table.scm-table td{border-bottom-color:rgba(255,255,255,.06); color:#EDE6D8;}
+#scDeptModal table.scm-table tbody tr.scm-row:hover td{background:rgba(201,162,39,.08);}
+#scDeptModal table.scm-table tr.scm-open td{background:rgba(201,162,39,.10);}
+#scDeptModal table.scm-table tr.scm-detail td{background:#0C0C10;}
+#scDeptModal .scm-detailgrid .dk{color:#6A6A60;}
+#scDeptModal .scm-detailgrid .dv{color:#EDE6D8;}
+#scDeptModal table.scm-table tr.scm-subtotal td{background:#1D1809; color:#F0D68A;}
+#scDeptModal table.scm-table tr.scm-grand td{background:#241D0B; color:#F6E9C2;}
+#scDeptModal table.scm-table td.scm-prod{color:#F0D68A;}
+#scDeptModal .scm-empty{color:#8F8877;}
+#scDayTable tbody tr.sc-hasdata td:nth-child(3), #scNgayTable tbody tr.sc-hasdata td:nth-child(3), #scMtdTable tbody tr.sc-hasdata td:nth-child(3){color:var(--gold-1); font-weight:700;}
+#scDayTable tbody tr.sc-hasdata, #scNgayTable tbody tr.sc-hasdata{cursor:pointer;}
+#scDayTable tbody tr.sc-nodata, #scNgayTable tbody tr.sc-nodata{cursor:default;}
+
 </style>
 <script>
 /* particles.js v2.0.0 embedded inline (offline) - VincentGarreau */
@@ -2719,12 +2749,13 @@ window.TOP50_DATA = {"dates":[20260901,20260902,20260903,20260904,20260905,20260
 </script>
 
 <!-- PAGE v20260911-deptmodal-BYDAY (additive modal only; table structure unchanged) -->
+<!-- v20260911-ngaymodal (Yesterday rows open modal w/ SCDAY data; dark modal; no-click guard; DECS gold) -->
 <div id="scDeptModal" role="dialog" aria-modal="true" aria-label="Chi tiet nganh hang BY DAY">
   <div class="scm-panel">
     <button class="scm-close" id="scmClose" aria-label="Dong">&times;</button>
     <div class="scm-kicker" id="scmKicker">DEPT №</div>
     <div class="scm-title" id="scmTitle">-</div>
-    <div class="scm-sub">Stock Correction BY DAY · chi tiết lý do code 2 / 3 / 6</div>
+    <div class="scm-sub" id="scmSub">Stock Correction BY DAY · chi tiết lý do code 2 / 3 / 6</div>
     <div class="scm-kpis" id="scmKpis"></div>
     <div class="scm-card">
       <h4 id="scmTableTitle">CHI TIẾT DÒNG</h4>
@@ -2751,10 +2782,15 @@ window.TOP50_DATA = {"dates":[20260901,20260902,20260903,20260904,20260905,20260
     if (d && d.reasonNames && d.reasonNames[code]) return d.reasonNames[code];
     return 'CODE ' + code;
   }
-  function openScDeptModal(deptNo, decsName){
+  function openScDeptModal(deptNo, decsName, srcKey){
     var modal = document.getElementById('scDeptModal');
     if (!modal) return;
-    var d = (typeof scActive === 'function') ? scActive() : window.SC_DATA;
+    var isNgay = (srcKey === 'ngay');
+    var ng = (typeof scDayActive === 'function') ? scDayActive() : window.SCDAY_DATA;
+    var d = isNgay ? ng : ((typeof scActive === 'function') ? scActive() : window.SC_DATA);
+    if (!d) return;
+    var sub = document.getElementById('scmSub');
+    if (sub) sub.textContent = isNgay ? 'Stock Correction BY Yesterday \u00b7 chi ti\u1ebft l\u00fd do code 2 / 3 / 6' : 'Stock Correction BY DAY \u00b7 chi ti\u1ebft l\u00fd do code 2 / 3 / 6';
     var rows = d && d.dayDetail ? d.dayDetail : [];
     var list = rows.filter(function(r){
       if (Number(r.dept) !== Number(deptNo)) return false;
@@ -2836,6 +2872,7 @@ window.TOP50_DATA = {"dates":[20260901,20260902,20260903,20260904,20260905,20260
     }
     var r = scmLastList[Number(tr.getAttribute('data-idx'))];
     if (!r) return;
+    if ((Number(r.qty) || 0) === 0 && (Number(r.amount) || 0) === 0) return;
     var drow = document.createElement('tr');
     drow.className = 'scm-detail';
     function kv(k, v){ return '<div><div class="dk">' + escHtml(k) + '</div><div class="dv">' + escHtml(v) + '</div></div>'; }
@@ -2850,22 +2887,35 @@ window.TOP50_DATA = {"dates":[20260901,20260902,20260903,20260904,20260905,20260
   document.addEventListener('keydown', function(e){
     if (e.key === 'Escape') closeScDeptModal();
   });
-  document.getElementById('scDayTable').addEventListener('click', function(e){
-    var tr = e.target ? e.target.closest('tbody tr') : null;
-    if (!tr || tr.classList.contains('row-total')) return;
-    var tds = tr.querySelectorAll('td');
-    if (!tds.length) return;
-    var deptNo = Number(String(tds[0].textContent).trim());
-    if (!deptNo) return;
-    var d = (typeof scActive === 'function') ? scActive() : window.SC_DATA;
-    var decsName = '';
-    if (d && d.dayRows){
-      for (var i = 0; i < d.dayRows.length; i++){
-        if (Number(d.dayRows[i].dept_no) === deptNo){ decsName = d.dayRows[i].decs || ''; break; }
-      }
+  function scDeptRowsFor(srcKey){
+    if (srcKey === 'ngay'){
+      var ng = (typeof scDayActive === 'function') ? scDayActive() : window.SCDAY_DATA;
+      return ng ? ng.dayRows || [] : [];
     }
-    openScDeptModal(deptNo, decsName);
-  });
+    var d = (typeof scActive === 'function') ? scActive() : window.SC_DATA;
+    return d ? d.dayRows || [] : [];
+  }
+  function wireScModalTable(tblId, srcKey){
+    var tbl = document.getElementById(tblId);
+    if (!tbl) return;
+    tbl.addEventListener('click', function(e){
+      var tr = e.target ? e.target.closest('tbody tr') : null;
+      if (!tr || tr.classList.contains('row-total')) return;
+      if (tr.classList.contains('sc-nodata')) return;
+      var tds = tr.querySelectorAll('td');
+      if (!tds.length) return;
+      var deptNo = Number(String(tds[0].textContent).trim());
+      if (!deptNo) return;
+      var rows = scDeptRowsFor(srcKey);
+      var decsName = '';
+      for (var i = 0; i < rows.length; i++){
+        if (Number(rows[i].dept_no) === deptNo){ decsName = rows[i].decs || ''; break; }
+      }
+      openScDeptModal(deptNo, decsName, srcKey);
+    });
+  }
+  wireScModalTable('scDayTable', 'day');
+  wireScModalTable('scNgayTable', 'ngay');
   var scmLastList = [];
   window.openScDeptModal = openScDeptModal;
   window.closeScDeptModal = closeScDeptModal;
