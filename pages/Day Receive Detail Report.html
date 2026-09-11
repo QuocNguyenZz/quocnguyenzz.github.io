@@ -368,6 +368,13 @@ body.landing-active #topHeader{display:none !important;}
 #scDeptModal table.scm-table tr.scm-grand td{background:#F8DADA; font-weight:800; color:#8E1414;}
 #scDeptModal .scm-badge{display:inline-block; min-width:26px; text-align:center; background:#C62828; color:#fff; border-radius:999px; padding:2px 9px; font-size:11px; font-weight:700;}
 #scDeptModal .scm-empty{padding:34px 10px; text-align:center; color:#999; font-size:13px;}
+#scDeptModal table.scm-table tbody tr.scm-row{cursor:pointer;}
+#scDeptModal table.scm-table tbody tr.scm-row:hover td{background:#FFF8E7;}
+#scDeptModal table.scm-table tr.scm-open td{background:#FFF3D6;}
+#scDeptModal table.scm-table tr.scm-detail td{background:#FFFEF7; padding:6px 10px 10px 34px;}
+#scDeptModal .scm-detailgrid{display:grid; grid-template-columns:repeat(4,1fr); gap:6px 14px; font-size:11px;}
+#scDeptModal .scm-detailgrid .dk{color:#999; text-transform:uppercase; font-size:10px; letter-spacing:.06em;}
+#scDeptModal .scm-detailgrid .dv{color:#333; font-weight:600;}
 @media (max-width:640px){ #scDeptModal .scm-kpis{grid-template-columns:repeat(2,1fr);} }
 
 </style>
@@ -2768,6 +2775,7 @@ window.TOP50_DATA = {"dates":[20260901,20260902,20260903,20260904,20260905,20260
       '<div class="v">' + fmtVnd(total) + '</div>' +
       '<div class="n">' + fmtInt(list.length) + ' dòng chi tiết</div></div>';
     document.getElementById('scmKpis').innerHTML = kpis;
+    scmLastList = list;
     document.getElementById('scmTableTitle').textContent = 'CHI TIẾT DÒNG (' + fmtInt(list.length) + ')';
     var body = document.getElementById('scmBody');
     if (!list.length){
@@ -2778,7 +2786,8 @@ window.TOP50_DATA = {"dates":[20260901,20260902,20260903,20260904,20260905,20260
         var grp = list.filter(function(r){ return r.reason_code === c; });
         if (!grp.length) return;
         grp.forEach(function(r){
-          h += '<tr>' +
+          var ridx = list.indexOf(r);
+          h += '<tr class="scm-row" data-idx="' + ridx + '">' +
             '<td><span class="scm-badge">' + escHtml(r.reason_code) + '</span></td>' +
             '<td>' + escHtml(r.reason_desc) + '</td>' +
             '<td>' + escHtml(r.root_code) + '</td>' +
@@ -2805,6 +2814,28 @@ window.TOP50_DATA = {"dates":[20260901,20260902,20260903,20260904,20260905,20260
   document.getElementById('scDeptModal').addEventListener('click', function(e){
     if (e.target && e.target.id === 'scDeptModal') closeScDeptModal();
   });
+  document.getElementById('scmBody').addEventListener('click', function(e){
+    var tr = e.target ? e.target.closest('tr.scm-row') : null;
+    if (!tr) return;
+    var nxt = tr.nextElementSibling;
+    if (nxt && nxt.classList.contains('scm-detail')){
+      nxt.parentNode.removeChild(nxt);
+      tr.classList.remove('scm-open');
+      return;
+    }
+    var r = scmLastList[Number(tr.getAttribute('data-idx'))];
+    if (!r) return;
+    var drow = document.createElement('tr');
+    drow.className = 'scm-detail';
+    function kv(k, v){ return '<div><div class="dk">' + escHtml(k) + '</div><div class="dv">' + escHtml(v) + '</div></div>'; }
+    drow.innerHTML = '<td colspan="6"><div class="scm-detailgrid">' +
+      kv('SUPP_NO', r.supp_no) + kv('SUPP_NAME', r.supp_name) +
+      kv('BARCODE', r.barcode) + kv('COST', fmtVnd(r.cost)) +
+      kv('DIV', r.div) + kv('SUBDEPT', r.subdept) +
+      kv('DEPT', r.dept) + kv('ROOT_CODE', r.root_code) + '</div></td>';
+    tr.parentNode.insertBefore(drow, tr.nextSibling);
+    tr.classList.add('scm-open');
+  });
   document.addEventListener('keydown', function(e){
     if (e.key === 'Escape') closeScDeptModal();
   });
@@ -2824,6 +2855,7 @@ window.TOP50_DATA = {"dates":[20260901,20260902,20260903,20260904,20260905,20260
     }
     openScDeptModal(deptNo, decsName);
   });
+  var scmLastList = [];
   window.openScDeptModal = openScDeptModal;
   window.closeScDeptModal = closeScDeptModal;
 })();
