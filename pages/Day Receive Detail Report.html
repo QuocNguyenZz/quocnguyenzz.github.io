@@ -2787,11 +2787,13 @@ window.TOP50_DATA = {"dates":[20260901,20260902,20260903,20260904,20260905,20260
         if (!grp.length) return;
         grp.forEach(function(r){
           var ridx = list.indexOf(r);
+          var rDesc = (r.reason_desc === null || r.reason_desc === undefined || String(r.reason_desc).trim() === '') ? scmReasonName(r.reason_code, d) : r.reason_desc;
+          var rArt = (r.artdesc === null || r.artdesc === undefined || String(r.artdesc).trim() === '') ? '\u2014' : r.artdesc;
           h += '<tr class="scm-row" data-idx="' + ridx + '">' +
             '<td><span class="scm-badge">' + escHtml(r.reason_code) + '</span></td>' +
-            '<td>' + escHtml(r.reason_desc) + '</td>' +
+            '<td>' + escHtml(rDesc) + '</td>' +
             '<td>' + escHtml(r.root_code) + '</td>' +
-            '<td>' + escHtml(r.artdesc) + '</td>' +
+            '<td>' + escHtml(rArt) + '</td>' +
             '<td class="num">' + escHtml(scmQty(r.qty)) + '</td>' +
             '<td class="num">' + escHtml(fmtVnd(r.amount)) + '</td></tr>';
         });
