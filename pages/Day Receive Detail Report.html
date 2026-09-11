@@ -341,6 +341,35 @@ body.landing-active #topHeader{display:none !important;}
   @media (max-width:1280px){ .header-left-group{gap:7px;} }
   @media (max-width:1000px){ .header-left-group{order:-1;} }
   @media (max-width:640px){ .menu-panel{left:10px; min-width:240px;} }
+
+/* ============ SC DEPT MODAL (BY DAY) v20260911-deptmodal-BYDAY ============ */
+#scDeptModal{display:none; position:fixed; inset:0; z-index:2000; background:rgba(0,0,0,.55); align-items:flex-start; justify-content:center; overflow:auto; padding:28px 14px;}
+#scDeptModal.open{display:flex;}
+#scDeptModal .scm-panel{background:#fff; border-radius:14px; max-width:980px; width:100%; padding:22px 22px 18px; position:relative; box-shadow:0 18px 60px rgba(0,0,0,.45);}
+#scDeptModal .scm-close{position:absolute; top:12px; right:12px; width:32px; height:32px; border-radius:50%; border:1px solid #E5E5E5; background:#fff; color:#666; font-size:17px; line-height:1; cursor:pointer;}
+#scDeptModal .scm-close:hover{background:#C62828; color:#fff; border-color:#C62828;}
+#scDeptModal .scm-kicker{font-size:11px; color:#999; text-transform:uppercase; letter-spacing:.14em;}
+#scDeptModal .scm-title{font-size:26px; font-weight:800; color:#B71C1C; text-transform:uppercase; margin:2px 0;}
+#scDeptModal .scm-sub{font-size:12px; color:#888; margin-bottom:14px;}
+#scDeptModal .scm-kpis{display:grid; grid-template-columns:repeat(4,1fr); gap:10px; margin-bottom:14px;}
+#scDeptModal .scm-kpi{background:#fff; border:1px solid #EDEDED; border-radius:10px; padding:10px 12px;}
+#scDeptModal .scm-kpi .k{font-size:10px; color:#999; text-transform:uppercase; letter-spacing:.06em;}
+#scDeptModal .scm-kpi .v{font-size:22px; font-weight:800; color:#C62828; margin:2px 0;}
+#scDeptModal .scm-kpi.total .v{font-size:17px;}
+#scDeptModal .scm-kpi .n{font-size:11px; color:#999;}
+#scDeptModal .scm-card{border:1px solid #EDEDED; border-radius:10px; overflow:hidden;}
+#scDeptModal .scm-card h4{margin:0; padding:10px 14px; font-size:13px; color:#B71C1C; text-transform:uppercase; letter-spacing:.06em; background:#fff;}
+#scDeptModal .scm-tablewrap{max-height:46vh; overflow:auto;}
+#scDeptModal table.scm-table{width:100%; border-collapse:collapse; font-size:12px;}
+#scDeptModal table.scm-table thead th{position:sticky; top:0; background:#FBEAEA; color:#B71C1C; text-align:left; padding:8px 10px; font-size:11px; text-transform:uppercase; white-space:nowrap;}
+#scDeptModal table.scm-table thead th.num, #scDeptModal table.scm-table td.num{text-align:right; white-space:nowrap;}
+#scDeptModal table.scm-table td{padding:7px 10px; border-bottom:1px solid #F3F3F3; color:#333;}
+#scDeptModal table.scm-table tr.scm-subtotal td{background:#FBEAEA; font-weight:700; color:#B71C1C;}
+#scDeptModal table.scm-table tr.scm-grand td{background:#F8DADA; font-weight:800; color:#8E1414;}
+#scDeptModal .scm-badge{display:inline-block; min-width:26px; text-align:center; background:#C62828; color:#fff; border-radius:999px; padding:2px 9px; font-size:11px; font-weight:700;}
+#scDeptModal .scm-empty{padding:34px 10px; text-align:center; color:#999; font-size:13px;}
+@media (max-width:640px){ #scDeptModal .scm-kpis{grid-template-columns:repeat(2,1fr);} }
+
 </style>
 <script>
 /* particles.js v2.0.0 embedded inline (offline) - VincentGarreau */
@@ -1197,7 +1226,9 @@ function buildSCFromWorkbook(wb){
         root_code: (r[10]===null||r[10]===undefined)?null:Number(r[10]),
         barcode: (r[11]===null||r[11]===undefined)?null:Number(r[11]),
         artdesc: normN(r[12]),
-        cost: (r[14]===null||r[14]===undefined)?0:Number(r[14])
+        cost: (r[14]===null||r[14]===undefined)?0:Number(r[14]),
+        qty: (r[15]===null||r[15]===undefined)?0:Number(r[15]),
+        amount: (r[16]===null||r[16]===undefined)?0:Number(r[16])
       });
     }
     return out;
@@ -1275,7 +1306,9 @@ function buildSCDayFromWorkbook(wb){
         root_code: (r[10]===null||r[10]===undefined)?null:Number(r[10]),
         barcode: (r[11]===null||r[11]===undefined)?null:Number(r[11]),
         artdesc: normN(r[12]),
-        cost: (r[14]===null||r[14]===undefined)?0:Number(r[14])
+        cost: (r[14]===null||r[14]===undefined)?0:Number(r[14]),
+        qty: (r[15]===null||r[15]===undefined)?0:Number(r[15]),
+        amount: (r[16]===null||r[16]===undefined)?0:Number(r[16])
       });
     }
     return out;
@@ -2789,5 +2822,133 @@ window.TOP50_DATA = {"dates": [20260901, 20260902, 20260903, 20260904, 20260905,
   });
 })();
 </script>
+
+<!-- PAGE v20260911-deptmodal-BYDAY (additive modal only; table structure unchanged) -->
+<div id="scDeptModal" role="dialog" aria-modal="true" aria-label="Chi tiet nganh hang BY DAY">
+  <div class="scm-panel">
+    <button class="scm-close" id="scmClose" aria-label="Dong">&times;</button>
+    <div class="scm-kicker" id="scmKicker">DEPT №</div>
+    <div class="scm-title" id="scmTitle">-</div>
+    <div class="scm-sub">Stock Correction BY DAY · chi tiết lý do code 2 / 3 / 6</div>
+    <div class="scm-kpis" id="scmKpis"></div>
+    <div class="scm-card">
+      <h4 id="scmTableTitle">CHI TIẾT DÒNG</h4>
+      <div class="scm-tablewrap"><table class="scm-table">
+        <thead><tr><th>REASON_CODE</th><th>REASON_DESC</th><th>ARTICLE</th><th>ARTDESC</th><th class="num">QTY</th><th class="num">AMOUNT</th></tr></thead>
+        <tbody id="scmBody"></tbody>
+      </table></div>
+    </div>
+  </div>
+</div>
+
+
+<script>
+/* SC DEPT MODAL (BY DAY) v20260911-deptmodal-BYDAY */
+(function(){
+  function escHtml(s){ return String(s===null||s===undefined?'':s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;').replace(/'/g,'&#39;'); }
+  function scmQty(v){
+    if (v===null||v===undefined||isNaN(Number(v))) return '';
+    var n = Number(v);
+    var r = Math.abs(n) < 1 ? Math.round(n*100)/100 : Math.round(n*10)/10;
+    return r.toLocaleString('en-US',{maximumFractionDigits:2});
+  }
+  function scmReasonName(code, d){
+    if (d && d.reasonNames && d.reasonNames[code]) return d.reasonNames[code];
+    return 'CODE ' + code;
+  }
+  function openScDeptModal(deptNo, decsName){
+    var modal = document.getElementById('scDeptModal');
+    if (!modal) return;
+    var d = (typeof scActive === 'function') ? scActive() : window.SC_DATA;
+    var rows = d && d.dayDetail ? d.dayDetail : [];
+    var list = rows.filter(function(r){
+      if (Number(r.dept) !== Number(deptNo)) return false;
+      if (r.reason_code !== 2 && r.reason_code !== 3 && r.reason_code !== 6) return false;
+      var q = Number(r.qty) || 0, a = Number(r.amount) || 0;
+      if (q === 0 && a === 0) return false;
+      return true;
+    });
+    list.sort(function(x, y){
+      if (x.reason_code !== y.reason_code) return x.reason_code - y.reason_code;
+      return (Number(y.amount) || 0) - (Number(x.amount) || 0);
+    });
+    document.getElementById('scmKicker').textContent = 'DEPT № ' + deptNo;
+    document.getElementById('scmTitle').textContent = String(decsName || '');
+    var sums = {2:0, 3:0, 6:0}, counts = {2:0, 3:0, 6:0}, total = 0;
+    list.forEach(function(r){
+      var a = Number(r.amount) || 0;
+      sums[r.reason_code] += a; counts[r.reason_code]++; total += a;
+    });
+    var kpis = '';
+    [2, 3, 6].forEach(function(c){
+      kpis += '<div class="scm-kpi"><div class="k">' + c + ' · ' + escHtml(scmReasonName(c, d)) + '</div>' +
+        '<div class="v">' + fmtVnd(sums[c]) + '</div>' +
+        '<div class="n">' + fmtInt(counts[c]) + ' dòng</div></div>';
+    });
+    kpis += '<div class="scm-kpi total"><div class="k">Tổng 2+3+6</div>' +
+      '<div class="v">' + fmtVnd(total) + '</div>' +
+      '<div class="n">' + fmtInt(list.length) + ' dòng chi tiết</div></div>';
+    document.getElementById('scmKpis').innerHTML = kpis;
+    document.getElementById('scmTableTitle').textContent = 'CHI TIẾT DÒNG (' + fmtInt(list.length) + ')';
+    var body = document.getElementById('scmBody');
+    if (!list.length){
+      body.innerHTML = '<tr><td colspan="6"><div class="scm-empty">Không có dòng chi tiết nào với code 2 / 3 / 6 cho ngành hàng này.</div></td></tr>';
+    } else {
+      var h = '';
+      [2, 3, 6].forEach(function(c){
+        var grp = list.filter(function(r){ return r.reason_code === c; });
+        if (!grp.length) return;
+        grp.forEach(function(r){
+          h += '<tr>' +
+            '<td><span class="scm-badge">' + escHtml(r.reason_code) + '</span></td>' +
+            '<td>' + escHtml(r.reason_desc) + '</td>' +
+            '<td>' + escHtml(r.root_code) + '</td>' +
+            '<td>' + escHtml(r.artdesc) + '</td>' +
+            '<td class="num">' + escHtml(scmQty(r.qty)) + '</td>' +
+            '<td class="num">' + escHtml(fmtVnd(r.amount)) + '</td></tr>';
+        });
+        h += '<tr class="scm-subtotal"><td colspan="5">' + c + ' · ' + escHtml(scmReasonName(c, d)) + ' — TỔNG</td>' +
+          '<td class="num">' + escHtml(fmtVnd(sums[c])) + '</td></tr>';
+      });
+      h += '<tr class="scm-grand"><td colspan="5">Tổng cộng 2 + 3 + 6</td>' +
+        '<td class="num">' + escHtml(fmtVnd(total)) + '</td></tr>';
+      body.innerHTML = h;
+    }
+    modal.classList.add('open');
+    document.body.style.overflow = 'hidden';
+  }
+  function closeScDeptModal(){
+    var modal = document.getElementById('scDeptModal');
+    if (modal) modal.classList.remove('open');
+    document.body.style.overflow = '';
+  }
+  document.getElementById('scmClose').addEventListener('click', closeScDeptModal);
+  document.getElementById('scDeptModal').addEventListener('click', function(e){
+    if (e.target && e.target.id === 'scDeptModal') closeScDeptModal();
+  });
+  document.addEventListener('keydown', function(e){
+    if (e.key === 'Escape') closeScDeptModal();
+  });
+  document.getElementById('scDayTable').addEventListener('click', function(e){
+    var tr = e.target ? e.target.closest('tbody tr') : null;
+    if (!tr || tr.classList.contains('row-total')) return;
+    var tds = tr.querySelectorAll('td');
+    if (!tds.length) return;
+    var deptNo = Number(String(tds[0].textContent).trim());
+    if (!deptNo) return;
+    var d = (typeof scActive === 'function') ? scActive() : window.SC_DATA;
+    var decsName = '';
+    if (d && d.dayRows){
+      for (var i = 0; i < d.dayRows.length; i++){
+        if (Number(d.dayRows[i].dept_no) === deptNo){ decsName = d.dayRows[i].decs || ''; break; }
+      }
+    }
+    openScDeptModal(deptNo, decsName);
+  });
+  window.openScDeptModal = openScDeptModal;
+  window.closeScDeptModal = closeScDeptModal;
+})();
+</script>
+
 </body>
 </html>
