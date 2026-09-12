@@ -766,7 +766,6 @@ var pJS=function(e,a){var t=document.querySelector("#"+e+" > .particles-js-canva
     <div class="tab" data-tab="minus">Minus Stock</div>
     <div class="tab" data-tab="day">Day Receive Detail</div>
     <div class="tab" data-tab="top50">TOP 50 Sales</div>
-    <div class="tab" data-tab="thietbi">Tủ Thiết Bị</div>
   </div>
   <div class="header-right">
     <span class="mid-fest">🌕 Red Moon · 🐇 Jade Rabbit</span>
@@ -783,6 +782,13 @@ var pJS=function(e,a){var t=document.querySelector("#"+e+" > .particles-js-canva
     <div style="flex:1; min-width:0;">
       <div class="mi-t">RPT18 Fillrate Report</div>
       <div class="mi-s">Báo cáo tỷ lệ giao hàng · chi tiết</div>
+    </div>
+  </div>
+  <div class="menu-item" id="menuThietBi" title="Tủ Thiết Bị">
+    <div class="mi-ico" style="background:linear-gradient(180deg,#F0D68A,#C9A227);">🧰</div>
+    <div style="flex:1; min-width:0;">
+      <div class="mi-t">Tủ Thiết Bị</div>
+      <div class="mi-s">Báo cáo tủ thiết bị · GOR</div>
     </div>
   </div>
 </div>
@@ -3189,6 +3195,19 @@ window.TOP50_DATA = {"dates": [20260901, 20260902, 20260903, 20260904, 20260905,
     a.remove();
   });
 })();
+
+(function(){
+  var b = document.getElementById('menuThietBi');
+  if (!b) return;
+  b.addEventListener('click', function(){
+    var panel = document.getElementById('menuPanel');
+    if (panel) panel.classList.remove('open');
+    var mb = document.getElementById('menuBtn');
+    if (mb) mb.classList.remove('active');
+    if (typeof activateTab === 'function') activateTab('thietbi');
+  });
+})();
+</script>
 </script>
 
 <!-- PAGE v20260911-deptmodal-BYDAY (additive modal only; table structure unchanged) -->
