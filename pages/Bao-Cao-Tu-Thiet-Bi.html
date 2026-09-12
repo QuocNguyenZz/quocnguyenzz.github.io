@@ -936,6 +936,7 @@ document.getElementById('btnSave').addEventListener('click', function(){
   noteDiffs.forEach(function(d){ HIST.push({t: now, stt: d.stt, name: d.name, from: d.from, to: d.to, isNote: true}); });
   persist(true);
   fbPush();
+  ghPush();
   renderHist();
   const total = diffs.length + noteDiffs.length;
   toast('<b>✓ Đã lưu</b> lúc ' + fmtTime(savedAt) + '<br>' +
@@ -954,6 +955,63 @@ document.getElementById('btnSave').addEventListener('click', function(){
     }, 600);
   }
 })();
+
+
+/* ---------- GitHub private-repo sync (save qua API, load khi mo trang) ---------- */
+var GH_OWNER = "PASTE_OWNER";
+var GH_REPO = "PASTE_DATA_REPO";
+var GH_FILE = "tb-data.json";
+var GH_TOKEN = "PASTE_FINE_GRAINED_PAT";
+function ghReady(){
+  try {
+    if (!GH_TOKEN || GH_TOKEN.indexOf('PASTE_') === 0) return false;
+    if (!GH_OWNER || GH_OWNER.indexOf('PASTE_') === 0) return false;
+    if (!GH_REPO || GH_REPO.indexOf('PASTE_') === 0) return false;
+    return true;
+  } catch (e) { return false; }
+}
+function ghHeaders(){
+  return {'Accept': 'application/vnd.github+json', 'Authorization': 'Bearer ' + GH_TOKEN};
+}
+function ghApi(path, opts){
+  return fetch('https://api.github.com/repos/' + GH_OWNER + '/' + GH_REPO + '/contents/' + GH_FILE + (path || ''), opts);
+}
+function ghState(){
+  return {app: 'tu-thiet-bi', v: 1, savedAt: savedAt, adj: ADJ, hist: HIST.slice(-500), custom: CUSTOM, notes: NOTES};
+}
+function ghPush(){
+  if (!ghReady()) return;
+  try {
+    ghApi('').then(function(r){ return r.ok ? r.json() : null; }).then(function(meta){
+      const body = {message: 'tu-thiet-bi sync ' + new Date().toISOString(), content: btoa(unescape(encodeURIComponent(JSON.stringify(ghState()))))};
+      if (meta && meta.sha) body.sha = meta.sha;
+      return fetch('https://api.github.com/repos/' + GH_OWNER + '/' + GH_REPO + '/contents/' + GH_FILE, {
+        method: 'PUT', headers: Object.assign({'Content-Type': 'application/json'}, ghHeaders()), body: JSON.stringify(body)
+      });
+    }).catch(function(){});
+  } catch (e) {}
+}
+function ghPull(){
+  if (!ghReady()) return;
+  try {
+    ghApi('').then(function(r){ return r.ok ? r.json() : null; }).then(function(meta){
+      if (!meta || !meta.content) return;
+      const o = JSON.parse(decodeURIComponent(escape(atob(meta.content.replace(/\n/g, '')))));
+      if (!o || o.app !== 'tu-thiet-bi') return;
+      let cur = {};
+      try { cur = JSON.parse(localStorage.getItem(LS_KEY) || '{}'); } catch (e) {}
+      if ((o.savedAt || 0) <= (cur.savedAt || savedAt || 0)) return;
+      if (fbHasUnsaved()) {
+        toast('Có bản mới trên GitHub. Lưu trang này trước để đẩy lên, hoặc tải lại trang để nhận.');
+        return;
+      }
+      try { localStorage.setItem(LS_KEY, JSON.stringify({adj: o.adj || {}, hist: (o.hist || []).slice(-500), savedAt: o.savedAt || Date.now(), custom: o.custom || [], notes: o.notes || {}})); } catch (e) { return; }
+      toast('Đã nhận bản mới từ GitHub, đang tải lại...');
+      setTimeout(function(){ location.reload(); }, 800);
+    }).catch(function(){});
+  } catch (e) {}
+}
+setTimeout(ghPull, 2500);
 
 /* ---------- Lịch sử + Xuất CSV ---------- */
 function renderHist(){
