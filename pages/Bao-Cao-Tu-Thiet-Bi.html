@@ -1063,7 +1063,8 @@ function ghPull(){
     }).catch(function(){});
   } catch (e) {}
 }
-setTimeout(ghPull, 2500);
+if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', function(){ setTimeout(ghPull, 50); });
+else setTimeout(ghPull, 50);
 setTimeout(function(){ if (ghReady()) tbSyncMsg('\\u2601 Cloud: s\\u1eb5n s\\u00e0ng'); }, 1000);
 
 /* ---------- Lịch sử + Xuất CSV ---------- */
