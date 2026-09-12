@@ -345,6 +345,9 @@
       <button class="clr" id="btnHist">📜 Lịch sử</button>
       <button class="clr" id="btnAdd">＋ Thêm</button>
       <button class="clr" id="btnCsv">⬇ Xuất CSV</button>
+      <button class="clr" id="btnExportJson" title="Xuất toàn bộ dữ liệu ra file JSON để mang sang máy khác">⤓ Xuất JSON</button>
+      <button class="clr" id="btnImportJson" title="Nhập file JSON từ máy khác (ghi đè dữ liệu hiện tại)">⤒ Nhập JSON</button>
+      <input type="file" id="fileJson" accept=".json,application/json" style="display:none">
       <button class="btn-save" id="btnSave">💾 Lưu</button>
     </div>
     <div class="chips" id="chiptray"></div>
@@ -996,6 +999,60 @@ function stampName(prefix){
   const d = new Date(), p = function(n){ return String(n).padStart(2, '0'); };
   return prefix + '_' + d.getFullYear() + p(d.getMonth() + 1) + p(d.getDate()) + '_' + p(d.getHours()) + p(d.getMinutes()) + '.csv';
 }
+
+/* ---------- Xuat / Nhap JSON lien may ---------- */
+function downloadJSON(name, obj){
+  const txt = JSON.stringify(obj);
+  const blob = new Blob([txt], {type: 'application/json;charset=utf-8'});
+  const a = document.createElement('a');
+  a.href = URL.createObjectURL(blob);
+  a.download = name;
+  document.body.appendChild(a);
+  a.click();
+  setTimeout(function(){ URL.revokeObjectURL(a.href); a.remove(); }, 800);
+}
+document.getElementById('btnExportJson').addEventListener('click', function(){
+  persist(false);
+  downloadJSON(stampName('tu-thiet-bi_data').replace(/\.csv$/, '.json'), {
+    app: 'tu-thiet-bi', v: 1, exportedAt: Date.now(), savedAt: savedAt,
+    adj: ADJ, hist: HIST.slice(-500), custom: CUSTOM, notes: NOTES
+  });
+  toast('<b>\u2913 \u0110\u00e3 xu\u1ea5t</b> file JSON. Mang file sang m\u00e1y kia \u2192 Nh\u1eadp JSON.');
+});
+document.getElementById('btnImportJson').addEventListener('click', function(){
+  document.getElementById('fileJson').click();
+});
+document.getElementById('fileJson').addEventListener('change', function(){
+  const f = this.files && this.files[0];
+  if (!f) return;
+  const rd = new FileReader();
+  rd.onload = function(){
+    try {
+      const o = JSON.parse(rd.result);
+      if (!o || o.app !== 'tu-thiet-bi' || typeof o.adj !== 'object' || !Array.isArray(o.hist)) throw new Error('bad');
+      const cleanAdj = {};
+      Object.keys(o.adj || {}).forEach(function(k){
+        if (isFinite(o.adj[k])) cleanAdj[k] = Number(o.adj[k]);
+      });
+      const cleanCustom = (Array.isArray(o.custom) ? o.custom : []).filter(function(r){
+        return r && isFinite(r.stt) && String(r.name || '').trim() && String(r.unit || '').trim() && isFinite(r.qty);
+      });
+      const cleanNotes = {};
+      Object.keys(o.notes || {}).forEach(function(k){ cleanNotes[k] = String(o.notes[k]); });
+      localStorage.setItem(LS_KEY, JSON.stringify({
+        adj: cleanAdj, hist: (Array.isArray(o.hist) ? o.hist : []).slice(-500),
+        savedAt: o.savedAt || Date.now(), custom: cleanCustom, notes: cleanNotes
+      }));
+      toast('<b>\u2912 \u0110\u00e3 nh\u1eadp</b> xong, \u0111ang t\u1ea3i l\u1ea1i trang...');
+      setTimeout(function(){ location.reload(); }, 700);
+    } catch (e) {
+      toast('<b>L\u1ed7i:</b> file JSON kh\u00f4ng h\u1ee3p l\u1ec7 (c\u1ea7n file Xu\u1ea5t JSON t\u1eeb trang n\u00e0y).');
+    }
+    this.value = '';
+  };
+  rd.readAsText(f);
+});
+
 document.getElementById('btnCsv').addEventListener('click', function(){
   const rows = [['STT', 'Ten dung cu', 'DVT', 'So luong hien tai', 'So luong goc', 'Da dieu chinh', 'Ghi chu']];
   ALL.forEach(function(r){
