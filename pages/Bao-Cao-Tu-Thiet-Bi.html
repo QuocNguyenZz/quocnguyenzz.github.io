@@ -935,6 +935,7 @@ document.getElementById('btnSave').addEventListener('click', function(){
   const noteDiffs = diffNotes(SAVED_NOTES, NOTES);
   noteDiffs.forEach(function(d){ HIST.push({t: now, stt: d.stt, name: d.name, from: d.from, to: d.to, isNote: true}); });
   persist(true);
+  fbPush();
   renderHist();
   const total = diffs.length + noteDiffs.length;
   toast('<b>✓ Đã lưu</b> lúc ' + fmtTime(savedAt) + '<br>' +
@@ -1052,6 +1053,56 @@ document.getElementById('fileJson').addEventListener('change', function(){
   };
   rd.readAsText(f);
 });
+
+
+/* ---------- Firebase Realtime Sync (can may khac) ---------- */
+var FB_CONFIG = {
+  apiKey: "PASTE_API_KEY",
+  authDomain: "PASTE_PROJECT.firebaseapp.com",
+  databaseURL: "https://PASTE_PROJECT-default-rtdb.firebaseio.com",
+  projectId: "PASTE_PROJECT"
+};
+var FB_PATH = 'tuThietBi/state';
+var fbDb = null;
+function fbReady(){
+  try {
+    if (typeof firebase === 'undefined' || !FB_CONFIG.apiKey || FB_CONFIG.apiKey.indexOf('PASTE_') === 0) return false;
+    if (!fbDb) fbDb = firebase.initializeApp(FB_CONFIG).database();
+    return true;
+  } catch (e) { return false; }
+}
+function fbHasUnsaved(){
+  try {
+    return diffAdj(SAVED_ADJ, ADJ).length + diffNotes(SAVED_NOTES, NOTES).length > 0 || !!histDirty;
+  } catch (e) { return false; }
+}
+function fbPush(){
+  if (!fbReady()) return;
+  try {
+    fbDb.ref(FB_PATH).set({app: 'tu-thiet-bi', v: 1, savedAt: savedAt,
+      adj: ADJ, hist: HIST.slice(-500), custom: CUSTOM, notes: NOTES, by: location.hostname || 'pc'});
+  } catch (e) {}
+}
+function fbPullSubscribe(){
+  if (!fbReady()) return;
+  try {
+    fbDb.ref(FB_PATH).on('value', function(snap){
+      const o = snap.val();
+      if (!o || o.app !== 'tu-thiet-bi') return;
+      let cur = {};
+      try { cur = JSON.parse(localStorage.getItem(LS_KEY) || '{}'); } catch (e) {}
+      if ((o.savedAt || 0) <= (cur.savedAt || savedAt || 0)) return;
+      if (fbHasUnsaved()){
+        toast('<b>\u2601 C\u00f3 b\u1ea3n m\u1edbi</b> t\u1eeb m\u00e1y kh\u00e1c (cloud). L\u01b0u trang n\u00e0y tr\u01b0\u1edbc \u0111\u1ec3 \u0111\u1ea9y l\u00ean, ho\u1eb7c t\u1ea3i l\u1ea1i trang \u0111\u1ec3 nh\u1eadn.');
+        return;
+      }
+      try { localStorage.setItem(LS_KEY, JSON.stringify({adj: o.adj || {}, hist: (o.hist || []).slice(-500), savedAt: o.savedAt || Date.now(), custom: o.custom || [], notes: o.notes || {}})); } catch (e) { return; }
+      toast('<b>\u2601 \u0110\u00e3 nh\u1eadn</b> b\u1ea3n m\u1edbi t\u1eeb cloud, \u0111ang t\u1ea3i l\u1ea1i...');
+      setTimeout(function(){ location.reload(); }, 800);
+    });
+  } catch (e) {}
+}
+setTimeout(fbPullSubscribe, 1500);
 
 document.getElementById('btnCsv').addEventListener('click', function(){
   const rows = [['STT', 'Ten dung cu', 'DVT', 'So luong hien tai', 'So luong goc', 'Da dieu chinh', 'Ghi chu']];
@@ -1268,6 +1319,10 @@ document.getElementById('histList').addEventListener('click', function(e){
   else tbToday();
 })();
 </script>
+
+
+<script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-app-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-database-compat.js"></script>
 
 </body>
 </html>
