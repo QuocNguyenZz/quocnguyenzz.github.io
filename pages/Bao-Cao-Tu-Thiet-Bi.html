@@ -1016,6 +1016,17 @@ function ghPush(){
     const stateObj = ghState();
     tbSyncMsg('\u2601 Cloud: \u0111ang \u0111\u1ea9y l\u00ean...');
     ghApi('').then(function(r){ return r.ok ? r.json() : null; }).then(function(meta){
+      try {
+        if (meta && meta.content) {
+          const ro = JSON.parse(decodeURIComponent(escape(atob(meta.content.replace(/\n/g, '')))));
+          const rTot = Object.keys(ro.adj || {}).length + (ro.hist || []).length + (ro.custom || []).length + Object.keys(ro.notes || {}).length;
+          const lTot = Object.keys(stateObj.adj || {}).length + (stateObj.hist || []).length + (stateObj.custom || []).length + Object.keys(stateObj.notes || {}).length;
+          if (lTot === 0 && rTot > 0) {
+            tbSyncMsg('\u2601 Cloud: trang n\u00e0y tr\u1ed1ng, KH\u00d4NG \u0111\u1ea9y \u0111\u00e8 \u0111\u1ec3 gi\u1eef cloud.');
+            return {ok: true, skipped: true};
+          }
+        }
+      } catch (e) {}
       return ghPut(stateObj, meta && meta.sha).then(function(pr){
         if (pr.ok) return pr;
         if (pr.status === 409) {
@@ -1026,6 +1037,7 @@ function ghPush(){
         return pr;
       });
     }).then(function(pr){
+      if (pr && pr.skipped) return;
       if (pr && pr.ok) tbSyncMsg('\u2601 Cloud: \u0111\u00e3 \u0111\u1ea9y l\u00ean ' + tbTime());
       else tbSyncMsg('\u2601 Cloud: \u0111\u1ea9y l\u00ean L\u1ed6I (' + ((pr && pr.status) || '?') + ')');
     }).catch(function(){ tbSyncMsg('\u2601 Cloud: m\u1ea5t m\u1ea1ng/kh\u00f4ng g\u1ecdi \u0111\u01b0\u1ee3c API'); });
