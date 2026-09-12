@@ -1003,18 +1003,31 @@ function tbSyncMsg(txt){
 function tbTime(){
   try { const d = new Date(), p = function(n){ return String(n).padStart(2, '0'); }; return p(d.getHours()) + ':' + p(d.getMinutes()); } catch (e) { return ''; }
 }
+function ghPut(stateObj, sha){
+  const body = {message: 'tu-thiet-bi sync ' + new Date().toISOString(), content: btoa(unescape(encodeURIComponent(JSON.stringify(stateObj))))};
+  if (sha) body.sha = sha;
+  return fetch('https://api.github.com/repos/' + GH_OWNER + '/' + GH_REPO + '/contents/' + GH_FILE, {
+    method: 'PUT', headers: Object.assign({'Content-Type': 'application/json'}, ghHeaders()), body: JSON.stringify(body)
+  });
+}
 function ghPush(){
   if (!ghReady()){ tbSyncMsg('\u2601 Cloud: ch\u01b0a c\u1ea5u h\u00ecnh'); return; }
   try {
+    const stateObj = ghState();
+    tbSyncMsg('\u2601 Cloud: \u0111ang \u0111\u1ea9y l\u00ean...');
     ghApi('').then(function(r){ return r.ok ? r.json() : null; }).then(function(meta){
-      const body = {message: 'tu-thiet-bi sync ' + new Date().toISOString(), content: btoa(unescape(encodeURIComponent(JSON.stringify(ghState()))))};
-      if (meta && meta.sha) body.sha = meta.sha;
-      return fetch('https://api.github.com/repos/' + GH_OWNER + '/' + GH_REPO + '/contents/' + GH_FILE, {
-        method: 'PUT', headers: Object.assign({'Content-Type': 'application/json'}, ghHeaders()), body: JSON.stringify(body)
-      }).then(function(pr){
-        if (pr.ok) tbSyncMsg('\u2601 Cloud: \u0111\u00e3 \u0111\u1ea9y l\u00ean ' + tbTime());
-        else tbSyncMsg('\u2601 Cloud: \u0111\u1ea9y l\u00ean L\u1ed6I (' + pr.status + ')');
+      return ghPut(stateObj, meta && meta.sha).then(function(pr){
+        if (pr.ok) return pr;
+        if (pr.status === 409) {
+          return ghApi('').then(function(r2){ return r2.ok ? r2.json() : null; }).then(function(meta2){
+            return ghPut(stateObj, meta2 && meta2.sha);
+          });
+        }
+        return pr;
       });
+    }).then(function(pr){
+      if (pr && pr.ok) tbSyncMsg('\u2601 Cloud: \u0111\u00e3 \u0111\u1ea9y l\u00ean ' + tbTime());
+      else tbSyncMsg('\u2601 Cloud: \u0111\u1ea9y l\u00ean L\u1ed6I (' + ((pr && pr.status) || '?') + ')');
     }).catch(function(){ tbSyncMsg('\u2601 Cloud: m\u1ea5t m\u1ea1ng/kh\u00f4ng g\u1ecdi \u0111\u01b0\u1ee3c API'); });
   } catch (e) {}
 }
