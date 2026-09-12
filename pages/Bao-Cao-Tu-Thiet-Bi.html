@@ -321,7 +321,7 @@
       <div class="brand-tag"><b>◈</b> &nbsp;Kho dụng cụ</div>
     </div>
     <div class="header-right">
-      <span class="chip">📅 Cập nhật&nbsp;<b>31-Aug-26</b></span>
+      <span class="chip">📅 Cập nhật&nbsp;<b id="tbToday">--</b></span>
       <span class="chip">🗄️ <b>Tủ thiết bị GOR</b></span>
     </div>
   </div>
@@ -395,7 +395,7 @@
   </div>
 
   <footer>
-    <span>Nguồn: <b>File tổng hợp Dụng Cụ _ Thiết Bị.xlsx</b> · Sheet1 · Cập nhật 31/08/2026 &nbsp;·&nbsp; GOR</span>
+    <span>Nguồn: <b>File tổng hợp Dụng Cụ _ Thiết Bị.xlsx</b> · Sheet1 · Cập nhật <b id="tbTodayFoot">--</b> &nbsp;·&nbsp; GOR</span>
     <span class="chip"><b>GOR</b>&nbsp;· TỦ THIẾT BỊ</span>
   </footer>
 </div>
@@ -1190,6 +1190,25 @@ document.getElementById('histList').addEventListener('click', function(e){
   backdrop.addEventListener('click', closeOverlay);
   document.addEventListener('keydown', function(e){ if (e.key === 'Escape') closeOverlay(); });
   window.tubeOpenDetail = openDetail;
+})();
+</script>
+
+
+<script>
+(function(){
+  function tbToday(){
+    try {
+      var d = new Date();
+      var MON = ['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'];
+      var p2 = function(n){ return (n < 10 ? '0' : '') + n; };
+      var chip = p2(d.getDate()) + '-' + MON[d.getMonth()] + '-' + String(d.getFullYear()).slice(2);
+      var foot = p2(d.getDate()) + '/' + p2(d.getMonth()+1) + '/' + d.getFullYear();
+      var a = document.getElementById('tbToday'); if (a) a.textContent = chip;
+      var b = document.getElementById('tbTodayFoot'); if (b) b.textContent = foot;
+    } catch(e){}
+  }
+  if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', tbToday);
+  else tbToday();
 })();
 </script>
 
