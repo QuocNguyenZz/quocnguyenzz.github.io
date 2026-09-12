@@ -351,6 +351,7 @@
       <button class="btn-save" id="btnSave">💾 Lưu</button>
     </div>
     <div class="chips" id="chiptray"></div>
+    <div class="chips"><span class="chip" id="tbSync">☁ Cloud: chưa cấu hình</span></div>
     <div class="bar" id="bar"></div>
     <div class="tbl">
       <table id="mainTable">
@@ -936,6 +937,7 @@ document.getElementById('btnSave').addEventListener('click', function(){
   noteDiffs.forEach(function(d){ HIST.push({t: now, stt: d.stt, name: d.name, from: d.from, to: d.to, isNote: true}); });
   persist(true);
   fbPush();
+  if (!ghToken()) ghAskToken();
   ghPush();
   renderHist();
   const total = diffs.length + noteDiffs.length;
@@ -958,20 +960,39 @@ document.getElementById('btnSave').addEventListener('click', function(){
 
 
 /* ---------- GitHub private-repo sync (save qua API, load khi mo trang) ---------- */
-var GH_OWNER = "PASTE_OWNER";
-var GH_REPO = "PASTE_DATA_REPO";
+var GH_OWNER = "QuocNguyenZz";
+var GH_REPO = "fsd50-tb-data";
 var GH_FILE = "tb-data.json";
-var GH_TOKEN = "PASTE_FINE_GRAINED_PAT";
+var GH_TOKEN = "";
+function ghToken(){
+  try {
+    if (GH_TOKEN && GH_TOKEN.indexOf('PASTE_') !== 0) return GH_TOKEN;
+    var s = null;
+    try { s = localStorage.getItem('tuThietBi_pat'); } catch (e) {}
+    return s || '';
+  } catch (e) { return ''; }
+}
 function ghReady(){
   try {
-    if (!GH_TOKEN || GH_TOKEN.indexOf('PASTE_') === 0) return false;
+    if (!ghToken()) return false;
     if (!GH_OWNER || GH_OWNER.indexOf('PASTE_') === 0) return false;
     if (!GH_REPO || GH_REPO.indexOf('PASTE_') === 0) return false;
     return true;
   } catch (e) { return false; }
 }
 function ghHeaders(){
-  return {'Accept': 'application/vnd.github+json', 'Authorization': 'Bearer ' + GH_TOKEN};
+  return {'Accept': 'application/vnd.github+json', 'Authorization': 'Bearer ' + ghToken()};
+}
+function ghAskToken(){
+  try {
+    var v = window.prompt('Nh\u1eadp GitHub sync token (1 l\u1ea7n duy nh\u1ea5t tr\u00ean m\u00e1y n\u00e0y, l\u01b0u trong tr\u00ecnh duy\u1ec7t):', '');
+    if (v && v.trim()){
+      try { localStorage.setItem('tuThietBi_pat', v.trim()); } catch (e) {}
+      tbSyncMsg('\u2601 Cloud: \u0111\u00e3 l\u01b0u token, b\u1ea5m L\u01b0u \u0111\u1ec3 \u0111\u1ed3ng b\u1ed9.');
+      return true;
+    }
+  } catch (e) {}
+  return false;
 }
 function ghApi(path, opts){
   return fetch('https://api.github.com/repos/' + GH_OWNER + '/' + GH_REPO + '/contents/' + GH_FILE + (path || ''), opts);
@@ -979,16 +1000,25 @@ function ghApi(path, opts){
 function ghState(){
   return {app: 'tu-thiet-bi', v: 1, savedAt: savedAt, adj: ADJ, hist: HIST.slice(-500), custom: CUSTOM, notes: NOTES};
 }
+function tbSyncMsg(txt){
+  try { var el = document.getElementById('tbSync'); if (el) el.textContent = txt; } catch (e) {}
+}
+function tbTime(){
+  try { const d = new Date(), p = function(n){ return String(n).padStart(2, '0'); }; return p(d.getHours()) + ':' + p(d.getMinutes()); } catch (e) { return ''; }
+}
 function ghPush(){
-  if (!ghReady()) return;
+  if (!ghReady()){ tbSyncMsg('\u2601 Cloud: ch\u01b0a c\u1ea5u h\u00ecnh'); return; }
   try {
     ghApi('').then(function(r){ return r.ok ? r.json() : null; }).then(function(meta){
       const body = {message: 'tu-thiet-bi sync ' + new Date().toISOString(), content: btoa(unescape(encodeURIComponent(JSON.stringify(ghState()))))};
       if (meta && meta.sha) body.sha = meta.sha;
       return fetch('https://api.github.com/repos/' + GH_OWNER + '/' + GH_REPO + '/contents/' + GH_FILE, {
         method: 'PUT', headers: Object.assign({'Content-Type': 'application/json'}, ghHeaders()), body: JSON.stringify(body)
+      }).then(function(pr){
+        if (pr.ok) tbSyncMsg('\u2601 Cloud: \u0111\u00e3 \u0111\u1ea9y l\u00ean ' + tbTime());
+        else tbSyncMsg('\u2601 Cloud: \u0111\u1ea9y l\u00ean L\u1ed6I (' + pr.status + ')');
       });
-    }).catch(function(){});
+    }).catch(function(){ tbSyncMsg('\u2601 Cloud: m\u1ea5t m\u1ea1ng/kh\u00f4ng g\u1ecdi \u0111\u01b0\u1ee3c API'); });
   } catch (e) {}
 }
 function ghPull(){
@@ -1012,6 +1042,7 @@ function ghPull(){
   } catch (e) {}
 }
 setTimeout(ghPull, 2500);
+setTimeout(function(){ if (ghReady()) tbSyncMsg('\\u2601 Cloud: s\\u1eb5n s\\u00e0ng'); }, 1000);
 
 /* ---------- Lịch sử + Xuất CSV ---------- */
 function renderHist(){
@@ -1155,6 +1186,7 @@ function fbPullSubscribe(){
         return;
       }
       try { localStorage.setItem(LS_KEY, JSON.stringify({adj: o.adj || {}, hist: (o.hist || []).slice(-500), savedAt: o.savedAt || Date.now(), custom: o.custom || [], notes: o.notes || {}})); } catch (e) { return; }
+      tbSyncMsg('\u2601 Cloud: \u0111\u00e3 nh\u1eadn b\u1ea3n m\u1edbi');
       toast('<b>\u2601 \u0110\u00e3 nh\u1eadn</b> b\u1ea3n m\u1edbi t\u1eeb cloud, \u0111ang t\u1ea3i l\u1ea1i...');
       setTimeout(function(){ location.reload(); }, 800);
     });
