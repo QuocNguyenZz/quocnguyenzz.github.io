@@ -1069,7 +1069,7 @@ function ghPull(){
 }
 if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', function(){ setTimeout(ghPull, 50); });
 else setTimeout(ghPull, 50);
-setInterval(function(){ try { ghPull(); } catch (e) {} }, 60000);
+setInterval(function(){ try { ghPull(); } catch (e) {} }, 5000);
 setTimeout(function(){ if (ghReady()) tbSyncMsg('\\u2601 Cloud: s\\u1eb5n s\\u00e0ng'); }, 1000);
 
 /* ---------- Lịch sử + Xuất CSV ---------- */
