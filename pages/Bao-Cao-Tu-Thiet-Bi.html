@@ -1102,7 +1102,6 @@ function downloadJSON(name, obj){
   setTimeout(function(){ URL.revokeObjectURL(a.href); a.remove(); }, 800);
 }
 document.getElementById('btnExportJson').addEventListener('click', function(){
-  persist(false);
   downloadJSON(stampName('tu-thiet-bi_data').replace(/\.csv$/, '.json'), {
     app: 'tu-thiet-bi', v: 1, exportedAt: Date.now(), savedAt: savedAt,
     adj: ADJ, hist: HIST.slice(-500), custom: CUSTOM, notes: NOTES
