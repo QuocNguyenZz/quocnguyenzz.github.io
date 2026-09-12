@@ -3204,7 +3204,13 @@ window.TOP50_DATA = {"dates": [20260901, 20260902, 20260903, 20260904, 20260905,
     if (panel) panel.classList.remove('open');
     var mb = document.getElementById('menuBtn');
     if (mb) mb.classList.remove('active');
-    if (typeof activateTab === 'function') activateTab('thietbi');
+    var a = document.createElement('a');
+    a.href = encodeURI('Bao-Cao-Tu-Thiet-Bi.html');
+    a.target = '_blank';
+    a.rel = 'noopener';
+    document.body.appendChild(a);
+    a.click();
+    a.remove();
   });
 })();
 </script>
