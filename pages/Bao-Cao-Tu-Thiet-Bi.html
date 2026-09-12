@@ -310,7 +310,7 @@
 <header>
   <div class="header-inner">
     <div class="header-left">
-      <div class="brand">
+      <div class="brand" id="tbBrandGo" title="V\u1ec1 trang ch\u00ednh FSD50" role="link" tabindex="0" style="cursor:pointer;">
         <div class="seal">GOR</div>
         <div class="brand-text">
           <div class="brand-name">Tủ Thiết Bị <span class="sep">·</span> Dụng Cụ &amp; Thiết Bị</div>
@@ -1372,6 +1372,17 @@ document.getElementById('histList').addEventListener('click', function(e){
 
 <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-app-compat.js"></script>
 <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-database-compat.js"></script>
+
+
+<script>
+(function(){
+  var bg = document.getElementById('tbBrandGo');
+  if (!bg) return;
+  function go(){ window.location.href = 'Day Receive Detail Report.html'; }
+  bg.addEventListener('click', go);
+  bg.addEventListener('keydown', function(e){ if (e.key === 'Enter' || e.key === ' '){ e.preventDefault(); go(); } });
+})();
+</script>
 
 </body>
 </html>
