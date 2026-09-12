@@ -714,6 +714,40 @@ table.data tbody tr.sc-nodata:hover{opacity:.75;}
     #pageThietBi html{scroll-behavior:auto}
   }
 
+
+/* v20260912-mobcard: modal tables become stacked cards on phones */
+@media (max-width:640px){
+  #scDeptModal{padding:12px 8px;}
+  #scDeptModal .scm-panel{padding:16px 12px 14px;}
+  #scDeptModal table.scm-table thead{display:none;}
+  #scDeptModal table.scm-table, #scDeptModal table.scm-table tbody{display:block; width:100%;}
+  #scDeptModal table.scm-table tbody tr{display:block; border:1px solid #EDEDED; border-radius:10px; margin-bottom:8px; padding:4px 2px;}
+  #scDeptModal table.scm-table tbody tr.scm-subtotal, #scDeptModal table.scm-table tbody tr.scm-grand{display:flex; justify-content:space-between; align-items:center;}
+  #scDeptModal table.scm-table td{display:flex; justify-content:space-between; align-items:center; gap:10px; border:none; padding:5px 10px; text-align:left !important; font-size:12px;}
+  #scDeptModal table.scm-table td::before{content:attr(data-lb); font-size:10px; color:#999; text-transform:uppercase; letter-spacing:.06em; flex-shrink:0;}
+  #scDeptModal table.scm-table td:nth-child(1)::before{content:'CODE';}
+  #scDeptModal table.scm-table td:nth-child(2)::before{content:'LÝ DO';}
+  #scDeptModal table.scm-table td:nth-child(3)::before{content:'ARTICLE';}
+  #scDeptModal table.scm-table td:nth-child(4)::before{content:'TÊN HÀNG';}
+  #scDeptModal table.scm-table td:nth-child(5)::before{content:'SL';}
+  #scDeptModal table.scm-table td:nth-child(6)::before{content:'TIỀN';}
+  #scDeptModal table.scm-table tr.scm-subtotal td, #scDeptModal table.scm-table tr.scm-grand td{display:block; border:none;}
+  #scDeptModal table.scm-table tr.scm-subtotal td::before, #scDeptModal table.scm-table tr.scm-grand td::before{content:'';}
+  #scDeptModal .scm-tablewrap{max-height:52vh;}
+  #minusArtModal{padding:12px 8px;}
+  #minusArtModal .mam-panel{padding:16px 12px 14px;}
+  #minusArtModal table.mam-table thead{display:none;}
+  #minusArtModal table.mam-table, #minusArtModal table.mam-table tbody{display:block; width:100%;}
+  #minusArtModal table.mam-table tbody tr{display:block; border:1px solid #EDEDED; border-radius:10px; margin-bottom:8px; padding:4px 2px;}
+  #minusArtModal table.mam-table td{display:flex; justify-content:space-between; align-items:center; gap:10px; border:none; padding:5px 10px; text-align:left !important; font-size:12px;}
+  #minusArtModal table.mam-table td:nth-child(1)::before{content:'MÃ'; font-size:10px; color:#999; text-transform:uppercase; flex-shrink:0;}
+  #minusArtModal table.mam-table td:nth-child(2)::before{content:'TÊN HÀNG'; font-size:10px; color:#999; text-transform:uppercase; flex-shrink:0;}
+  #minusArtModal table.mam-table td:nth-child(3)::before{content:'SL'; font-size:10px; color:#999; text-transform:uppercase; flex-shrink:0;}
+  #minusArtModal table.mam-table td:nth-child(4)::before{content:'TIỀN'; font-size:10px; color:#999; text-transform:uppercase; flex-shrink:0;}
+  #minusArtModal table.mam-table tr.mam-grand td{display:block; border:none;}
+  #minusArtModal table.mam-table tr.mam-grand td::before{content:'';}
+  #minusArtModal .mam-tablewrap{max-height:52vh;}
+}
 </style>
 <script>
 /* particles.js v2.0.0 embedded inline (offline) - VincentGarreau */
