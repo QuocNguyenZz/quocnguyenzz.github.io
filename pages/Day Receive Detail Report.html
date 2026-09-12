@@ -1740,6 +1740,24 @@ function buildSCDayFromWorkbook(wb){
   }
   var dayPivot = dayHasCols ? parseSumPivot(3, 4, 50) : {cols: [], rows: []};
 
+  try {
+    var deptMaster = {}, dmA = aoaN('Department');
+    for (var mi=1;mi<dmA.length;mi++){
+      var mr = dmA[mi] || [];
+      if (mr[0]===null||mr[0]===undefined||mr[0]==='') continue;
+      var mk = Number(mr[0]);
+      if (isNaN(mk) || deptMaster[mk]) continue;
+      deptMaster[mk] = {dept_name: normN(mr[1]), decs: normN(mr[2]).replace(/\s+/g,' ')};
+    }
+    dayPivot.rows.forEach(function(dr){
+      if (dr.dept_no===null||dr.dept_no===undefined) return;
+      var mm = deptMaster[Number(dr.dept_no)];
+      if (!mm) return;
+      if (!dr.dept_name) dr.dept_name = mm.dept_name;
+      if (!dr.decs) dr.decs = mm.decs;
+    });
+  } catch(e){}
+
   function parseDetail(a){
     var out = [];
     for (var i=1;i<a.length;i++){
