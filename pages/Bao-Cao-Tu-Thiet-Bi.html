@@ -127,6 +127,12 @@
   .tag.kho{background:rgba(64,120,180,.16);color:#8FC1E9;border:1px solid rgba(64,120,180,.5)}
   .tag.new{background:rgba(44,107,63,.16);color:#7BD89C;border:1px solid rgba(44,107,63,.5);margin-left:6px}
   .row-del{display:inline-flex;margin-left:6px;vertical-align:-7px}
+  /* Select doi Nhom / sua DVT tung dong (giong tone tag) */
+  .cat-sel,.unit-sel{background:#0A0A0E;border:1px solid rgba(240,214,138,.3);border-radius:999px;
+    padding:3px 8px;font-size:11px;font-weight:600;letter-spacing:.3px;color:var(--text);
+    font-family:inherit;outline:0;cursor:pointer;max-width:150px}
+  .cat-sel:focus,.unit-sel:focus{border-color:var(--gold-2)}
+  .cat-sel.edited,.unit-sel.edited{border-color:var(--gold-1);box-shadow:0 0 0 1px rgba(240,214,138,.4)}
 
   /* ---------- Form thêm thiết bị ---------- */
   .form{display:flex;flex-direction:column;gap:12px}
@@ -467,6 +473,24 @@ const HIST = []; // [{t, stt, name, from, to} | {t, reset:true, count}]
 const CUSTOM = []; // thiết bị tự thêm [{stt, name, unit, qty, note, custom:true}]
 const NOTES = {}; // stt -> ghi chú đang gõ (chỉ lưu chênh lệch với gốc)
 const ORIG_NOTES = {}; // stt -> ghi chú gốc (Excel / lúc tạo mới)
+const CATLIST = [{key:'tb', label:'THIẾT BỊ'}, {key:'kho', label:'KHO VẬN'}, {key:'vpp', label:'VĂN PHÒNG PHẨM'}];
+const CATS = {}; // stt -> key nhóm đã chọn (chỉ lưu chênh lệch với auto catOf)
+const ORIG_CATS = {}; // stt -> key nhóm auto ban đầu
+let SAVED_CATS = {};
+const UNITS = {}; // stt -> ĐVT đã sửa (chỉ lưu chênh lệch với gốc)
+const ORIG_UNITS = {}; // stt -> ĐVT gốc (Excel / lúc tạo mới)
+let SAVED_UNITS = {};
+function catByKey(k){ return CATLIST.filter(function(c){ return c.key === k; })[0] || CATLIST[2]; }
+function effCatOf(stt, map){
+  if (map[stt] !== undefined) return catByKey(map[stt]);
+  if (ORIG_CATS[stt] !== undefined) return catByKey(ORIG_CATS[stt]);
+  return CATLIST[2];
+}
+function effUnitOf(stt, map){
+  if (map[stt] !== undefined) return map[stt];
+  if (ORIG_UNITS[stt] !== undefined) return ORIG_UNITS[stt];
+  return '';
+}
 let SAVED_NOTES = {}; // ảnh ghi chú đã chốt lần Lưu trước
 // Mô hình chốt khi Lưu: +/− chỉ đổi số tạm (ADJ); bấm Lưu mới ghi lịch sử + lưu cứng.
 // Lưu trữ: SL đã chốt + lịch sử + thời điểm lưu (giữ lại khi tải lại trang)
@@ -504,6 +528,21 @@ try {
   });
   SAVED_NOTES = {};
   Object.keys(NOTES).forEach(function(k){ SAVED_NOTES[k] = NOTES[k]; });
+  // Chụp nhóm/ĐVT gốc + áp dụng lựa chọn đã chốt
+  ALL.forEach(function(r){
+    ORIG_CATS[r.stt] = catOf(r.name).key;
+    ORIG_UNITS[r.stt] = r.unit;
+  });
+  if (saved.cats) Object.keys(saved.cats).forEach(function(k){
+    if (saved.cats[k] !== ORIG_CATS[k]) CATS[k] = saved.cats[k];
+  });
+  if (saved.units) Object.keys(saved.units).forEach(function(k){
+    if (saved.units[k] !== ORIG_UNITS[k]) UNITS[k] = saved.units[k];
+  });
+  SAVED_CATS = {};
+  Object.keys(CATS).forEach(function(k){ SAVED_CATS[k] = CATS[k]; });
+  SAVED_UNITS = {};
+  Object.keys(UNITS).forEach(function(k){ SAVED_UNITS[k] = UNITS[k]; });
 } catch (e) {}
 // So sánh SL đang chỉnh với SL đã chốt -> danh sách thay đổi
 function diffAdj(oldA, newA){
