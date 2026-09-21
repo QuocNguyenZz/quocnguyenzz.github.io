@@ -133,6 +133,19 @@
     font-family:inherit;outline:0;cursor:pointer;max-width:150px}
   .cat-sel:focus,.unit-sel:focus{border-color:var(--gold-2)}
   .cat-sel.edited,.unit-sel.edited{border-color:var(--gold-1);box-shadow:0 0 0 1px rgba(240,214,138,.4)}
+  /* Màu tên + select theo nhóm */
+  .ano-btn.cat-tb{color:#7BD89C;border-bottom-color:rgba(123,216,156,.5)}
+  .ano-btn.cat-kho{color:#8FC1E9;border-bottom-color:rgba(143,193,233,.5)}
+  .ano-btn.cat-vpp{color:var(--gold-1)}
+  .cat-sel.cat-tb{color:#7BD89C}
+  .cat-sel.cat-kho{color:#8FC1E9}
+  .cat-sel.cat-vpp{color:var(--gold-1)}
+  #fCat{background:#0A0A0E;border:1.5px solid var(--line);border-radius:10px;padding:11px 14px;
+    font-size:14px;font-weight:700;letter-spacing:.3px;color:var(--text);outline:0;font-family:inherit;cursor:pointer}
+  #fCat:focus{border-color:var(--gold-2)}
+  #fCat.cat-tb{color:#7BD89C}
+  #fCat.cat-kho{color:#8FC1E9}
+  #fCat.cat-vpp{color:var(--gold-1)}
 
   /* ---------- Form thêm thiết bị ---------- */
   .form{display:flex;flex-direction:column;gap:12px}
@@ -418,6 +431,7 @@
     <div class="d-body">
       <div class="form">
         <label>Tên dụng cụ / thiết bị *<input id="fName" type="text" maxlength="120" placeholder="VD: Bút lông bảng"></label>
+        <label>Nhóm *<select id="fCat" aria-label="Nhóm thiết bị"><option value="tb">THIẾT BỊ</option><option value="kho">KHO VẬN</option><option value="vpp" selected>VĂN PHÒNG PHẨM</option></select></label>
         <label>Đơn vị tính *<input id="fUnit" type="text" list="unitList" maxlength="20" placeholder="VD: Cái"><datalist id="unitList"></datalist></label>
         <label>Số lượng *<input id="fQty" type="number" min="0" step="any" value="1"></label>
         <label>Ghi chú<input id="fNote" type="text" maxlength="200" placeholder="Không bắt buộc"></label>
@@ -589,8 +603,12 @@ function persist(stamp){
     Object.keys(ADJ).forEach(function(k){ SAVED_ADJ[k] = ADJ[k]; });
     SAVED_NOTES = {};
     Object.keys(NOTES).forEach(function(k){ SAVED_NOTES[k] = NOTES[k]; });
+    SAVED_CATS = {};
+    Object.keys(CATS).forEach(function(k){ SAVED_CATS[k] = CATS[k]; });
+    SAVED_UNITS = {};
+    Object.keys(UNITS).forEach(function(k){ SAVED_UNITS[k] = UNITS[k]; });
     histDirty = false;
-    localStorage.setItem(LS_KEY, JSON.stringify({adj: ADJ, hist: HIST.slice(-500), savedAt: savedAt, custom: CUSTOM, notes: NOTES}));
+    localStorage.setItem(LS_KEY, JSON.stringify({adj: ADJ, hist: HIST.slice(-500), savedAt: savedAt, custom: CUSTOM, notes: NOTES, cats: CATS, units: UNITS}));
   } catch (e) {}
   updateSaveState();
 }
@@ -615,7 +633,8 @@ function toast(html){
 function updateSaveState(){
   const el = document.getElementById('saveState');
   if (!el) return;
-  const n = diffAdj(SAVED_ADJ, ADJ).length + diffNotes(SAVED_NOTES, NOTES).length;
+  const n = diffAdj(SAVED_ADJ, ADJ).length + diffNotes(SAVED_NOTES, NOTES).length +
+    diffCats(SAVED_CATS, CATS).length + diffUnits(SAVED_UNITS, UNITS).length;
   if (n || histDirty){
     el.innerHTML = '';
   } else if (savedAt){
@@ -624,8 +643,43 @@ function updateSaveState(){
     el.innerHTML = 'Chưa có thay đổi';
   }
 }
-function stepOf(r){ return (String(r.unit).toLowerCase() === 'bao') ? 0.5 : 1; }
+function stepOf(r){ return (String(effUnit(r)).toLowerCase() === 'bao') ? 0.5 : 1; }
 function effQty(r){ return (ADJ[r.stt] !== undefined) ? ADJ[r.stt] : r.qty; }
+function effCat(r){ return effCatOf(r.stt, CATS); }
+function effUnit(r){ return effUnitOf(r.stt, UNITS); }
+// So sánh nhóm/ĐVT đang chọn với đã chốt
+function diffCats(oldM, newM){
+  const out = [], keys = {};
+  Object.keys(oldM || {}).forEach(function(k){ keys[k] = 1; });
+  Object.keys(newM || {}).forEach(function(k){ keys[k] = 1; });
+  Object.keys(CATS).forEach(function(k){ keys[k] = 1; });
+  Object.keys(keys).forEach(function(k){
+    const from = effCatOf(k, oldM || {}).label, to = effCatOf(k, newM || {}).label;
+    if (from !== to){
+      const r = ALL.filter(function(x){ return String(x.stt) === String(k); })[0];
+      if (!r) return;
+      out.push({stt: r.stt, name: r.name, from: from, to: to, isCat: true});
+    }
+  });
+  out.sort(function(x, y){ return x.stt - y.stt; });
+  return out;
+}
+function diffUnits(oldM, newM){
+  const out = [], keys = {};
+  Object.keys(oldM || {}).forEach(function(k){ keys[k] = 1; });
+  Object.keys(newM || {}).forEach(function(k){ keys[k] = 1; });
+  Object.keys(UNITS).forEach(function(k){ keys[k] = 1; });
+  Object.keys(keys).forEach(function(k){
+    const from = effUnitOf(k, oldM || {}), to = effUnitOf(k, newM || {});
+    if (from !== to){
+      const r = ALL.filter(function(x){ return String(x.stt) === String(k); })[0];
+      if (!r) return;
+      out.push({stt: r.stt, name: r.name, from: from, to: to, isUnit: true});
+    }
+  });
+  out.sort(function(x, y){ return x.stt - y.stt; });
+  return out;
+}
 function fmtStep(n){ return (Math.round(n*100)/100).toLocaleString('vi-VN'); }
 function shortQ(s){
   s = String(s == null ? '' : s);
@@ -681,7 +735,7 @@ function esc(s){
 
 function buildChips(){
   const counts = {};
-  ALL.forEach(function(r){ counts[r.unit] = (counts[r.unit] || 0) + 1; });
+  ALL.forEach(function(r){ const u = effUnit(r); counts[u] = (counts[u] || 0) + 1; });
   const units = Object.keys(counts).sort();
   const tray = document.getElementById('chiptray');
   let html = '<span class="chips-label">Đơn vị tính</span>';
@@ -711,8 +765,8 @@ function filter_active(){ return $q.value.trim() !== '' || curUnit !== ''; }
 function runSearch(){
   const q = norm($q.value.trim());
   filtered = ALL.filter(function(r){
-    if (curUnit && r.unit !== curUnit) return false;
-    if (q && !(norm(r.name).includes(q) || norm(r.unit).includes(q) || String(r.stt) === q)) return false;
+    if (curUnit && effUnit(r) !== curUnit) return false;
+    if (q && !(norm(r.name).includes(q) || norm(effUnit(r)).includes(q) || String(r.stt) === q)) return false;
     return true;
   });
   page = 1;
@@ -731,7 +785,7 @@ function render(){
   // KPI (luôn tính trên tập đang lọc, dùng SL sau điều chỉnh)
   const units = new Set(), names = new Set();
   let sumQty = 0;
-  filtered.forEach(function(r){ units.add(r.unit); names.add(norm(r.name)); sumQty += effQty(r); });
+  filtered.forEach(function(r){ units.add(effUnit(r)); names.add(norm(r.name)); sumQty += effQty(r); });
   sumQty = Math.round(sumQty * 100) / 100;
   document.getElementById('kpiLines').textContent = total.toLocaleString('vi-VN');
   document.getElementById('kpiQty').textContent = sumQty.toLocaleString('vi-VN');
@@ -755,23 +809,33 @@ function render(){
 
   // rows
   const slice = filtered.slice(i0, i0 + P);
+  const unitSet = {};
+  ALL.forEach(function(r){ unitSet[effUnit(r)] = 1; });
+  const unitOpts = Object.keys(unitSet).sort();
   if (!slice.length){
     tbody.innerHTML = '<tr><td colspan="6"><div class="empty"><span class="ic">🔍</span>' +
       '<div class="t-text">Không tìm thấy kết quả nào</div>' +
       '<div class="s-text">Điều chỉnh từ khóa tìm kiếm hoặc bỏ đơn vị tính đang lọc</div></div></td></tr>';
   } else {
     tbody.innerHTML = slice.map(function(r){
-      const c = catOf(r.name);
+      const c = effCat(r);
+      const u2 = effUnit(r);
       const q = effQty(r);
       const isAdj = ADJ[r.stt] !== undefined;
+      const catEdited = CATS[r.stt] !== undefined;
+      const unitEdited = UNITS[r.stt] !== undefined;
       return '<tr>' +
         '<td class="stt">' + r.stt + '</td>' +
         '<td>' + prodImg(r.stt, 52) + '</td>' +
-        '<td><button type="button" class="ano-btn" data-ano="' + r.stt + '">' + esc(r.name) + '</button>' +
-          '<div style="margin-top:4px"><span class="tag ' + c.key + '">' + c.label + '</span>' +
+        '<td><button type="button" class="ano-btn cat-' + c.key + '" data-ano="' + r.stt + '">' + esc(r.name) + '</button>' +
+          '<div style="margin-top:4px"><select class="cat-sel cat-' + c.key + (catEdited ? ' edited' : '') + '" data-cat-stt="' + r.stt + '" aria-label="Nhóm" title="Chọn nhóm">' +
+          CATLIST.map(function(o){ return '<option value="' + o.key + '"' + (o.key === c.key ? ' selected' : '') + '>' + o.label + '</option>'; }).join('') +
+          '</select>' +
           (r.custom ? '<span class="tag new">＋ MỚI</span><button type="button" class="h-del row-del" data-del-stt="' + r.stt + '" title="Xóa thiết bị này" aria-label="Xóa thiết bị">×</button>' : '') +
           '</div></td>' +
-        '<td style="white-space:nowrap">' + esc(r.unit) + '</td>' +
+        '<td style="white-space:nowrap"><select class="unit-sel' + (unitEdited ? ' edited' : '') + '" data-unit-stt="' + r.stt + '" aria-label="Đơn vị tính" title="Sửa đơn vị tính">' +
+          unitOpts.map(function(u){ return '<option value="' + esc(u) + '"' + (u === u2 ? ' selected' : '') + '>' + esc(u) + '</option>'; }).join('') +
+          '</select></td>' +
         '<td class="num"><span class="stepper">' +
           '<button type="button" class="step-btn" data-step="-1" data-stt="' + r.stt + '" aria-label="Giảm số lượng">−</button>' +
           '<span class="step-val' + (isAdj ? ' adj' : '') + '" title="' + (isAdj ? 'Đã điều chỉnh (gốc ' + fmtStep(r.qty) + ')' : 'Số lượng gốc') + '">' + fmtStep(q) + '</span>' +
@@ -801,7 +865,7 @@ function render(){
 function renderTop10(){
   const el = document.getElementById('top10Chart');
   if (!el) return;
-  const arr = ALL.map(function(r){ return {stt:r.stt, name:r.name, unit:r.unit, qty:effQty(r)}; });
+  const arr = ALL.map(function(r){ return {stt:r.stt, name:r.name, unit:effUnit(r), qty:effQty(r)}; });
   arr.sort(function(a, b){ return b.qty - a.qty; });
   const top = arr.slice(0, 10);
   if (!top.length){ el.innerHTML = '<div style="text-align:center;color:var(--muted);padding:24px">Không có dữ liệu</div>'; return; }
@@ -819,8 +883,31 @@ function renderTop10(){
   }).join('');
 }
 
-// Gõ ghi chú trực tiếp (commit khi rời ô / Enter; chốt khi bấm Lưu)
+// Đổi Nhóm / sửa ĐVT từng dòng (commit ngay khi chọn; chốt khi bấm Lưu)
 tbody.addEventListener('change', function(e){
+  const cs = e.target.closest('[data-cat-stt]');
+  if (cs){
+    const stt = parseInt(cs.getAttribute('data-cat-stt'), 10);
+    const r = ALL.filter(function(x){ return x.stt === stt; })[0];
+    if (!r) return;
+    const v = cs.value;
+    if (v === ORIG_CATS[stt]) delete CATS[stt]; else CATS[stt] = v;
+    updateSaveState();
+    render();
+    return;
+  }
+  const us = e.target.closest('[data-unit-stt]');
+  if (us){
+    const stt = parseInt(us.getAttribute('data-unit-stt'), 10);
+    const r = ALL.filter(function(x){ return x.stt === stt; })[0];
+    if (!r) return;
+    const v = us.value;
+    if (v === ORIG_UNITS[stt]) delete UNITS[stt]; else UNITS[stt] = v;
+    buildChips();
+    updateSaveState();
+    render();
+    return;
+  }
   const inp = e.target.closest('[data-note-stt]');
   if (!inp) return;
   const stt = parseInt(inp.getAttribute('data-note-stt'), 10);
@@ -843,7 +930,7 @@ tbody.addEventListener('click', function(e){
     const ix = ALL.findIndex(function(x){ return x.stt === stt && x.custom; });
     if (ix < 0) return;
     const r = ALL[ix];
-    if (!confirm('Xóa "' + r.name + '" (SL ' + fmtStep(effQty(r)) + ' ' + r.unit + ') khỏi danh sách?')) return;
+    if (!confirm('Xóa "' + r.name + '" (SL ' + fmtStep(effQty(r)) + ' ' + effUnit(r) + ') khỏi danh sách?')) return;
     HIST.push({t: Date.now(), stt: r.stt, name: r.name, from: effQty(r), to: 0});
     ALL.splice(ix, 1);
     const cx = CUSTOM.findIndex(function(x){ return x.stt === stt; });
@@ -851,6 +938,10 @@ tbody.addEventListener('click', function(e){
     delete ADJ[stt];
     delete NOTES[stt];
     delete ORIG_NOTES[stt];
+    delete CATS[stt];
+    delete ORIG_CATS[stt];
+    delete UNITS[stt];
+    delete ORIG_UNITS[stt];
     buildChips();
     persist(true);
     runSearch();
@@ -904,15 +995,36 @@ function nextStt(){
   ALL.forEach(function(r){ if (r.stt > m) m = r.stt; });
   return m + 1;
 }
+function paintFCat(){
+  const s = document.getElementById('fCat');
+  if (!s) return;
+  s.classList.remove('cat-tb', 'cat-kho', 'cat-vpp');
+  s.classList.add('cat-' + s.value);
+}
 function openAdd(){
   const dl = document.getElementById('unitList');
   if (dl){
     const units = {};
-    ALL.forEach(function(r){ units[r.unit] = 1; });
+    ALL.forEach(function(r){ units[effUnit(r)] = 1; });
     dl.innerHTML = Object.keys(units).sort().map(function(u){ return '<option value="' + esc(u) + '">'; }).join('');
   }
+  const fn = document.getElementById('fName');
+  const fc = document.getElementById('fCat');
+  if (fn && !fn.dataset.catBound){
+    fn.dataset.catBound = '1';
+    fn.addEventListener('input', function(){
+      if (!fc) return;
+      fc.value = catOf(fn.value).key; // gợi ý nhóm theo tên, vẫn sửa tay được
+      paintFCat();
+    });
+  }
+  if (fc && !fc.dataset.paintBound){
+    fc.dataset.paintBound = '1';
+    fc.addEventListener('change', paintFCat);
+  }
   document.getElementById('formErr').textContent = '';
-  document.getElementById('fName').value = '';
+  fn.value = '';
+  if (fc){ fc.value = 'vpp'; paintFCat(); }
   document.getElementById('fUnit').value = '';
   document.getElementById('fQty').value = '1';
   document.getElementById('fNote').value = '';
@@ -947,12 +1059,17 @@ document.getElementById('addOk').addEventListener('click', function(){
   if (!name){ err.textContent = 'Vui lòng nhập tên dụng cụ / thiết bị.'; return; }
   if (!unit){ err.textContent = 'Vui lòng nhập đơn vị tính.'; return; }
   if (!isFinite(qty) || qty < 0){ err.textContent = 'Số lượng phải là số ≥ 0.'; return; }
-  const dup = ALL.filter(function(x){ return norm(x.name) === norm(name) && x.unit === unit; })[0];
+  const dup = ALL.filter(function(x){ return norm(x.name) === norm(name) && effUnit(x) === unit; })[0];
   if (dup){ err.textContent = 'Đã có "' + dup.name + '" (' + dup.unit + ') trong danh sách (STT ' + dup.stt + ').'; return; }
+  const fcat = document.getElementById('fCat');
+  const catKey = (fcat && catByKey(fcat.value)) ? fcat.value : catOf(name).key;
   const it = {stt: nextStt(), name: name, unit: unit, qty: Math.round(qty * 100) / 100, note: note, custom: true};
   ALL.push(it);
   CUSTOM.push(it);
   ORIG_NOTES[it.stt] = it.note || '';
+  ORIG_CATS[it.stt] = catOf(it.name).key;
+  ORIG_UNITS[it.stt] = it.unit;
+  if (catKey !== ORIG_CATS[it.stt]) CATS[it.stt] = catKey;
   HIST.push({t: Date.now(), stt: it.stt, name: it.name, from: 0, to: it.qty});
   // hiện toàn bộ để thấy dòng mới
   $q.value = ''; curUnit = '';
@@ -971,15 +1088,19 @@ document.getElementById('btnSave').addEventListener('click', function(){
   diffs.forEach(function(d){ HIST.push({t: now, stt: d.stt, name: d.name, from: d.from, to: d.to}); });
   const noteDiffs = diffNotes(SAVED_NOTES, NOTES);
   noteDiffs.forEach(function(d){ HIST.push({t: now, stt: d.stt, name: d.name, from: d.from, to: d.to, isNote: true}); });
+  const catDiffs = diffCats(SAVED_CATS, CATS);
+  catDiffs.forEach(function(d){ HIST.push({t: now, stt: d.stt, name: d.name, from: d.from, to: d.to, isCat: true}); });
+  const unitDiffs = diffUnits(SAVED_UNITS, UNITS);
+  unitDiffs.forEach(function(d){ HIST.push({t: now, stt: d.stt, name: d.name, from: d.from, to: d.to, isUnit: true}); });
   persist(true);
   fbPush();
   if (!ghToken()) ghAskToken();
   ghPush();
   renderHist();
-  const total = diffs.length + noteDiffs.length;
+  const total = diffs.length + noteDiffs.length + catDiffs.length + unitDiffs.length;
   toast('<b>✓ Đã lưu</b> lúc ' + fmtTime(savedAt) + '<br>' +
     (total
-      ? 'Đã ghi <b>' + total + ' thay đổi</b> (' + diffs.length + ' SL, ' + noteDiffs.length + ' ghi chú) vào lịch sử. Toàn bộ sẽ giữ nguyên khi mở lại file.'
+      ? 'Đã ghi <b>' + total + ' thay đổi</b> (' + diffs.length + ' SL, ' + noteDiffs.length + ' ghi chú, ' + catDiffs.length + ' nhóm, ' + unitDiffs.length + ' ĐVT) vào lịch sử. Toàn bộ sẽ giữ nguyên khi mở lại file.'
       : (histDirty ? '' : 'Không có thay đổi mới. ') + 'Lịch sử hiện có ' + HIST.length + ' mục, đã được lưu.'));
 });
 // Báo ngay khi mở file nếu có số liệu đã lưu từ lần trước
@@ -1034,7 +1155,7 @@ function ghApi(path, opts){
   return fetch('https://api.github.com/repos/' + GH_OWNER + '/' + GH_REPO + '/contents/' + GH_FILE + (path || ''), opts);
 }
 function ghState(){
-  return {app: 'tu-thiet-bi', v: 1, savedAt: savedAt, adj: ADJ, hist: HIST.slice(-500), custom: CUSTOM, notes: NOTES};
+  return {app: 'tu-thiet-bi', v: 1, savedAt: savedAt, adj: ADJ, hist: HIST.slice(-500), custom: CUSTOM, notes: NOTES, cats: CATS, units: UNITS};
 }
 function tbSyncMsg(txt){
   try { var el = document.getElementById('tbSync'); if (el) el.textContent = txt; } catch (e) {}
@@ -1100,7 +1221,7 @@ function ghPull(){
         }
         return;
       }
-      try { localStorage.setItem(LS_KEY, JSON.stringify({adj: o.adj || {}, hist: (o.hist || []).slice(-500), savedAt: o.savedAt || Date.now(), custom: o.custom || [], notes: o.notes || {}})); } catch (e) { return; }
+      try { localStorage.setItem(LS_KEY, JSON.stringify({adj: o.adj || {}, hist: (o.hist || []).slice(-500), savedAt: o.savedAt || Date.now(), custom: o.custom || [], notes: o.notes || {}, cats: o.cats || {}, units: o.units || {}})); } catch (e) { return; }
       toast('Đã nhận bản mới từ GitHub, đang tải lại...');
       setTimeout(function(){ location.reload(); }, 800);
     }).catch(function(){});
@@ -1129,6 +1250,12 @@ function renderHist(){
     if (h.isNote) return '<div class="h-row"><span class="h-time">' + fmtTime(h.t) + '</span>' +
       '<span class="h-name">#' + h.stt + ' · ' + esc(h.name) + '</span>' +
       '<span class="h-chg">Ghi chú: ' + shortQ(h.from) + ' → ' + shortQ(h.to) + '</span><span></span>' + del + '</div>';
+    if (h.isCat) return '<div class="h-row"><span class="h-time">' + fmtTime(h.t) + '</span>' +
+      '<span class="h-name">#' + h.stt + ' · ' + esc(h.name) + '</span>' +
+      '<span class="h-chg">Nhóm: ' + esc(h.from) + ' → <b>' + esc(h.to) + '</b></span><span></span>' + del + '</div>';
+    if (h.isUnit) return '<div class="h-row"><span class="h-time">' + fmtTime(h.t) + '</span>' +
+      '<span class="h-name">#' + h.stt + ' · ' + esc(h.name) + '</span>' +
+      '<span class="h-chg">ĐVT: ' + esc(h.from) + ' → <b>' + esc(h.to) + '</b></span><span></span>' + del + '</div>';
     const d = Math.round((h.to - h.from) * 100) / 100;
     const cls = d >= 0 ? 'h-plus' : 'h-minus';
     return '<div class="h-row"><span class="h-time">' + fmtTime(h.t) + '</span>' +
@@ -1178,14 +1305,15 @@ function fbReady(){
 }
 function fbHasUnsaved(){
   try {
-    return diffAdj(SAVED_ADJ, ADJ).length + diffNotes(SAVED_NOTES, NOTES).length > 0 || !!histDirty;
+    return diffAdj(SAVED_ADJ, ADJ).length + diffNotes(SAVED_NOTES, NOTES).length +
+      diffCats(SAVED_CATS, CATS).length + diffUnits(SAVED_UNITS, UNITS).length > 0 || !!histDirty;
   } catch (e) { return false; }
 }
 function fbPush(){
   if (!fbReady()) return;
   try {
     fbDb.ref(FB_PATH).set({app: 'tu-thiet-bi', v: 1, savedAt: savedAt,
-      adj: ADJ, hist: HIST.slice(-500), custom: CUSTOM, notes: NOTES, by: location.hostname || 'pc'});
+      adj: ADJ, hist: HIST.slice(-500), custom: CUSTOM, notes: NOTES, cats: CATS, units: UNITS, by: location.hostname || 'pc'});
   } catch (e) {}
 }
 function fbPullSubscribe(){
@@ -1201,7 +1329,7 @@ function fbPullSubscribe(){
         toast('<b>\u2601 C\u00f3 b\u1ea3n m\u1edbi</b> t\u1eeb m\u00e1y kh\u00e1c (cloud). L\u01b0u trang n\u00e0y tr\u01b0\u1edbc \u0111\u1ec3 \u0111\u1ea9y l\u00ean, ho\u1eb7c t\u1ea3i l\u1ea1i trang \u0111\u1ec3 nh\u1eadn.');
         return;
       }
-      try { localStorage.setItem(LS_KEY, JSON.stringify({adj: o.adj || {}, hist: (o.hist || []).slice(-500), savedAt: o.savedAt || Date.now(), custom: o.custom || [], notes: o.notes || {}})); } catch (e) { return; }
+      try { localStorage.setItem(LS_KEY, JSON.stringify({adj: o.adj || {}, hist: (o.hist || []).slice(-500), savedAt: o.savedAt || Date.now(), custom: o.custom || [], notes: o.notes || {}, cats: o.cats || {}, units: o.units || {}})); } catch (e) { return; }
       tbSyncMsg('\u2601 Cloud: \u0111\u00e3 nh\u1eadn b\u1ea3n m\u1edbi');
       toast('<b>\u2601 \u0110\u00e3 nh\u1eadn</b> b\u1ea3n m\u1edbi t\u1eeb cloud, \u0111ang t\u1ea3i l\u1ea1i...');
       setTimeout(function(){ location.reload(); }, 800);
@@ -1211,9 +1339,9 @@ function fbPullSubscribe(){
 setTimeout(fbPullSubscribe, 1500);
 
 document.getElementById('btnCsv').addEventListener('click', function(){
-  const rows = [['STT', 'Ten dung cu', 'DVT', 'So luong hien tai', 'So luong goc', 'Da dieu chinh', 'Ghi chu']];
+  const rows = [['STT', 'Ten dung cu', 'Nhom', 'DVT', 'So luong hien tai', 'So luong goc', 'Da dieu chinh', 'Ghi chu']];
   ALL.forEach(function(r){
-    rows.push([r.stt, r.name, r.unit, effQty(r), r.qty, (ADJ[r.stt] !== undefined ? 'Co' : 'Khong'), r.note || '']);
+    rows.push([r.stt, r.name, effCat(r).label, effUnit(r), effQty(r), r.qty, (ADJ[r.stt] !== undefined ? 'Co' : 'Khong'), r.note || '']);
   });
   downloadCSV(stampName('tu-thiet-bi'), rows);
 });
@@ -1347,13 +1475,14 @@ document.getElementById('histList').addEventListener('click', function(e){
     stt = parseInt(stt, 10);
     const r0 = ALL.filter(function(x){ return x.stt === stt; })[0];
     if (!r0) return;
-    const c = catOf(r0.name);
+    const c = effCat(r0);
+    const u0 = effUnit(r0);
     const q = effQty(r0);
     const grand = ALL.reduce(function(s, r){ return s + effQty(r); }, 0);
     const share = grand > 0 ? (q / grand * 100) : 0;
 
     const unitGroups = {};
-    ALL.forEach(function(r){ unitGroups[r.unit] = (unitGroups[r.unit] || 0) + effQty(r); });
+    ALL.forEach(function(r){ const u = effUnit(r); unitGroups[u] = (unitGroups[u] || 0) + effQty(r); });
     const unitArr = Object.keys(unitGroups).map(function(k){ return {name:k, val:Math.round(unitGroups[k] * 100) / 100}; })
       .sort(function(a, b){ return b.val - a.val; });
 
@@ -1370,19 +1499,19 @@ document.getElementById('histList').addEventListener('click', function(e){
       '<div class="d-title"><div class="d-ano">STT&nbsp;№&nbsp;' + r0.stt + '</div>' +
       '<div class="d-name">' + esc(r0.name) + '</div>' +
       '<span class="d-badge" style="' + badgeCls + '">' + esc(c.label) + '</span>' +
-      '<span class="d-badge" style="background:rgba(255,255,255,.05);color:var(--text);border:1px solid var(--line)">ĐVT: ' + esc(r0.unit) + '</span></div>' +
+      '<span class="d-badge" style="background:rgba(255,255,255,.05);color:var(--text);border:1px solid var(--line)">ĐVT: ' + esc(u0) + '</span></div>' +
       '<button class="d-close" id="dClose" aria-label="Đóng">×</button></div>' +
       '<div class="d-body">' +
       '<div class="d-hero"><div class="big">' + prodImg(r0.stt, 120) + '</div>' +
         '<div style="flex:1;min-width:200px;color:var(--muted);font-size:12.5px;line-height:1.7">' +
         'Ghi chú: <b style="color:var(--text)">' + (r0.note ? esc(r0.note) : '—') + '</b><br>' +
-        'Bước nhảy +/−: <b style="color:var(--gold-1)">' + stepOf(r0) + ' ' + esc(r0.unit) + '</b>' +
+        'Bước nhảy +/−: <b style="color:var(--gold-1)">' + stepOf(r0) + ' ' + esc(u0) + '</b>' +
         (ADJ[r0.stt] !== undefined ? '<br>Đã điều chỉnh từ <b style="color:var(--text)">' + fmtStep(r0.qty) + '</b> → <b style="color:var(--gold-1)">' + fmtStep(q) + '</b>' : '<br>Chưa điều chỉnh (đang dùng số gốc)') +
         '</div></div>' +
       '<div class="d-thumbs">' +
-        '<div class="d-t"><div class="d-t-label">Số lượng hiện tại</div><div class="d-t-val">' + fmtStep(q) + '</div><div class="d-t-note">' + esc(r0.unit) + '</div></div>' +
+        '<div class="d-t"><div class="d-t-label">Số lượng hiện tại</div><div class="d-t-val">' + fmtStep(q) + '</div><div class="d-t-note">' + esc(u0) + '</div></div>' +
         '<div class="d-t"><div class="d-t-label">Tỉ trọng</div><div class="d-t-val">' + share.toFixed(1) + '%</div><div class="d-t-note">trên tổng tủ</div></div>' +
-        '<div class="d-t"><div class="d-t-label">Đơn vị tính</div><div class="d-t-val" style="font-size:16px">' + esc(r0.unit) + '</div><div class="d-t-note">cùng nhóm ĐVT</div></div>' +
+        '<div class="d-t"><div class="d-t-label">Đơn vị tính</div><div class="d-t-val" style="font-size:16px">' + esc(u0) + '</div><div class="d-t-note">cùng nhóm ĐVT</div></div>' +
         '<div class="d-t"><div class="d-t-label">Ghi chú</div><div class="d-t-val" style="font-size:14px">' + (r0.note ? esc(r0.note) : '—') + '</div><div class="d-t-note">từ file Excel</div></div>' +
       '</div>' +
       '<div class="charts">' +
