@@ -378,6 +378,30 @@ body.landing-active #topHeader{display:none !important;}
 #scDeptModal .scm-detailgrid .dv{color:#333; font-weight:600;}
 @media (max-width:900px){ #scDeptModal .scm-kpis{grid-template-columns:repeat(3,1fr);} }
 @media (max-width:640px){ #scDeptModal .scm-kpis{grid-template-columns:repeat(2,1fr);} }
+/* ============ MINUS MODAL v20260922-minusmodal (mirror scm- styles) ============ */
+#minusModal{display:none; position:fixed; inset:0; z-index:2000; background:rgba(0,0,0,.55); align-items:flex-start; justify-content:center; overflow:auto; padding:28px 14px;}
+#minusModal.open{display:flex;}
+#minusModal .scm-panel{background:#fff; border-radius:14px; max-width:980px; width:100%; padding:22px 22px 18px; position:relative; box-shadow:0 18px 60px rgba(0,0,0,.45);}
+#minusModal .scm-close{position:absolute; top:12px; right:12px; width:32px; height:32px; border-radius:50%; border:1px solid #E5E5E5; background:#fff; color:#666; font-size:17px; line-height:1; cursor:pointer;}
+#minusModal .scm-close:hover{background:#C62828; color:#fff; border-color:#C62828;}
+#minusModal .scm-kicker{font-size:11px; color:#999; text-transform:uppercase; letter-spacing:.14em;}
+#minusModal .scm-title{font-size:26px; font-weight:800; color:#B71C1C; text-transform:uppercase; margin:2px 0;}
+#minusModal .scm-sub{font-size:12px; color:#888; margin-bottom:14px;}
+#minusModal .scm-kpis{display:grid; grid-template-columns:repeat(3,1fr); gap:10px; margin-bottom:14px;}
+#minusModal .scm-kpi{background:#fff; border:1px solid #EDEDED; border-radius:10px; padding:10px 12px;}
+#minusModal .scm-kpi .k{font-size:10px; color:#999; text-transform:uppercase; letter-spacing:.06em;}
+#minusModal .scm-kpi .v{font-size:22px; font-weight:800; color:#C62828; margin:2px 0;}
+#minusModal .scm-kpi .n{font-size:11px; color:#999;}
+#minusModal .scm-card{border:1px solid #EDEDED; border-radius:10px; overflow:hidden;}
+#minusModal .scm-card h4{margin:0; padding:10px 14px; font-size:13px; color:#B71C1C; text-transform:uppercase; letter-spacing:.06em; background:#fff;}
+#minusModal .scm-tablewrap{max-height:46vh; overflow:auto;}
+#minusModal table.scm-table{width:100%; border-collapse:collapse; font-size:12px;}
+#minusModal table.scm-table thead th{position:sticky; top:0; background:#FBEAEA; color:#B71C1C; text-align:left; padding:8px 10px; font-size:11px; text-transform:uppercase; white-space:nowrap;}
+#minusModal table.scm-table thead th.num, #minusModal table.scm-table td.num{text-align:right; white-space:nowrap;}
+#minusModal table.scm-table td{padding:7px 10px; border-bottom:1px solid #F3F3F3; color:#333;}
+#minusModal table.scm-table tr.scm-grand td{background:#F8DADA; font-weight:800; color:#8E1414;}
+#minusModal .scm-empty{padding:34px 10px; text-align:center; color:#999; font-size:13px;}
+@media (max-width:640px){ #minusModal .scm-kpis{grid-template-columns:repeat(2,1fr);} }
 
 
 /* ============ SC ROW HIGHLIGHT v20260911-schl (rows with data pop, all-zero rows dim) ============ */
@@ -394,6 +418,9 @@ table.data tbody tr.sc-nodata:hover{opacity:.75;}
 #scDayTable tbody tr.scm-clickable td:nth-child(3):hover, #scNgayTable tbody tr.scm-clickable td:nth-child(3):hover, #scMtdTable tbody tr.scm-clickable td:nth-child(3):hover{text-decoration:underline;}
 #scNgayTable tbody tr.scm-clickable td:nth-child(3), #scDayTable tbody tr.scm-clickable td:nth-child(3){color:var(--gold-1); font-weight:700;}
 #scDayTable tbody tr.sc-hasdata, #scNgayTable tbody tr.sc-hasdata{cursor:default;}
+/* v20260922-minusmodal: Daily Minus rows mo modal chi tiet article */
+#minusDailyTable tbody tr.scm-clickable td:nth-child(1), #minusDeptTable tbody tr.scm-clickable td:nth-child(2){cursor:pointer;color:var(--gold-1);font-weight:700;}
+#minusDailyTable tbody tr.scm-clickable td:nth-child(1):hover, #minusDeptTable tbody tr.scm-clickable td:nth-child(2):hover{text-decoration:underline;}
 #scNgayTable tbody tr.sc-hasdata{background:none; box-shadow:none;}
 
 
@@ -1839,7 +1866,25 @@ function buildMinusFromWorkbook(wb){
   var deptTotal = {stock:0, amount:0};
   deptRows.forEach(function(e){ deptTotal.stock += e.stock; deptTotal.amount += e.amount; });
 
-  return {period:'(All)', daily: daily, dailyTotal: dailyTotal, deptRows: deptRows, deptTotal: deptTotal};
+  // Chi tiet article STO am (Data-Sym: 0=Dept, 3=DEPT_NAME, 26=ART_NO, 28=ART_SV_NAME, 75=STO, 76=AMT)
+  var minusDetail = [];
+  try {
+    if (wb.Sheets['Data-Sym']){
+      var ds = bl_aoa(wb, 'Data-Sym');
+      for (var d3 = 2; d3 < ds.length; d3++){
+        var dr = ds[d3] || [];
+        var sto = (dr[75] === null || dr[75] === undefined || dr[75] === '') ? null : Number(dr[75]);
+        if (sto === null || isNaN(sto) || sto >= 0) continue;
+        var dno = (dr[0] === null || dr[0] === undefined || dr[0] === '') ? null : Number(dr[0]);
+        minusDetail.push({dept_no: (isNaN(dno) ? null : dno), dept_name: bl_trim(dr[3]),
+          art_no: (dr[26] === null || dr[26] === undefined ? '' : String(dr[26])), art_name: bl_trim(dr[28]),
+          sto: sto, amt: bl_num(dr[76])});
+      }
+      minusDetail.sort(function(a, b){ return a.sto - b.sto; });
+    }
+  } catch (e) {}
+
+  return {period:'(All)', daily: daily, dailyTotal: dailyTotal, deptRows: deptRows, deptTotal: deptTotal, minusDetail: minusDetail};
 }
 
 /* ---------------- DAY: 5.DAY_RECEIVE_DETAIL_ST.xlsb ---------------- */
@@ -2363,10 +2408,21 @@ function renderMinus(){
   var daily = qDaily ? d.daily.filter(function(r){ return String(r.dept_no).toLowerCase().indexOf(qDaily) >= 0; }) : d.daily;
   var html = '<thead><tr><th>CATEGORY</th><th class="num">DEPT_NO</th><th class="num">STOCK</th><th class="num">AMOUNT</th></tr></thead><tbody>';
   var dStock = 0, dAmt = 0;
+  var dDetail = (d.minusDetail && d.minusDetail.length) ? d.minusDetail : [];
+  var dDepts = {};
+  dDetail.forEach(function(r){ if (r.dept_no !== null && r.dept_no !== undefined) dDepts[r.dept_no] = 1; });
   daily.forEach(function(r){
-    var cls = r.dept_no === null ? ((/^(02|04|05)\b/.test(r.cat)) ? ' class="row-cat-hl"' : ' class="row-sub"') : '';
+    var cl = [];
+    if (r.dept_no === null || r.dept_no === undefined){
+      cl.push(/^(02|04|05)\b/.test(r.cat) ? 'row-cat-hl' : 'row-sub');
+    }
+    var dattr = '';
+    if (r.dept_no !== null && r.dept_no !== undefined && dDepts[r.dept_no]){
+      cl.push('scm-clickable');
+      dattr = ' data-dept="' + r.dept_no + '"';
+    }
     dStock += r.stock; dAmt += r.amount;
-    html += '<tr' + cls + '>' +
+    html += '<tr' + (cl.length ? ' class="' + cl.join(' ') + '"' : '') + dattr + '>' +
       '<td>' + r.cat + '</td>' +
       '<td class="num">' + (r.dept_no === null ? '' : r.dept_no) + '</td>' +
       '<td class="num">' + fmtDec(r.stock, 1) + '</td>' +
@@ -2387,7 +2443,7 @@ function renderMinus(){
   var html2 = '<thead><tr><th class="num">DEPT_NO</th><th>DEPT_NAME</th><th class="num">MINUS QTY</th><th class="num">MINUS AMOUNT</th><th class="num">% AMOUNT</th></tr></thead><tbody>';
   dRows2.forEach(function(r){
     var pct = tAmt ? (r.amount / tAmt) * 100 : 0;
-    html2 += '<tr>' +
+    html2 += '<tr' + (dDepts[r.dept_no] ? ' class="scm-clickable" data-dept="' + r.dept_no + '"' : '') + '>' +
       '<td class="num">' + r.dept_no + '</td>' +
       '<td>' + (r.dept_name || '') + '</td>' +
       '<td class="num">' + fmtDec(r.stock, 1) + '</td>' +
@@ -3857,6 +3913,115 @@ window.TOP50_DATA = {"dates": [20260901, 20260902, 20260903, 20260904, 20260905,
   var scmLastList = [];
   window.openScDeptModal = openScDeptModal;
   window.closeScDeptModal = closeScDeptModal;
+})();
+</script>
+
+<!-- PAGE v20260922-minusmodal (additive modal only; table structure unchanged) -->
+<div id="minusModal" role="dialog" aria-modal="true" aria-label="Chi tiet Minus Stock">
+  <div class="scm-panel">
+    <button class="scm-close" id="mmClose" aria-label="Dong">&times;</button>
+    <div class="scm-kicker" id="mmKicker">DEPT №</div>
+    <div class="scm-title" id="mmTitle">-</div>
+    <div class="scm-sub" id="mmSub">Daily Minus Stock · article STO âm, xếp âm lớn nhất trước</div>
+    <div class="scm-kpis" id="mmKpis"></div>
+    <div class="scm-card">
+      <h4 id="mmTableTitle">CHI TIẾT DÒNG</h4>
+      <div class="scm-tablewrap"><table class="scm-table">
+        <thead><tr><th>DEPT_NAME</th><th>ART_NO</th><th>ART_SV_NAME</th><th class="num">STO</th><th class="num">AMT</th></tr></thead>
+        <tbody id="mmBody"></tbody>
+      </table></div>
+    </div>
+  </div>
+</div>
+
+<script>
+/* MINUS MODAL v20260922-minusmodal */
+(function(){
+  function mmEsc(s){ return String(s===null||s===undefined?'':s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;').replace(/'/g,'&#39;'); }
+  function mmQty(v){
+    if (v===null||v===undefined||isNaN(Number(v))) return '';
+    var n = Number(v);
+    var r = Math.abs(n) < 1 ? Math.round(n*100)/100 : Math.round(n*10)/10;
+    return r.toLocaleString('en-US',{maximumFractionDigits:2});
+  }
+  function openMinusModal(deptNo, deptName){
+    var modal = document.getElementById('minusModal');
+    if (!modal) return;
+    var d = window.MINUS_DATA;
+    var all = (d && d.minusDetail) ? d.minusDetail : [];
+    var list = all.filter(function(r){ return Number(r.dept_no) === Number(deptNo); });
+    document.getElementById('mmKicker').textContent = 'DEPT № ' + deptNo;
+    document.getElementById('mmTitle').textContent = String(deptName || '');
+    var tSto = 0, tAmt = 0;
+    list.forEach(function(r){ tSto += (Number(r.sto) || 0); tAmt += (Number(r.amt) || 0); });
+    document.getElementById('mmKpis').innerHTML =
+      '<div class="scm-kpi"><div class="k">Article STO âm</div>' +
+        '<div class="v">' + list.length + '</div><div class="n">dòng</div></div>' +
+      '<div class="scm-kpi"><div class="k">Tổng STO</div>' +
+        '<div class="v">' + mmEsc(mmQty(tSto)) + '</div><div class="n">tồn âm</div></div>' +
+      '<div class="scm-kpi"><div class="k">Tổng AMT</div>' +
+        '<div class="v">' + mmEsc(fmtVnd(tAmt)) + '</div><div class="n">giá trị âm</div></div>';
+    document.getElementById('mmTableTitle').textContent = 'CHI TIẾT DÒNG (' + list.length + ')';
+    var body = document.getElementById('mmBody');
+    if (!list.length){
+      body.innerHTML = '<tr><td colspan="5"><div class="scm-empty">Ngành hàng này không có article STO âm.</div></td></tr>';
+    } else {
+      var h = '';
+      list.forEach(function(r){
+        h += '<tr><td>' + mmEsc(r.dept_name) + '</td>' +
+          '<td>' + mmEsc(r.art_no) + '</td>' +
+          '<td>' + mmEsc(r.art_name || '—') + '</td>' +
+          '<td class="num">' + mmEsc(mmQty(r.sto)) + '</td>' +
+          '<td class="num">' + mmEsc(fmtVnd(r.amt)) + '</td></tr>';
+      });
+      h += '<tr class="scm-grand"><td colspan="3">Tổng cộng</td>' +
+        '<td class="num">' + mmEsc(mmQty(tSto)) + '</td>' +
+        '<td class="num">' + mmEsc(fmtVnd(tAmt)) + '</td></tr>';
+      body.innerHTML = h;
+    }
+    modal.classList.add('open');
+    document.body.style.overflow = 'hidden';
+  }
+  function closeMinusModal(){
+    var modal = document.getElementById('minusModal');
+    if (modal) modal.classList.remove('open');
+    document.body.style.overflow = '';
+  }
+  document.getElementById('mmClose').addEventListener('click', closeMinusModal);
+  document.getElementById('minusModal').addEventListener('click', function(e){
+    if (e.target && e.target.id === 'minusModal') closeMinusModal();
+  });
+  document.addEventListener('keydown', function(e){
+    if (e.key === 'Escape') closeMinusModal();
+  });
+  function wireMinusTable(tblId, colIdx){
+    var tbl = document.getElementById(tblId);
+    if (!tbl) return;
+    tbl.addEventListener('click', function(e){
+      var tr = e.target ? e.target.closest('tbody tr') : null;
+      if (!tr || tr.classList.contains('row-total')) return;
+      if (!tr.classList.contains('scm-clickable')) return;
+      var td = e.target ? e.target.closest('td') : null;
+      if (!td || td.cellIndex !== colIdx) return;
+      var deptNo = Number(tr.getAttribute('data-dept'));
+      if (!deptNo) return;
+      var tds = tr.querySelectorAll('td');
+      var deptName = '';
+      if (tblId === 'minusDeptTable' && tds.length > 1) deptName = tds[1].textContent.trim();
+      else {
+        var d = window.MINUS_DATA;
+        var rows = (d && d.deptRows) ? d.deptRows : [];
+        for (var i = 0; i < rows.length; i++){
+          if (Number(rows[i].dept_no) === deptNo){ deptName = rows[i].dept_name || ''; break; }
+        }
+      }
+      openMinusModal(deptNo, deptName);
+    });
+  }
+  wireMinusTable('minusDailyTable', 0);
+  wireMinusTable('minusDeptTable', 1);
+  window.openMinusModal = openMinusModal;
+  window.closeMinusModal = closeMinusModal;
 })();
 </script>
 
