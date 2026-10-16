@@ -2459,7 +2459,7 @@ function renderMinus(){
   _chain('minus', [
     function(){ $('minusDailyTable').innerHTML = html; },
     function(){ $('minusDeptTable').innerHTML = html2; mkVBar('vbarMinusCat', cats.map(function(x){ return x.cat.length > 28 ? x.cat.slice(0,28) : x.cat; }), cats.map(function(x){ return Number(Math.abs(x.amount).toFixed(0)); }), '#C9A227', true, compactNum); },
-    function(){ mkDonut('donutMinusDept', dRows.map(function(x){ return (x.dept_name || '') + ' ' + x.dept_no; }), dRows.map(function(x){ return Number(Math.abs(x.stock).toFixed(2)); }), SERIES_COLORS); mkLine('lineMinusDept', deptSorted.map(function(r){ return r.dept_no + (r.dept_name ? ' · ' + r.dept_name : ''); }), deptSorted.map(function(r){ return Number(Math.abs(r.amount).toFixed(0)); }), '#D4A72C', false); }
+    function(){ mkDonut('donutMinusDept', dRows.map(function(x){ return (x.dept_name || '') + ' ' + x.dept_no; }), dRows.map(function(x){ return Number(Math.abs(x.stock).toFixed(2)); }), SERIES_COLORS); mkVBar('lineMinusDept', deptSorted.map(function(r){ return r.dept_no + (r.dept_name ? ' · ' + r.dept_name : ''); }), deptSorted.map(function(r){ return Number(Math.abs(r.amount).toFixed(0)); }), '#D4A72C', true, compactNum); }
   ]);
 }
 

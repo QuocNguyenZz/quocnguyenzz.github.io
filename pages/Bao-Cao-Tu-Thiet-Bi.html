@@ -231,6 +231,13 @@
     justify-content:center;transition:all .12s;padding:0}
   .h-del:hover{color:#fff;background:#8E1F1F;border-color:#C62828}
   .h-del:focus-visible{outline:2px solid var(--gold-1);outline-offset:2px}
+  /* Nut doi ten thiet bi tu them (di kem nut xoa) */
+  .row-edit{display:inline-flex;margin-left:6px;vertical-align:-7px}
+  .h-edit{flex-shrink:0;width:24px;height:24px;border-radius:7px;border:1px solid var(--line);background:var(--panel-2);
+    color:var(--muted);font-size:12px;line-height:1;cursor:pointer;display:inline-flex;align-items:center;
+    justify-content:center;transition:all .12s;padding:0}
+  .h-edit:hover{color:#fff;background:#98720F;border-color:#C9A227}
+  .h-edit:focus-visible{outline:2px solid var(--gold-1);outline-offset:2px}
   .hist-btns{display:flex;gap:8px;margin-bottom:12px;flex-wrap:wrap}
   .hist-btns .clr{padding:8px 14px;font-size:12.5px}
   .hist.flash{animation:histFlash 1.6s ease}
@@ -831,7 +838,7 @@ function render(){
           '<div style="margin-top:4px"><select class="cat-sel cat-' + c.key + (catEdited ? ' edited' : '') + '" data-cat-stt="' + r.stt + '" aria-label="Nhóm" title="Chọn nhóm">' +
           CATLIST.map(function(o){ return '<option value="' + o.key + '"' + (o.key === c.key ? ' selected' : '') + '>' + o.label + '</option>'; }).join('') +
           '</select>' +
-          (r.custom ? '<span class="tag new">＋ MỚI</span><button type="button" class="h-del row-del" data-del-stt="' + r.stt + '" title="Xóa thiết bị này" aria-label="Xóa thiết bị">×</button>' : '') +
+          (r.custom ? '<span class="tag new">＋ MỚI</span><button type="button" class="h-edit row-edit" data-ren-stt="' + r.stt + '" title="Đổi tên thiết bị này" aria-label="Đổi tên thiết bị">✎</button><button type="button" class="h-del row-del" data-del-stt="' + r.stt + '" title="Xóa thiết bị này" aria-label="Xóa thiết bị">×</button>' : '') +
           '</div></td>' +
         '<td style="white-space:nowrap"><select class="unit-sel' + (unitEdited ? ' edited' : '') + '" data-unit-stt="' + r.stt + '" aria-label="Đơn vị tính" title="Sửa đơn vị tính">' +
           unitOpts.map(function(u){ return '<option value="' + esc(u) + '"' + (u === u2 ? ' selected' : '') + '>' + esc(u) + '</option>'; }).join('') +
@@ -924,6 +931,28 @@ tbody.addEventListener('keydown', function(e){
 });
 // +/− điều chỉnh số lượng + xóa thiết bị tự thêm (event delegation trên tbody)
 tbody.addEventListener('click', function(e){
+  const ren = e.target.closest('[data-ren-stt]');
+  if (ren){
+    const stt = parseInt(ren.getAttribute('data-ren-stt'), 10);
+    const r = ALL.filter(function(x){ return x.stt === stt && x.custom; })[0];
+    if (!r) return;
+    let nv = null;
+    try { nv = window.prompt('Đổi tên thiết bị #' + r.stt + ':', r.name); } catch (err) { return; }
+    if (nv === null) return;
+    nv = String(nv).trim().slice(0, 120);
+    if (!nv){ toast('Tên không được để trống.'); return; }
+    if (norm(nv) === norm(r.name)) return;
+    const dup = ALL.filter(function(x){ return x.stt !== stt && norm(x.name) === norm(nv) && effUnit(x) === effUnit(r); })[0];
+    if (dup){ toast('Đã có "' + esc(dup.name) + '" (' + esc(effUnit(dup)) + ') trong danh sách (STT ' + dup.stt + ').'); return; }
+    const oldName = r.name;
+    r.name = nv;
+    HIST.push({t: Date.now(), stt: r.stt, name: nv, from: oldName, to: nv, isRename: true});
+    persist(true);
+    render();
+    renderHist();
+    toast('Đã đổi tên <b>#' + r.stt + '</b> thành <b>' + esc(nv) + '</b>.');
+    return;
+  }
   const del = e.target.closest('[data-del-stt]');
   if (del){
     const stt = parseInt(del.getAttribute('data-del-stt'), 10);
@@ -1256,6 +1285,9 @@ function renderHist(){
     if (h.isUnit) return '<div class="h-row"><span class="h-time">' + fmtTime(h.t) + '</span>' +
       '<span class="h-name">#' + h.stt + ' · ' + esc(h.name) + '</span>' +
       '<span class="h-chg">ĐVT: ' + esc(h.from) + ' → <b>' + esc(h.to) + '</b></span><span></span>' + del + '</div>';
+    if (h.isRename) return '<div class="h-row"><span class="h-time">' + fmtTime(h.t) + '</span>' +
+      '<span class="h-name">#' + h.stt + ' · ' + esc(h.to) + '</span>' +
+      '<span class="h-chg">Đổi tên: ' + esc(h.from) + ' → <b>' + esc(h.to) + '</b></span><span></span>' + del + '</div>';
     const d = Math.round((h.to - h.from) * 100) / 100;
     const cls = d >= 0 ? 'h-plus' : 'h-minus';
     return '<div class="h-row"><span class="h-time">' + fmtTime(h.t) + '</span>' +
