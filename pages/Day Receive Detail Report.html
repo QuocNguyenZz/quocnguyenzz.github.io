@@ -3003,7 +3003,7 @@ function renderScCharts(){
   mkDonut('donutScReason', rcKeys.map(function(k){ return k + ' · ' + scReasonLabel(k); }), rcKeys.map(function(k){ return rcDay[k]; }), SERIES_COLORS);
 
   var mtdOrder = scFilter.mtdRows.slice().sort(function(a,b){ return (Number(a.dept_no)||0) - (Number(b.dept_no)||0); });
-  mkLine('lineScMtd', mtdOrder.map(function(r){ return r.dept_name + ' ' + r.dept_no; }), mtdOrder.map(function(r){ return r.total != null ? Number(r.total.toFixed(0)) : 0; }), '#D4A72C', false);
+  mkVBar('lineScMtd', mtdOrder.map(function(r){ return r.dept_name + ' ' + r.dept_no; }), mtdOrder.map(function(r){ return r.total != null ? Math.abs(Number(r.total.toFixed(0))) : 0; }), '#D4A72C', true, compactNum);
 
   var items = scFilter.top10.filter(function(r){ return !r.subtotal; }).slice()
     .sort(function(a,b){ return Math.abs(b.total) - Math.abs(a.total); }).slice(0,10);
