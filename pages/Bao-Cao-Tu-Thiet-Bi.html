@@ -501,6 +501,8 @@ let SAVED_CATS = {};
 const UNITS = {}; // stt -> ĐVT đã sửa (chỉ lưu chênh lệch với gốc)
 const ORIG_UNITS = {}; // stt -> ĐVT gốc (Excel / lúc tạo mới)
 let SAVED_UNITS = {};
+const RENS = {}; // stt -> tên đã đổi của dòng gốc Excel (dòng tự thêm lưu thẳng trong CUSTOM)
+let SAVED_RENS = {};
 function catByKey(k){ return CATLIST.filter(function(c){ return c.key === k; })[0] || CATLIST[2]; }
 function effCatOf(stt, map){
   if (map[stt] !== undefined) return catByKey(map[stt]);
@@ -564,6 +566,18 @@ try {
   Object.keys(CATS).forEach(function(k){ SAVED_CATS[k] = CATS[k]; });
   SAVED_UNITS = {};
   Object.keys(UNITS).forEach(function(k){ SAVED_UNITS[k] = UNITS[k]; });
+  // Áp dụng tên đã đổi của dòng gốc (lưu từ lần trước)
+  if (saved.rens) Object.keys(saved.rens).forEach(function(k){
+    const nm = String(saved.rens[k] || '').trim().slice(0, 120);
+    if (!nm) return;
+    const r = ALL.filter(function(x){ return String(x.stt) === String(k); })[0];
+    if (!r || r.custom) return;
+    r.name = nm;
+    RENS[k] = nm;
+    ORIG_CATS[k] = catOf(nm).key; // nhóm auto theo tên mới (lựa chọn tay trong CATS vẫn ưu tiên)
+  });
+  SAVED_RENS = {};
+  Object.keys(RENS).forEach(function(k){ SAVED_RENS[k] = RENS[k]; });
 } catch (e) {}
 // So sánh SL đang chỉnh với SL đã chốt -> danh sách thay đổi
 function diffAdj(oldA, newA){
@@ -614,8 +628,10 @@ function persist(stamp){
     Object.keys(CATS).forEach(function(k){ SAVED_CATS[k] = CATS[k]; });
     SAVED_UNITS = {};
     Object.keys(UNITS).forEach(function(k){ SAVED_UNITS[k] = UNITS[k]; });
+    SAVED_RENS = {};
+    Object.keys(RENS).forEach(function(k){ SAVED_RENS[k] = RENS[k]; });
     histDirty = false;
-    localStorage.setItem(LS_KEY, JSON.stringify({adj: ADJ, hist: HIST.slice(-500), savedAt: savedAt, custom: CUSTOM, notes: NOTES, cats: CATS, units: UNITS}));
+    localStorage.setItem(LS_KEY, JSON.stringify({adj: ADJ, hist: HIST.slice(-500), savedAt: savedAt, custom: CUSTOM, notes: NOTES, cats: CATS, units: UNITS, rens: RENS}));
   } catch (e) {}
   updateSaveState();
 }
@@ -838,7 +854,8 @@ function render(){
           '<div style="margin-top:4px"><select class="cat-sel cat-' + c.key + (catEdited ? ' edited' : '') + '" data-cat-stt="' + r.stt + '" aria-label="Nhóm" title="Chọn nhóm">' +
           CATLIST.map(function(o){ return '<option value="' + o.key + '"' + (o.key === c.key ? ' selected' : '') + '>' + o.label + '</option>'; }).join('') +
           '</select>' +
-          (r.custom ? '<span class="tag new">＋ MỚI</span><button type="button" class="h-edit row-edit" data-ren-stt="' + r.stt + '" title="Đổi tên thiết bị này" aria-label="Đổi tên thiết bị">✎</button><button type="button" class="h-del row-del" data-del-stt="' + r.stt + '" title="Xóa thiết bị này" aria-label="Xóa thiết bị">×</button>' : '') +
+          '<button type="button" class="h-edit row-edit" data-ren-stt="' + r.stt + '" title="Đổi tên thiết bị này" aria-label="Đổi tên thiết bị">✎</button>' +
+          (r.custom ? '<span class="tag new">＋ MỚI</span><button type="button" class="h-del row-del" data-del-stt="' + r.stt + '" title="Xóa thiết bị này" aria-label="Xóa thiết bị">×</button>' : '') +
           '</div></td>' +
         '<td style="white-space:nowrap"><select class="unit-sel' + (unitEdited ? ' edited' : '') + '" data-unit-stt="' + r.stt + '" aria-label="Đơn vị tính" title="Sửa đơn vị tính">' +
           unitOpts.map(function(u){ return '<option value="' + esc(u) + '"' + (u === u2 ? ' selected' : '') + '>' + esc(u) + '</option>'; }).join('') +
@@ -934,7 +951,7 @@ tbody.addEventListener('click', function(e){
   const ren = e.target.closest('[data-ren-stt]');
   if (ren){
     const stt = parseInt(ren.getAttribute('data-ren-stt'), 10);
-    const r = ALL.filter(function(x){ return x.stt === stt && x.custom; })[0];
+    const r = ALL.filter(function(x){ return x.stt === stt; })[0];
     if (!r) return;
     let nv = null;
     try { nv = window.prompt('Đổi tên thiết bị #' + r.stt + ':', r.name); } catch (err) { return; }
@@ -946,6 +963,13 @@ tbody.addEventListener('click', function(e){
     if (dup){ toast('Đã có "' + esc(dup.name) + '" (' + esc(effUnit(dup)) + ') trong danh sách (STT ' + dup.stt + ').'); return; }
     const oldName = r.name;
     r.name = nv;
+    ORIG_CATS[stt] = catOf(nv).key;
+    if (r.custom){
+      if (CATS[stt] === ORIG_CATS[stt]) delete CATS[stt];
+    } else {
+      RENS[stt] = nv;
+      if (CATS[stt] === ORIG_CATS[stt]) delete CATS[stt];
+    }
     HIST.push({t: Date.now(), stt: r.stt, name: nv, from: oldName, to: nv, isRename: true});
     persist(true);
     render();
@@ -1184,7 +1208,7 @@ function ghApi(path, opts){
   return fetch('https://api.github.com/repos/' + GH_OWNER + '/' + GH_REPO + '/contents/' + GH_FILE + (path || ''), opts);
 }
 function ghState(){
-  return {app: 'tu-thiet-bi', v: 1, savedAt: savedAt, adj: ADJ, hist: HIST.slice(-500), custom: CUSTOM, notes: NOTES, cats: CATS, units: UNITS};
+  return {app: 'tu-thiet-bi', v: 1, savedAt: savedAt, adj: ADJ, hist: HIST.slice(-500), custom: CUSTOM, notes: NOTES, cats: CATS, units: UNITS, rens: RENS};
 }
 function tbSyncMsg(txt){
   try { var el = document.getElementById('tbSync'); if (el) el.textContent = txt; } catch (e) {}
@@ -1250,7 +1274,7 @@ function ghPull(){
         }
         return;
       }
-      try { localStorage.setItem(LS_KEY, JSON.stringify({adj: o.adj || {}, hist: (o.hist || []).slice(-500), savedAt: o.savedAt || Date.now(), custom: o.custom || [], notes: o.notes || {}, cats: o.cats || {}, units: o.units || {}})); } catch (e) { return; }
+      try { localStorage.setItem(LS_KEY, JSON.stringify({adj: o.adj || {}, hist: (o.hist || []).slice(-500), savedAt: o.savedAt || Date.now(), custom: o.custom || [], notes: o.notes || {}, cats: o.cats || {}, units: o.units || {}, rens: o.rens || {}})); } catch (e) { return; }
       toast('Đã nhận bản mới từ GitHub, đang tải lại...');
       setTimeout(function(){ location.reload(); }, 800);
     }).catch(function(){});
@@ -1345,7 +1369,7 @@ function fbPush(){
   if (!fbReady()) return;
   try {
     fbDb.ref(FB_PATH).set({app: 'tu-thiet-bi', v: 1, savedAt: savedAt,
-      adj: ADJ, hist: HIST.slice(-500), custom: CUSTOM, notes: NOTES, cats: CATS, units: UNITS, by: location.hostname || 'pc'});
+      adj: ADJ, hist: HIST.slice(-500), custom: CUSTOM, notes: NOTES, cats: CATS, units: UNITS, rens: RENS, by: location.hostname || 'pc'});
   } catch (e) {}
 }
 function fbPullSubscribe(){
@@ -1361,7 +1385,7 @@ function fbPullSubscribe(){
         toast('<b>\u2601 C\u00f3 b\u1ea3n m\u1edbi</b> t\u1eeb m\u00e1y kh\u00e1c (cloud). L\u01b0u trang n\u00e0y tr\u01b0\u1edbc \u0111\u1ec3 \u0111\u1ea9y l\u00ean, ho\u1eb7c t\u1ea3i l\u1ea1i trang \u0111\u1ec3 nh\u1eadn.');
         return;
       }
-      try { localStorage.setItem(LS_KEY, JSON.stringify({adj: o.adj || {}, hist: (o.hist || []).slice(-500), savedAt: o.savedAt || Date.now(), custom: o.custom || [], notes: o.notes || {}, cats: o.cats || {}, units: o.units || {}})); } catch (e) { return; }
+      try { localStorage.setItem(LS_KEY, JSON.stringify({adj: o.adj || {}, hist: (o.hist || []).slice(-500), savedAt: o.savedAt || Date.now(), custom: o.custom || [], notes: o.notes || {}, cats: o.cats || {}, units: o.units || {}, rens: o.rens || {}})); } catch (e) { return; }
       tbSyncMsg('\u2601 Cloud: \u0111\u00e3 nh\u1eadn b\u1ea3n m\u1edbi');
       toast('<b>\u2601 \u0110\u00e3 nh\u1eadn</b> b\u1ea3n m\u1edbi t\u1eeb cloud, \u0111ang t\u1ea3i l\u1ea1i...');
       setTimeout(function(){ location.reload(); }, 800);
