@@ -4834,10 +4834,10 @@ window.TOP50_DATA = {"dates": [20261001, 20261002, 20261003, 20261004, 20261005,
     activateTab('sc');
   }
   bl_loadState();
-  var _dataUrls = ['sc-data.json'];
+  var _dataUrls = ['sc-data.json?t=' + Date.now()];
   (function _tryFetch(i){
     if (i >= _dataUrls.length){ start(); return; }
-    fetch(_dataUrls[i]).then(function(r){ return r.json(); }).then(function(sv){
+    fetch(_dataUrls[i], {cache:'no-store'}).then(function(r){ return r.json(); }).then(function(sv){
       if (sv && typeof sv === 'object' && Object.keys(sv).length){
         for (var j=0;j<LS_KEYS.length;j++){
           var k = LS_KEYS[j];
