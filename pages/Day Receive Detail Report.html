@@ -4869,7 +4869,9 @@ window.TOP50_DATA = {"dates": [20261001, 20261002, 20261003, 20261004, 20261005,
         activateTab(currentTab || 'sc');
         try {
           var d = window.SC_DATA ? fmtDate(window.SC_DATA.dayDate) : '';
-          $('reportDate').textContent = 'C\u1eadp nh\u1eadt: ' + d + ' \u00b7 t\u1ef1 \u0111\u1ed9ng ' + fmtTime(Date.now());
+          var _n = new Date();
+          var _hm = ('0' + _n.getHours()).slice(-2) + ':' + ('0' + _n.getMinutes()).slice(-2);
+          $('reportDate').textContent = 'C\u1eadp nh\u1eadt: ' + d + ' \u00b7 t\u1ef1 \u0111\u1ed9ng ' + _hm;
         } catch(e){}
       }
       if (force && btn) btn.textContent = '\u21bb Refresh';
