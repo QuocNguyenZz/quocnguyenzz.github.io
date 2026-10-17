@@ -1403,7 +1403,10 @@ function loadSpecByUrl(spec, cb){
   })();
 }
 
-$('uploadBtn').addEventListener('click', function(){ refreshAll(); });
+$('uploadBtn').addEventListener('click', function(){
+  if (window.fsdStaticPull){ window.fsdStaticPull(); return; }
+  refreshAll();
+});
 
 var refreshQueue = [];
 var refreshUpdated = [];
@@ -4835,18 +4838,58 @@ window.TOP50_DATA = {"dates": [20261001, 20261002, 20261003, 20261004, 20261005,
   }
   bl_loadState();
   var _dataUrls = ['sc-data.json?t=' + Date.now()];
+  var _autoUrl = null, _autoSig = null;
+
+  function _applyServerData(txt){
+    var sv = null, applied = false;
+    try { sv = JSON.parse(txt); } catch(e){ return false; }
+    if (sv && typeof sv === 'object'){
+      for (var j=0;j<LS_KEYS.length;j++){
+        var k = LS_KEYS[j];
+        if (sv[k]) { window[LS_NAME[k]] = sv[k]; applied = true; }
+      }
+    }
+    return applied;
+  }
+
+  /* Lay lai du lieu (cache-bust). Chi ve lai khi du lieu doi; force=true thi ve lai luon. */
+  function _pullData(force){
+    var url = _autoUrl || _dataUrls[0];
+    if (!url) return;
+    var clean = String(url).replace(/([?&])t=\d+/, '$1').replace(/[?&]$/, '');
+    var full = clean + (clean.indexOf('?') < 0 ? '?' : '&') + 't=' + Date.now();
+    var btn = $('uploadBtn');
+    if (force && btn) btn.textContent = '\u21bb \u0110ang c\u1eadp nh\u1eadt...';
+    fetch(full, {cache:'no-store'}).then(function(r){ return r.text(); }).then(function(txt){
+      var changed = (_autoSig !== null && txt !== _autoSig);
+      if (txt) _autoSig = txt;
+      if ((changed || force) && _applyServerData(txt)){
+        _autoUrl = clean;
+        activateTab(currentTab || 'sc');
+        try {
+          var d = window.SC_DATA ? fmtDate(window.SC_DATA.dayDate) : '';
+          $('reportDate').textContent = 'C\u1eadp nh\u1eadt: ' + d + ' \u00b7 t\u1ef1 \u0111\u1ed9ng ' + fmtTime(Date.now());
+        } catch(e){}
+      }
+      if (force && btn) btn.textContent = '\u21bb Refresh';
+    }).catch(function(){ if (force && btn) btn.textContent = '\u21bb Refresh'; });
+  }
+
   (function _tryFetch(i){
     if (i >= _dataUrls.length){ start(); return; }
-    fetch(_dataUrls[i], {cache:'no-store'}).then(function(r){ return r.json(); }).then(function(sv){
-      if (sv && typeof sv === 'object' && Object.keys(sv).length){
-        for (var j=0;j<LS_KEYS.length;j++){
-          var k = LS_KEYS[j];
-          if (sv[k]) window[LS_NAME[k]] = sv[k];
-        }
-      }
+    fetch(_dataUrls[i], {cache:'no-store'}).then(function(r){ return r.text(); }).then(function(txt){
+      if (_applyServerData(txt)){ _autoUrl = _dataUrls[i]; _autoSig = txt; }
+      else if (i + 1 < _dataUrls.length) { _tryFetch(i+1); return; }
       start();
     }).catch(function(){ _tryFetch(i+1); });
   })(0);
+
+  /* Ban tinh tren GitHub Pages (chi co sc-data.json) -> nut Refresh lay lai JSON */
+  if (_dataUrls.length === 1 && String(_dataUrls[0]).indexOf('sc-data.json') === 0){
+    window.fsdStaticPull = function(){ return _pullData(true); };
+  }
+  /* Tu dong lam moi 5 phut/lan, chi ve lai khi so lieu thuc su doi */
+  setInterval(function(){ try { _pullData(false); } catch(e){} }, 5*60*1000);
 })();
 </script>
 
