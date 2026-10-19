@@ -1,0 +1,1650 @@
+﻿<!DOCTYPE html>
+<html lang="vi">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Báo Cáo Thiết Bị IT · Kho 10050 · MMVN</title>
+<style>
+  :root{
+    --bg:#070709; --bg-2:#0C0C10; --panel:#101014; --panel-2:#15151B;
+    --gold-1:#F0D68A; --gold-2:#C9A227; --gold-3:#98720F; --gold-deep:#A9841C;
+    --line:#23232D; --line-soft:#191920;
+    --text:#EDE6D8; --muted:#8F8877; --hdH:0px;
+    --shadow-sm:0 1px 3px rgba(0,0,0,.5);
+    --shadow-md:0 6px 20px rgba(0,0,0,.55);
+    --shadow-lg:0 12px 40px rgba(0,0,0,.7);
+    --radius:14px;
+  }
+  *{box-sizing:border-box;margin:0;padding:0}
+  html{scroll-behavior:smooth}
+  body{margin:0;font-family:'Segoe UI',Tahoma,Arial,sans-serif;background:
+    radial-gradient(1100px 460px at 50% -8%, rgba(201,162,39,.10), transparent 60%),
+    var(--bg);
+    color:var(--text);min-height:100vh;-webkit-font-smoothing:antialiased;text-rendering:optimizeLegibility}
+
+  /* ---------- Header ---------- */
+  header{background:linear-gradient(120deg,#050506 0%,#0A0A0D 45%,#0D0D12 100%);color:var(--gold-1);
+    box-shadow:0 4px 20px rgba(0,0,0,.6);position:sticky;top:0;z-index:40;
+    display:flex;align-items:center;justify-content:space-between;gap:12px;padding:0 46px;height:64px;overflow:hidden;
+    border-bottom:1px solid rgba(201,162,39,.25)}
+  header::before{content:'';position:absolute;inset:0;pointer-events:none;
+    background:radial-gradient(640px 70px at 12% -30%,rgba(240,214,138,.14),transparent 60%),
+               radial-gradient(540px 60px at 60% -35%,rgba(240,214,138,.08),transparent 55%)}
+  header::after{content:'';position:absolute;left:0;right:0;bottom:0;height:2px;
+    background:linear-gradient(90deg,transparent,rgba(240,214,138,.9) 15%,var(--gold-2) 50%,rgba(240,214,138,.9) 85%,transparent)}
+  .header-inner{position:relative;z-index:1;width:100%;max-width:1440px;margin:0 auto;
+    display:flex;align-items:center;justify-content:space-between;gap:14px}
+  .header-left{display:flex;align-items:center;gap:13px;min-width:0}
+  .brand{display:flex;align-items:center;gap:13px;min-width:0}
+  .seal{width:42px;height:42px;border-radius:50%;flex-shrink:0;display:flex;align-items:center;justify-content:center;
+    font-family:Georgia,'Times New Roman',serif;font-size:14px;font-weight:700;letter-spacing:.5px;color:#0B0B0E;
+    background:radial-gradient(circle at 32% 28%,#FBF1D6,var(--gold-1) 38%,var(--gold-2) 70%,var(--gold-3));
+    border:1px solid rgba(251,241,214,.65);
+    box-shadow:0 0 0 2px rgba(240,214,138,.22),0 0 18px rgba(201,162,39,.35),0 3px 14px rgba(0,0,0,.6)}
+  .brand-text{line-height:1.3;min-width:0}
+  .brand-name{font-family:'Times New Roman',Georgia,serif;font-size:20px;font-weight:700;letter-spacing:1px;
+    color:var(--gold-1);text-shadow:0 0 18px rgba(240,214,138,.28);
+    white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+  .brand-name .sep{color:var(--gold-3);margin:0 3px}
+  .brand-sub{color:rgba(240,214,138,.55);font-size:10px;letter-spacing:2.4px;text-transform:uppercase;font-weight:600;
+    white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+  .brand-div{width:1px;height:40px;flex-shrink:0;
+    background:linear-gradient(180deg,transparent,rgba(201,162,39,.55),transparent)}
+  .brand-tag{font-size:10px;letter-spacing:1.6px;color:rgba(237,230,216,.65);text-transform:uppercase;
+    border:1px solid rgba(240,214,138,.3);border-radius:999px;padding:6px 12px;white-space:nowrap;background:rgba(255,255,255,.03)}
+  .brand-tag b{color:var(--gold-1)}
+  .header-right{display:flex;align-items:center;gap:10px}
+  .chip{display:inline-flex;align-items:center;gap:6px;background:rgba(255,255,255,.04);
+    border:1px solid rgba(240,214,138,.22);border-radius:999px;padding:6px 13px;font-size:11px;
+    color:rgba(237,230,216,.8);white-space:nowrap}
+  .chip b{color:var(--gold-1);font-weight:700}
+
+  /* ---------- Layout ---------- */
+  .wrap{max-width:1280px;margin:0 auto;padding:26px 20px 10px}
+
+  /* ---------- KPI band ---------- */
+  .kpis{display:grid;grid-template-columns:repeat(5,1fr);gap:14px;margin-bottom:20px}
+  .kpi{background:linear-gradient(180deg,var(--panel-2),var(--panel));border:1px solid var(--line);border-radius:var(--radius);
+    box-shadow:var(--shadow-sm);padding:16px 18px;position:relative;overflow:hidden}
+  .kpi::before{content:'';position:absolute;left:0;top:14px;bottom:14px;width:3px;border-radius:3px;
+    background:linear-gradient(180deg,var(--gold-1),var(--gold-3))}
+  .kpi-label{font-size:11px;letter-spacing:1.1px;text-transform:uppercase;color:var(--muted);font-weight:600}
+  .kpi-value{font-family:Georgia,'Times New Roman',serif;font-size:26px;font-weight:700;margin-top:4px;
+    background:linear-gradient(180deg,#F6E9C2,var(--gold-2));-webkit-background-clip:text;background-clip:text;
+    -webkit-text-fill-color:transparent;color:var(--gold-1);font-variant-numeric:tabular-nums}
+  .kpi-sub{font-size:11px;color:var(--muted);margin-top:2px}
+
+  /* ---------- Panel / toolbar ---------- */
+  .panel{background:var(--panel);border:1px solid var(--line);border-radius:var(--radius);
+    box-shadow:var(--shadow-md);overflow:hidden}
+  .toolbar{display:flex;gap:12px;align-items:center;flex-wrap:wrap;padding:16px 18px;
+    border-bottom:1px solid var(--line-soft);background:linear-gradient(180deg,var(--panel-2),var(--panel))}
+  .search{flex:1;min-width:270px;display:flex;border:1.5px solid var(--gold-2);border-radius:10px;overflow:hidden;background:#0A0A0E}
+  .search input{flex:1;border:0;outline:0;padding:11px 14px;font-size:14px;color:var(--text);min-width:0;background:transparent}
+  .search input::placeholder{color:var(--muted)}
+  .search button{border:0;background:linear-gradient(180deg,var(--gold-1),var(--gold-2));color:#0B0B0E;
+    padding:0 22px;font-weight:700;cursor:pointer;font-size:14px;transition:filter .15s;white-space:nowrap}
+  .search button:hover{filter:brightness(1.08)}
+  .chips{display:flex;gap:8px;flex-wrap:wrap;padding:0 18px 16px;align-items:center}
+  .chips-label{font-size:11px;color:var(--muted);letter-spacing:1px;text-transform:uppercase;font-weight:600;margin-right:4px}
+  .fchip{border:1.5px solid var(--line);background:var(--bg-2);color:var(--text);border-radius:999px;padding:7px 15px;
+    cursor:pointer;font-size:12.5px;font-weight:600;transition:all .15s;white-space:nowrap}
+  .fchip:hover{border-color:var(--gold-2);color:var(--gold-1)}
+  .fchip.active{background:linear-gradient(180deg,var(--gold-1),var(--gold-2));color:#0B0B0E;
+    border-color:var(--gold-2);box-shadow:0 2px 10px rgba(201,162,39,.25)}
+  .fchip .cnt{opacity:.6;font-weight:600;font-size:11px}
+  .fchip.active .cnt{opacity:.75}
+  .clr{border:1px solid var(--line);background:var(--bg-2);color:var(--muted);border-radius:10px;padding:11px 16px;
+    cursor:pointer;font-weight:600;font-size:13.5px;transition:all .15s}
+  .clr:hover{color:var(--gold-1);border-color:var(--gold-2)}
+  .clr.warn{border-color:var(--gold-2);color:var(--gold-1)}
+
+  /* ---------- Stat bar ---------- */
+  .bar{display:flex;align-items:center;gap:8px;flex-wrap:wrap;padding:0 18px 16px;font-size:12.5px;color:var(--muted)}
+  .bar b{color:var(--gold-1);font-weight:700}
+
+  /* ---------- Table (cố định layout: không co/dãn khi bấm +/-) ---------- */
+  .tbl{overflow-x:auto}
+  table{width:100%;border-collapse:collapse;font-size:13.5px;min-width:900px;table-layout:fixed}
+  thead th{background:linear-gradient(180deg,#0D0D12,#08080B);color:var(--gold-1);text-align:left;padding:13px 16px;
+    position:sticky;top:0;z-index:5;white-space:nowrap;font-size:11px;font-weight:700;letter-spacing:.7px;
+    text-transform:uppercase;box-shadow:inset 0 1px 0 rgba(240,214,138,.12)}
+  thead th.num, tbody td.num, tfoot td.num{text-align:right}
+  thead th.ctr, tbody td.ctr{text-align:center}
+  tbody td{padding:10px 16px;border-top:1px solid var(--line-soft);vertical-align:middle}
+  tbody tr:nth-child(even){background:var(--bg-2)}
+  tbody tr{transition:background .12s}
+  tbody tr:hover{background:#18150D}
+  td.stt{white-space:nowrap;color:var(--muted);font-variant-numeric:tabular-nums}
+  .ano-btn{background:none;border:none;padding:0;margin:0;cursor:pointer;font:inherit;color:var(--gold-1);
+    font-weight:700;letter-spacing:.3px;border-bottom:1px dashed rgba(240,214,138,.5);
+    transition:color .12s;text-align:left}
+  .ano-btn:hover{color:#fff;border-bottom-color:#fff}
+  .ano-btn:focus-visible{outline:2px solid var(--gold-1);outline-offset:3px;border-radius:3px}
+  .tag{display:inline-block;padding:3px 10px;border-radius:999px;font-size:11px;font-weight:600;letter-spacing:.3px;white-space:nowrap}
+  .tag.vpp{background:rgba(201,162,39,.12);color:var(--gold-1);border:1px solid rgba(201,162,39,.4)}
+  .tag.tb{background:rgba(44,107,63,.16);color:#7BD89C;border:1px solid rgba(44,107,63,.5)}
+  .tag.kho{background:rgba(64,120,180,.16);color:#8FC1E9;border:1px solid rgba(64,120,180,.5)}
+  .tag.new{background:rgba(44,107,63,.16);color:#7BD89C;border:1px solid rgba(44,107,63,.5);margin-left:6px}
+  .row-del{display:inline-flex;margin-left:6px;vertical-align:-7px}
+
+  /* ---------- Form thêm thiết bị ---------- */
+  .form{display:flex;flex-direction:column;gap:12px}
+  .form label{display:flex;flex-direction:column;gap:6px;font-size:12.5px;color:var(--muted);font-weight:600}
+  .form input{background:#0A0A0E;border:1.5px solid var(--line);border-radius:10px;padding:11px 14px;
+    font-size:14px;color:var(--text);outline:0;font-family:inherit}
+  .form input:focus{border-color:var(--gold-2)}
+  .form-err{color:#E57373;font-size:12.5px;min-height:18px}
+  .form-btns{display:flex;gap:10px;justify-content:flex-end;margin-top:2px}
+  .note{color:#CFC8B8;font-size:12.5px}
+  .note-inp{width:100%;min-width:120px;background:transparent;border:1px solid transparent;border-radius:8px;
+    padding:7px 10px;color:#CFC8B8;font:inherit;font-size:12.5px;outline:0;transition:all .12s}
+  .note-inp::placeholder{color:var(--muted)}
+  .note-inp:hover{border-color:var(--line)}
+  .note-inp:focus{background:#0A0A0E;border-color:var(--gold-2);color:var(--text);box-shadow:0 0 0 2px rgba(201,162,39,.15)}
+  .thumb{display:block;width:52px;height:52px;border-radius:12px;overflow:hidden;flex-shrink:0}
+  /* steppers +/- */
+  .stepper{display:inline-flex;align-items:center;gap:2px;background:var(--bg-2);border:1px solid var(--line);
+    border-radius:999px;padding:3px}
+  .step-btn{width:28px;height:28px;border-radius:50%;border:1px solid var(--line);background:var(--panel-2);
+    color:var(--gold-1);font-size:16px;font-weight:800;line-height:1;cursor:pointer;
+    display:flex;align-items:center;justify-content:center;transition:all .12s;user-select:none}
+  .step-btn:hover{background:linear-gradient(180deg,var(--gold-1),var(--gold-2));color:#0B0B0E;border-color:var(--gold-2)}
+  .step-btn:active{transform:scale(.92)}
+  .step-btn:focus-visible{outline:2px solid var(--gold-1);outline-offset:2px}
+  .step-val{width:74px;text-align:center;font-weight:800;font-variant-numeric:tabular-nums;white-space:nowrap;
+    color:var(--text);font-size:14px;padding:0 6px;overflow:hidden}
+  .step-val.adj{color:var(--gold-1);text-decoration:underline dotted rgba(240,214,138,.6);text-underline-offset:3px}
+  tfoot td{padding:13px 16px;border-top:2px solid var(--gold-3);background:linear-gradient(180deg,#0C0C11,#08080B);
+    color:var(--gold-1);font-weight:700;white-space:nowrap;font-size:13px;letter-spacing:.2px}
+  tfoot td.num{font-size:14px}
+  .empty{text-align:center;padding:56px 20px;color:var(--muted)}
+  .empty .ic{font-size:42px;display:block;margin-bottom:12px}
+  .empty .t-text{font-size:15px;font-weight:600;color:#CFC8B8;margin-bottom:4px}
+  .empty .s-text{font-size:12.5px}
+
+  /* ---------- Pager ---------- */
+  .pager{display:flex;align-items:center;justify-content:space-between;gap:14px;flex-wrap:wrap;padding:14px 18px;
+    border-top:1px solid var(--line-soft);background:linear-gradient(180deg,var(--panel),var(--panel-2))}
+  .pager-left{display:flex;align-items:center;gap:10px;font-size:12.5px;color:var(--muted);white-space:nowrap}
+  .pager-right{display:flex;align-items:center;gap:8px}
+  .pg-btn{border:1px solid var(--line);background:var(--bg-2);border-radius:9px;padding:9px 16px;cursor:pointer;font-weight:600;
+    font-size:13px;color:var(--text);transition:all .15s;box-shadow:var(--shadow-sm);min-width:44px;text-align:center}
+  .pg-btn:hover:not(:disabled){border-color:var(--gold-2);color:var(--gold-1)}
+  .pg-btn:disabled{opacity:.35;cursor:default}
+  .pg-info{font-size:13px;color:var(--muted);white-space:nowrap;margin:0 4px}
+  .pg-info b{color:var(--gold-1)}
+  select.ps{border:1px solid var(--line);border-radius:8px;padding:8px 8px;font-size:12.5px;color:var(--text);background:var(--bg-2);cursor:pointer}
+  select.ps option{background:#0B0B0E}
+
+  /* ---------- Top10 panel ---------- */
+  .top10{margin-top:18px;background:var(--panel);border:1px solid var(--line);border-radius:var(--radius);
+    box-shadow:var(--shadow-md);padding:18px 20px}
+  .top10 h3{font-size:12px;font-weight:700;letter-spacing:.8px;text-transform:uppercase;color:var(--gold-1);margin-bottom:4px}
+  .top10 .sub{font-size:11px;color:var(--muted);margin-bottom:10px}
+  .t10-row{display:flex;align-items:center;gap:10px;padding:7px 0;border-bottom:1px solid var(--line-soft)}
+  .t10-rank{width:26px;height:26px;border-radius:7px;background:linear-gradient(180deg,var(--gold-1),var(--gold-2));
+    color:#0B0B0E;display:flex;align-items:center;justify-content:center;font-weight:800;font-size:11px;flex-shrink:0}
+  .t10-mid{flex:1;min-width:0}
+  .t10-name{display:flex;align-items:center;gap:8px;white-space:nowrap;overflow:hidden;font-size:12.5px}
+  .t10-name b{color:var(--gold-1)}
+  .t10-name span{color:var(--text);overflow:hidden;text-overflow:ellipsis}
+  .t10-bar{height:7px;background:var(--bg-2);border-radius:999px;overflow:hidden;margin-top:5px}
+  .t10-bar i{display:block;height:100%;background:linear-gradient(90deg,var(--gold-1),var(--gold-3));border-radius:999px}
+  .t10-val{text-align:right;min-width:78px}
+  .t10-val b{color:var(--gold-1);font-variant-numeric:tabular-nums}
+  .t10-val small{display:block;color:var(--muted);font-size:11px}
+
+  /* ---------- History ---------- */
+  .hist-list{max-height:240px;overflow:auto;border:1px solid var(--line-soft);border-radius:10px}
+  .h-row{display:flex;align-items:center;gap:12px;padding:8px 14px;border-bottom:1px solid var(--line-soft);
+    font-size:12.5px}
+  .h-row:last-child{border-bottom:none}
+  .h-row:nth-child(even){background:var(--bg-2)}
+  .h-time{color:var(--gold-1);font-variant-numeric:tabular-nums;white-space:nowrap;font-size:12px;min-width:150px}
+  .h-name{flex:1;min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;color:var(--text)}
+  .h-chg{white-space:nowrap;color:var(--muted);font-variant-numeric:tabular-nums}
+  .h-chg b{color:var(--text)}
+  .h-plus{color:#7BD89C;font-weight:800;min-width:64px;text-align:right;font-variant-numeric:tabular-nums}
+  .h-minus{color:#E57373;font-weight:800;min-width:64px;text-align:right;font-variant-numeric:tabular-nums}
+  .h-del{flex-shrink:0;width:24px;height:24px;border-radius:7px;border:1px solid var(--line);background:var(--panel-2);
+    color:var(--muted);font-size:14px;line-height:1;cursor:pointer;display:flex;align-items:center;
+    justify-content:center;transition:all .12s;padding:0}
+  .h-del:hover{color:#fff;background:#8E1F1F;border-color:#C62828}
+  .h-del:focus-visible{outline:2px solid var(--gold-1);outline-offset:2px}
+  .hist-btns{display:flex;gap:8px;margin-bottom:12px;flex-wrap:wrap}
+  .hist-btns .clr{padding:8px 14px;font-size:12.5px}
+  .hist.flash{animation:histFlash 1.6s ease}
+  @keyframes histFlash{
+    0%,100%{box-shadow:var(--shadow-md)}
+    25%,60%{box-shadow:0 0 0 3px rgba(240,214,138,.55),0 6px 24px rgba(201,162,39,.25);border-color:var(--gold-2)}
+  }
+
+  /* ---------- Save state + toast ---------- */
+  .save-state{font-size:12px;color:var(--muted);white-space:nowrap;margin-left:auto}
+  .save-state b{color:#7BD89C}
+  .save-state i{color:var(--gold-1);font-style:normal}
+  .btn-save{border:1.5px solid var(--gold-2);background:linear-gradient(180deg,var(--gold-1),var(--gold-2));
+    color:#0B0B0E;border-radius:10px;padding:11px 18px;cursor:pointer;font-weight:800;font-size:13.5px;
+    transition:filter .15s;box-shadow:0 2px 10px rgba(201,162,39,.25)}
+  .btn-save:hover{filter:brightness(1.1)}
+  .toast{position:fixed;right:20px;bottom:20px;z-index:200;max-width:min(420px,90vw);
+    background:linear-gradient(180deg,var(--panel-2),var(--panel));border:1px solid var(--gold-2);
+    border-radius:12px;padding:13px 16px;font-size:13px;color:var(--text);box-shadow:var(--shadow-lg);
+    opacity:0;transform:translateY(8px);transition:opacity .2s,transform .2s;pointer-events:none}
+  .toast.show{opacity:1;transform:none}
+  .toast b{color:var(--gold-1)}
+
+  /* ---------- Detail overlay ---------- */
+  .overlay{position:fixed;inset:0;z-index:100;display:none;align-items:center;justify-content:center;padding:20px}
+  .overlay.open{display:flex}
+  .backdrop{position:absolute;inset:0;background:rgba(0,0,0,.8);backdrop-filter:blur(6px);animation:fadeIn .2s ease}
+  @keyframes fadeIn{from{opacity:0}to{opacity:1}}
+  .detail{position:relative;width:min(980px,100%);max-height:92vh;overflow:auto;border-radius:18px;
+    background:linear-gradient(180deg,var(--panel-2),var(--panel));border:1px solid rgba(201,162,39,.35);
+    box-shadow:var(--shadow-lg);animation:pop .22s cubic-bezier(.2,.9,.3,1.2)}
+  @keyframes pop{from{transform:translateY(10px) scale(.97);opacity:0}to{transform:none;opacity:1}}
+  .detail-head{display:flex;align-items:center;justify-content:space-between;gap:14px;padding:20px 22px 16px;
+    border-bottom:1px solid var(--line-soft);position:sticky;top:0;background:linear-gradient(180deg,var(--panel-2),var(--panel));z-index:2}
+  .d-title{min-width:0}
+  .d-ano{font-family:Georgia,'Times New Roman',serif;font-size:15px;letter-spacing:.5px;color:var(--muted)}
+  .d-name{font-family:'Times New Roman',Georgia,serif;font-size:22px;font-weight:700;margin-top:3px;
+    background:linear-gradient(180deg,#F6E9C2,var(--gold-2));-webkit-background-clip:text;background-clip:text;
+    -webkit-text-fill-color:transparent;color:var(--gold-1);overflow-wrap:anywhere}
+  .d-close{flex-shrink:0;width:36px;height:36px;border-radius:10px;border:1px solid var(--line);cursor:pointer;
+    background:var(--bg-2);color:var(--gold-1);font-size:19px;line-height:1;display:flex;align-items:center;justify-content:center;
+    transition:all .15s}
+  .d-close:hover{background:var(--gold-2);color:#0B0B0E;border-color:var(--gold-2)}
+  .d-body{padding:18px 22px 22px}
+  .d-hero{display:flex;gap:18px;align-items:center;flex-wrap:wrap}
+  .d-hero .big{width:120px;height:120px;border-radius:18px;overflow:hidden;flex-shrink:0}
+  .d-badge{display:inline-block;padding:4px 12px;border-radius:999px;font-size:11.5px;font-weight:700;letter-spacing:.3px;margin:8px 6px 0 0}
+  .d-thumbs{display:grid;grid-template-columns:repeat(4,1fr);gap:12px;margin-top:16px}
+  .d-t{background:linear-gradient(180deg,var(--bg-2),var(--panel));border:1px solid var(--line);border-radius:12px;padding:13px 15px}
+  .d-t-label{font-size:10.5px;letter-spacing:.9px;text-transform:uppercase;color:var(--muted);font-weight:600;white-space:nowrap}
+  .d-t-val{font-size:19px;font-weight:700;margin-top:3px;color:var(--gold-1);font-variant-numeric:tabular-nums}
+  .d-t .d-t-note{font-size:10.5px;color:var(--muted);margin-top:2px}
+
+  /* ---------- Charts ---------- */
+  .charts{display:grid;grid-template-columns:1fr 1fr;gap:16px;margin-top:18px}
+  .chart-card{background:var(--bg-2);border:1px solid var(--line);border-radius:12px;padding:16px}
+  .chart-title{font-size:12px;font-weight:700;letter-spacing:.6px;text-transform:uppercase;color:var(--gold-1);margin-bottom:12px}
+  .legend{display:flex;flex-direction:column;gap:7px;margin-top:12px;font-size:12px;color:var(--text)}
+  .legend-row{display:flex;align-items:center;gap:8px}
+  .legend-swatch{width:11px;height:11px;border-radius:3px;flex-shrink:0}
+  .legend-name{flex:1;color:var(--muted);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+  .legend-val{font-weight:600;color:var(--gold-1);font-variant-numeric:tabular-nums}
+
+  footer{padding:20px 2px 26px;color:var(--muted);font-size:12px;display:flex;gap:18px;flex-wrap:wrap;
+    align-items:center;justify-content:space-between;border-top:1px solid var(--line-soft)}
+  footer b{color:var(--gold-1)}
+
+  /* ---------- Responsive ---------- */
+  @media (max-width:1080px){.kpis{grid-template-columns:repeat(3,1fr)}}
+  @media (max-width:900px){.kpis{grid-template-columns:repeat(3,1fr)}.charts{grid-template-columns:1fr}}
+  @media (max-width:760px){
+    .wrap{padding:16px 12px}
+    header{padding:0 16px}
+    .brand-div,.brand-tag{display:none}
+    .kpis{grid-template-columns:repeat(2,1fr);gap:10px}
+    .charts{grid-template-columns:1fr}
+    .d-thumbs{grid-template-columns:repeat(2,1fr)}
+    thead th{position:static}
+    .bar{flex-direction:column;align-items:flex-start}
+    .pager{flex-direction:column;align-items:flex-start}
+  }
+  @media print{
+    body{background:#111 !important;-webkit-print-color-adjust:exact;print-color-adjust:exact}
+    .search,.chips,.pager-right,.stepper,.clr,.h-del{display:none !important}
+    .note-inp{border:none !important;padding:0 !important}
+    header{position:static !important}
+    table{font-size:11px}
+  }
+  @media (prefers-reduced-motion:reduce){
+    *{animation:none !important;transition:none !important}
+    html{scroll-behavior:auto}
+  }
+</style>
+</head>
+<body>
+<header>
+  <div class="header-inner">
+    <div class="header-left">
+      <div class="brand">
+        <div class="seal">IT</div>
+        <div class="brand-text">
+          <div class="brand-name">Thiết Bị IT <span class="sep">·</span> Kho 10050</div>
+          <div class="brand-sub">Bảng kê tài sản IT — MMVN · Store 10050</div>
+        </div>
+      </div>
+      <div class="brand-div"></div>
+      <div class="brand-tag"><b>◈</b> &nbsp;Assets gộp 15/09/2026</div>
+    </div>
+    <div class="header-right">
+      <span class="chip">📅 Dữ liệu&nbsp;<b id="chipDate">15-Sep-26</b></span>
+      <span class="chip">💻 <b>159</b>&nbsp;thiết bị · <b>100</b> mới thêm</span>
+    </div>
+  </div>
+</header>
+
+<div class="wrap">
+  <div class="kpis" id="kpis">
+    <div class="kpi"><div class="kpi-label">Thiết bị</div><div class="kpi-value" id="kpiLines">0</div><div class="kpi-sub">Tổng dòng</div></div>
+    <div class="kpi"><div class="kpi-label">Mới thêm</div><div class="kpi-value" id="kpiQty">0</div><div class="kpi-sub">từ file phụ (vàng)</div></div>
+    <div class="kpi"><div class="kpi-label">Nhóm loại</div><div class="kpi-value" id="kpiUnit">0</div><div class="kpi-sub">Categories</div></div>
+    <div class="kpi"><div class="kpi-label">Đang sử dụng</div><div class="kpi-value" id="kpiAdj">0</div><div class="kpi-sub">Deployed</div></div>
+    <div class="kpi"><div class="kpi-label">Nhà cung cấp</div><div class="kpi-value" id="kpiItems">0</div><div class="kpi-sub">Suppliers</div></div>
+  </div>
+
+  <div class="panel">
+    <div class="toolbar">
+      <div class="search">
+        <input id="q" type="text" placeholder="Tìm tên, serial, model, hãng, NCC… (gõ không dấu vẫn ra)" aria-label="Tìm kiếm">
+        <button id="btnSearch" aria-label="Tìm">Tìm</button>
+      </div>
+      <button class="clr" id="btnHist">📜 Lịch sử</button>
+      <button class="clr" id="btnAdd">＋ Thêm</button>
+      <button class="clr" id="btnCsv">⬇ Xuất CSV</button>
+      <button class="btn-save" id="btnSave">💾 Lưu</button>
+    </div>
+    <div class="chips" id="chiptray"></div>
+    <datalist id="divList"></datalist>
+    <div class="bar" id="bar"></div>
+    <div class="tbl">
+      <table id="mainTable">
+        <colgroup>
+          <col style="width:56px"><col style="width:84px"><col><col style="width:230px"><col style="width:150px"><col style="width:140px"><col style="width:120px"><col>
+        </colgroup>
+        <thead><tr>
+          <th style="width:52px">STT</th><th>Ảnh</th><th>Tên thiết bị</th><th>Serial / Model</th>
+          <th class="ctr">Trạng thái</th><th>Ngành hàng</th><th class="ctr">Vị trí</th><th>Ghi chú</th>
+        </tr></thead>
+        <tbody id="tbody"></tbody>
+        <tfoot id="tfoot"></tfoot>
+      </table>
+    </div>
+    <div class="pager">
+      <div class="pager-left">
+        <span>Hiển thị</span>
+        <select class="ps" id="ps" aria-label="Số dòng mỗi trang">
+          <option value="10" selected>10</option><option value="25">25</option>
+          <option value="50">50</option><option value="0">Tất cả</option>
+        </select>
+        <span class="pg-info" id="pageInfo"></span>
+      </div>
+      <div class="pager-right">
+        <button class="pg-btn" id="prev">← Trước</button>
+        <button class="pg-btn" id="next">Sau →</button>
+      </div>
+    </div>
+  </div>
+
+  <div class="top10">
+    <h3>Top 10 Model nhiều nhất</h3>
+    <div class="sub">Theo số lượng thiết bị trong danh sách</div>
+    <div id="top10Chart"></div>
+  </div>
+
+  <div class="top10 hist">
+    <h3>Lịch sử thay đổi <span id="histCount"></span></h3>
+    <div class="sub">Thêm / xóa thiết bị và sửa ghi chú (mới nhất lên đầu)</div>
+    <div class="hist-btns">
+      <button class="clr" id="btnHistCsv">⬇ Xuất lịch sử CSV</button>
+      <button class="clr" id="btnHistClear">🗑 Xóa lịch sử</button>
+    </div>
+    <div class="hist-list" id="histList"></div>
+  </div>
+
+  <footer>
+    <span>Nguồn: <b>COMPUTER_IMPORT_TEMPLATE.xlsx</b> · Sheet COMPUTER · 19/10/2026 &nbsp;·&nbsp; MMVN</span>
+    <span class="chip"><b>MMVN</b>&nbsp;· THIẾT BỊ IT · KHO 10050</span>
+  </footer>
+</div>
+
+<div class="toast" id="toast" role="status"></div>
+<div class="overlay" id="addOverlay" role="dialog" aria-modal="true" aria-hidden="true">
+  <div class="backdrop" id="addBackdrop"></div>
+  <div class="detail" style="width:min(680px,100%)">
+    <div class="detail-head">
+      <div class="d-title"><div class="d-ano">NHẬP LIỆU</div><div class="d-name">Import Excel / CSV</div></div>
+      <button class="d-close" id="addClose" aria-label="Đóng">×</button>
+    </div>
+    <div class="d-body">
+      <div class="form">
+        <div style="display:flex;gap:10px;align-items:center;flex-wrap:wrap">
+          <button type="button" class="clr" id="impPick">📂 Chọn file Excel/CSV</button>
+          <input id="impFile" type="file" accept=".xlsx,.xls,.csv,text/csv" style="display:none">
+          <span style="color:var(--muted);font-size:12px">(hàng 1 = tiêu đề: Tên thiết bị · Serial · Model · Mã · Nhóm · Ngành hàng · Trạng thái · Ghi chú …)</span>
+        </div>
+        <textarea id="impPaste" rows="4" style="width:100%;background:#0A0A0E;color:var(--text);border:1.5px solid var(--gold-2);border-radius:10px;padding:10px;font-size:12.5px" placeholder="…hoặc copy vùng Excel rồi Ctrl+V vào đây"></textarea>
+        <div style="display:flex;gap:10px;align-items:center">
+          <button type="button" class="clr" id="impParse">👁 Xem trước</button>
+          <span style="color:var(--muted);font-size:12px" id="impMsg">Hỗ trợ .xlsx/.xls/.csv hoặc dán trực tiếp.</span>
+        </div>
+        <div id="impPreview" style="max-height:44vh;overflow:auto;border:1px solid var(--line);border-radius:10px;padding:6px 10px;font-size:12.5px"></div>
+        <div class="form-err" id="formErr"></div>
+        <div class="form-btns"><button class="clr" id="addCancel">Hủy</button><button class="btn-save" id="addOk">⬇ Import danh sách</button></div>
+      </div>
+    </div>
+  </div>
+</div>
+<script src="https://cdn.jsdelivr.net/npm/xlsx@0.18.5/dist/xlsx.full.min.js" onerror="window.SHEETS_FAIL=1"></script>
+<div class="overlay" id="overlay" role="dialog" aria-modal="true" aria-hidden="true">
+  <div class="backdrop" id="backdrop"></div>
+  <div class="detail" id="detail"></div>
+</div>
+
+<script>
+// DATA từ "COMPUTER_IMPORT_TEMPLATE.xlsx" · Sheet COMPUTER · 81 dòng · 19/10/2026
+const ALL = [{"stt":1,"id":"10080","name":"HSC25046B4BEE","unit":"Scanner","code":"10022482","tag":"","serial":"25046B4BEE","model":"Honey Well 1470g","brand":"Honeywell","status":"Deployed","cond":"Good","store":"10050","dept":"Main Cashier","division":"OPT","checkout":"Trinh, Nguyen Duy","phys":"Yes","os":"","proc":"","mem":"","fixed":"Yes","fa":"","dispose":"No","support":"Yes","warranty":"12","supplier":"Viet A Technologies JSC","pdate":"2025-01-19","startd":"2025-01-19","exp":"2026-01-19","cby":"Lam, Le Danh Huynh","cdate":"2026-01-19","uby":"MMVN FSD 50, Goods Receiving","udate":"2026-07-17","nyeu":"2025","nmon":"7","nupd":"2026","snok":"1","qty":1,"note":"","isNew":0},{"stt":2,"id":"2610","name":"MMNB5CD2233SKC","ip":"10.138.88.146","unit":"Laptops","code":"10019855","tag":"","serial":"5CD2233SKC","model":"ProBook 440 G4","brand":"HP","status":"Deployed","cond":"Good","store":"10050","dept":"SGM/CoSGM","division":"OPT","checkout":"MMVN FSD 50, SGM","phys":"","os":"","proc":"","mem":"","fixed":"Yes","fa":"","dispose":"No","support":"Yes","warranty":"36","supplier":"CMC Saigon System Intergration Co.,Ltd","pdate":"2017-05-07","startd":"2017-05-07","exp":"2019-05-06","cby":"Duc, Truong Van","cdate":"2025-06-12","uby":"Lam, Le Danh Huynh","udate":"2026-07-06","nyeu":"2017","nmon":"7","nupd":"2026","snok":"1","qty":1,"note":"","isNew":0},{"stt":3,"id":"2600","name":"MMNBF0S45Y2","ip":"10.138.88.163","unit":"Laptops","code":"10006201","tag":"","serial":"F0S45Y2","model":"Latitude 5400","brand":"Dell","status":"Deployed","cond":"Good","store":"10050","dept":"Sales Force","division":"OPT","checkout":"MMVN FSD 50, SFM 01","phys":"Yes","os":"MS Windows 10 Pro","proc":"","mem":"","fixed":"Yes","fa":"","dispose":"No","support":"Yes","warranty":"36","supplier":"IDC GROUP","pdate":"2019-10-15","startd":"2019-10-15","exp":"2023-01-10","cby":"Duc, Truong Van","cdate":"2025-06-12","uby":"Lam, Le Danh Huynh","udate":"2026-07-06","nyeu":"2019","nmon":"7","nupd":"2026","snok":"1","qty":1,"note":"","isNew":0},{"stt":4,"id":"3112","name":"MMPC1CZ02001DY","unit":"Desktops","code":"10006059","tag":"4HF92AV","serial":"1CZ02001DY","model":"ProDesk 400 G6","brand":"HP","status":"Deployed","cond":"Good","store":"10050","dept":"IT & ALC","division":"OPT","checkout":"MMVN FSD 50, Goods Receiving","phys":"","os":"","proc":"","mem":"","fixed":"Yes","fa":"","dispose":"No","support":"Yes","warranty":"36","supplier":"IDC GROUP","pdate":"2018-01-11","startd":"2018-01-11","exp":"2019-12-02","cby":"Duc, Truong Van","cdate":"2025-06-12","uby":"Duc, Truong Van","udate":"2026-04-10","nyeu":"2018","nmon":"4","nupd":"2026","snok":"1","qty":1,"note":"","isNew":0},{"stt":5,"id":"3429","name":"MMPC1CZ83704XZ","unit":"Desktops","code":"10006059","tag":"","serial":"1CZ83704XZ","model":"ProDesk 400 G5","brand":"HP","status":"Deployed","cond":"Good","store":"10050","dept":"Delivery","division":"OPT","checkout":"MMVN FSD 50, Delivery 01","phys":"Yes","os":"MS Windows 10 Pro","proc":"","mem":"","fixed":"No","fa":"","dispose":"","support":"Yes","warranty":"12","supplier":"CMC Saigon System Intergration Co.,Ltd","pdate":"2018-11-01","startd":"2018-11-01","exp":"2019-02-12","cby":"Duc, Truong Van","cdate":"2025-06-12","uby":"Lam, Le Danh Huynh","udate":"2026-07-06","nyeu":"2018","nmon":"7","nupd":"2026","snok":"1","qty":1,"note":"","isNew":0},{"stt":6,"id":"3425","name":"MMPC1CZ83704YF","ip":"10.138.126.166","unit":"Desktops","code":"50NB006","tag":"6234","serial":"1CZ83704YF","model":"ProDesk 400 G5","brand":"HP","status":"Deployed","cond":"Good","store":"10050","dept":"Delivery","division":"OPT","checkout":"MMVN FSD 50, Delivery 01","phys":"","os":"MS Windows 10 Pro","proc":"","mem":"8GB","fixed":"","fa":"Yes","dispose":"","support":"Yes","warranty":"36","supplier":"CMC Saigon System Intergration Co.,Ltd","pdate":"2018-09-26","startd":"2018-09-26","exp":"2021-11-14","cby":"Duc, Truong Van","cdate":"2025-06-12","uby":"Lam, Le Danh Huynh","udate":"2026-02-26","nyeu":"2018","nmon":"2","nupd":"2026","snok":"1","qty":1,"note":"","isNew":0},{"stt":7,"id":"3426","name":"MMPC1CZ83704YP","ip":"10.138.88.155","unit":"Desktops","code":"10006059","tag":"","serial":"1CZ83704YP","model":"ProDesk 400 G5","brand":"HP","status":"Deployed","cond":"Good","store":"10050","dept":"Fresh Floor","division":"OPT","checkout":"MMVN FSD 50, Perishable&Frozen&Delicatessen","phys":"Yes","os":"MS Windows 10 Pro","proc":"","mem":"","fixed":"No","fa":"","dispose":"","support":"Yes","warranty":"12","supplier":"CMC Saigon System Intergration Co.,Ltd","pdate":"2018-11-01","startd":"2018-11-01","exp":"2019-02-12","cby":"Duc, Truong Van","cdate":"2025-06-12","uby":"Lam, Le Danh Huynh","udate":"2026-07-06","nyeu":"2018","nmon":"7","nupd":"2026","snok":"1","qty":1,"note":"","isNew":0},{"stt":8,"id":"7344","name":"MMPC1CZ83704Z2","unit":"Desktops","code":"10006059","tag":"4HF92AV","serial":"1CZ83704Z2","model":"ProDesk 400 G5","brand":"HP","status":"Deployed","cond":"Good","store":"10050","dept":"Sales Force","division":"OPT","checkout":"MMVN FSD 50, SF Specialist 01","phys":"","os":"","proc":"","mem":"","fixed":"","fa":"Yes","dispose":"","support":"Yes","warranty":"36","supplier":"CMC Saigon System Intergration Co.,Ltd","pdate":"2018-09-26","startd":"2018-09-26","exp":"2014-07-07","cby":"ITFA","cdate":"2025-06-23","uby":"MMVN FSD 50, Goods Receiving","udate":"2026-07-17","nyeu":"2018","nmon":"7","nupd":"2026","snok":"1","qty":1,"note":"","isNew":0},{"stt":9,"id":"3424","name":"MMPC1CZ83704Z4","unit":"Desktops","code":"10006059","tag":"","serial":"1CZ83704Z4","model":"ProDesk 400 G5","brand":"HP","status":"Deployed","cond":"Good","store":"10050","dept":"Main Cashier","division":"OPT","checkout":"MMVN FSD 50, Main Cashier","phys":"Yes","os":"MS Windows 10 Pro","proc":"","mem":"","fixed":"No","fa":"","dispose":"","support":"Yes","warranty":"12","supplier":"CMC Saigon System Intergration Co.,Ltd","pdate":"2018-11-01","startd":"2018-11-01","exp":"2019-02-12","cby":"Duc, Truong Van","cdate":"2025-06-12","uby":"Lam, Le Danh Huynh","udate":"2026-07-06","nyeu":"2018","nmon":"7","nupd":"2026","snok":"1","qty":1,"note":"","isNew":0},{"stt":10,"id":"9765","name":"MMPCGM16RNG3","ip":"10.138.88.236","unit":"Desktops","code":"10022464","tag":"","serial":"GM16RNG3","model":"ThinkCentre Neo 50q G4","brand":"Lenovo","status":"Deployed","cond":"Good","store":"10050","dept":"Fresh Floor","division":"OPT","checkout":"MMVN FSD 50, Seafood","phys":"Yes","os":"MS Windows 11 Pro","proc":"","mem":"","fixed":"Yes","fa":"","dispose":"No","support":"Yes","warranty":"36","supplier":"FPT Information System Corporation","pdate":"2025-12-30","startd":"2025-12-30","exp":"2028-12-30","cby":"Lam, Le Danh Huynh","cdate":"2025-12-30","uby":"Lam, Le Danh Huynh","udate":"2026-07-06","nyeu":"2025","nmon":"7","nupd":"2026","snok":"1","qty":1,"note":"","isNew":0},{"stt":11,"id":"9769","name":"MMPCGM16RNGD","ip":"10.138.88.134","unit":"Desktops","code":"10022464","tag":"","serial":"GM16RNGD","model":"ThinkCentre Neo 50q G4","brand":"Lenovo","status":"Deployed","cond":"Good","store":"10050","dept":"Fresh Floor","division":"OPT","checkout":"MMVN FSD 50, Produce","phys":"Yes","os":"MS Windows 11 Pro","proc":"","mem":"","fixed":"Yes","fa":"","dispose":"No","support":"Yes","warranty":"36","supplier":"FPT Information System Corporation","pdate":"2025-12-30","startd":"2025-12-30","exp":"2028-12-30","cby":"Lam, Le Danh Huynh","cdate":"2025-12-30","uby":"Lam, Le Danh Huynh","udate":"2026-07-06","nyeu":"2025","nmon":"7","nupd":"2026","snok":"1","qty":1,"note":"","isNew":0},{"stt":12,"id":"9776","name":"MMPCGM16RNGE","ip":"10.138.88.147","unit":"Desktops","code":"10022464","tag":"","serial":"GM16RNGE","model":"ThinkCentre Neo 50q G4","brand":"Lenovo","status":"Deployed","cond":"Good","store":"10050","dept":"IT & ALC","division":"OPT","checkout":"MMVN FSD 50, Goods Receiving","phys":"Yes","os":"MS Windows 11 Pro","proc":"Intel Core i5-13420H","mem":"","fixed":"Yes","fa":"","dispose":"No","support":"Yes","warranty":"36","supplier":"FPT Information System Corporation","pdate":"2025-12-30","startd":"2025-12-30","exp":"2028-12-30","cby":"Lam, Le Danh Huynh","cdate":"2025-12-30","uby":"Lam, Le Danh Huynh","udate":"2026-07-06","nyeu":"2025","nmon":"7","nupd":"2026","snok":"1","qty":1,"note":"","isNew":0},{"stt":13,"id":"9771","name":"MMPCGM16RNGK","ip":"10.138.88.159","unit":"Desktops","code":"10022464","tag":"","serial":"GM16RNGK","model":"ThinkCentre Neo 50q G4","brand":"Lenovo","status":"Deployed","cond":"Good","store":"10050","dept":"Main Cashier","division":"OPT","checkout":"MMVN FSD 50, Main Cashier","phys":"Yes","os":"MS Windows 11 Pro","proc":"","mem":"","fixed":"Yes","fa":"","dispose":"No","support":"Yes","warranty":"36","supplier":"FPT Information System Corporation","pdate":"2025-12-30","startd":"2025-12-30","exp":"2028-12-30","cby":"Lam, Le Danh Huynh","cdate":"2025-12-30","uby":"Lam, Le Danh Huynh","udate":"2026-07-06","nyeu":"2025","nmon":"7","nupd":"2026","snok":"1","qty":1,"note":"","isNew":0},{"stt":14,"id":"9777","name":"MMPCGM16RNGM","ip":"10.138.88.133","unit":"Desktops","code":"10022464","tag":"","serial":"GM16RNGM","model":"ThinkCentre Neo 50q G4","brand":"Lenovo","status":"Deployed","cond":"Good","store":"10050","dept":"Delivery","division":"OPT","checkout":"MMVN FSD 50, Delivery 02","phys":"Yes","os":"MS Windows 11 Pro","proc":"","mem":"","fixed":"Yes","fa":"","dispose":"No","support":"Yes","warranty":"36","supplier":"FPT Information System Corporation","pdate":"2025-12-30","startd":"2025-12-30","exp":"2028-12-30","cby":"Lam, Le Danh Huynh","cdate":"2025-12-30","uby":"Lam, Le Danh Huynh","udate":"2026-07-06","nyeu":"2025","nmon":"7","nupd":"2026","snok":"1","qty":1,"note":"","isNew":0},{"stt":15,"id":"9768","name":"MMPCGM16RNH0","ip":"10.138.88.239","unit":"Desktops","code":"10022464","tag":"","serial":"GM16RNH0","model":"ThinkCentre Neo 50q G4","brand":"Lenovo","status":"Deployed","cond":"Good","store":"10050","dept":"Delivery","division":"OPT","checkout":"MMVN FSD 50, Delivery 02","phys":"Yes","os":"MS Windows 11 Pro","proc":"","mem":"","fixed":"Yes","fa":"","dispose":"No","support":"Yes","warranty":"36","supplier":"FPT Information System Corporation","pdate":"2025-12-30","startd":"2025-12-30","exp":"2028-12-30","cby":"Lam, Le Danh Huynh","cdate":"2025-12-30","uby":"Lam, Le Danh Huynh","udate":"2026-07-06","nyeu":"2025","nmon":"7","nupd":"2026","snok":"1","qty":1,"note":"","isNew":0},{"stt":16,"id":"9766","name":"MMPCGM16RNH1","ip":"10.138.88.131","unit":"Desktops","code":"10022464","tag":"","serial":"GM16RNH1","model":"ThinkCentre Neo 50q G4","brand":"Lenovo","status":"Deployed","cond":"Good","store":"10050","dept":"Delivery","division":"OPT","checkout":"MMVN FSD 50, Delivery 02","phys":"Yes","os":"MS Windows 11 Pro","proc":"","mem":"","fixed":"Yes","fa":"","dispose":"No","support":"Yes","warranty":"36","supplier":"FPT Information System Corporation","pdate":"2025-12-30","startd":"2025-12-30","exp":"2028-12-30","cby":"Lam, Le Danh Huynh","cdate":"2025-12-30","uby":"Lam, Le Danh Huynh","udate":"2026-07-06","nyeu":"2025","nmon":"7","nupd":"2026","snok":"1","qty":1,"note":"","isNew":0},{"stt":17,"id":"9772","name":"MMPCGM16RNH2","ip":"10.138.88.144","unit":"Desktops","code":"10022464","tag":"","serial":"GM16RNH2","model":"ThinkCentre Neo 50q G4","brand":"Lenovo","status":"Deployed","cond":"Good","store":"10050","dept":"Delivery","division":"OPT","checkout":"MMVN FSD 50, Delivery 02","phys":"Yes","os":"MS Windows 11 Pro","proc":"","mem":"","fixed":"Yes","fa":"","dispose":"No","support":"Yes","warranty":"36","supplier":"FPT Information System Corporation","pdate":"2025-12-30","startd":"2025-12-30","exp":"2028-12-30","cby":"Lam, Le Danh Huynh","cdate":"2025-12-30","uby":"Lam, Le Danh Huynh","udate":"2026-07-06","nyeu":"2025","nmon":"7","nupd":"2026","snok":"1","qty":1,"note":"","isNew":0},{"stt":18,"id":"9767","name":"MMPCGM16RNH8","ip":"10.138.88.130","unit":"Desktops","code":"10022464","tag":"","serial":"GM16RNH8","model":"ThinkCentre Neo 50q G4","brand":"Lenovo","status":"Deployed","cond":"Good","store":"10050","dept":"Sales Force","division":"OPT","checkout":"MMVN FSD 50, SF Specialist 01","phys":"Yes","os":"MS Windows 11 Pro","proc":"","mem":"","fixed":"Yes","fa":"","dispose":"No","support":"Yes","warranty":"36","supplier":"FPT Information System Corporation","pdate":"2025-12-30","startd":"2025-12-30","exp":"2028-12-30","cby":"Lam, Le Danh Huynh","cdate":"2025-12-30","uby":"Lam, Le Danh Huynh","udate":"2026-07-06","nyeu":"2025","nmon":"7","nupd":"2026","snok":"1","qty":1,"note":"","isNew":0},{"stt":19,"id":"9773","name":"MMPCGM16RNHM","ip":"10.138.88.138","unit":"Desktops","code":"10022464","tag":"","serial":"GM16RNHM","model":"ThinkCentre Neo 50q G4","brand":"Lenovo","status":"Deployed","cond":"Good","store":"10050","dept":"SPRS/QA","division":"OPT","checkout":"MMVN FSD 50, QA","phys":"Yes","os":"MS Windows 11 Pro","proc":"","mem":"","fixed":"Yes","fa":"","dispose":"No","support":"Yes","warranty":"36","supplier":"FPT Information System Corporation","pdate":"2025-12-30","startd":"2025-12-30","exp":"2028-12-30","cby":"Lam, Le Danh Huynh","cdate":"2025-12-30","uby":"Lam, Le Danh Huynh","udate":"2026-07-06","nyeu":"2025","nmon":"7","nupd":"2026","snok":"1","qty":1,"note":"","isNew":0},{"stt":20,"id":"9764","name":"MMPCGM16RNJ2","ip":"10.138.88.129","unit":"Desktops","code":"10022464","tag":"","serial":"GM16RNJ2","model":"ThinkCentre Neo 50q G4","brand":"Lenovo","status":"Deployed","cond":"Good","store":"10050","dept":"Fresh Floor","division":"OPT","checkout":"MMVN FSD 50, Butchery","phys":"Yes","os":"MS Windows 11 Pro","proc":"","mem":"","fixed":"Yes","fa":"","dispose":"No","support":"Yes","warranty":"36","supplier":"FPT Information System Corporation","pdate":"2025-12-30","startd":"2025-12-30","exp":"2028-12-30","cby":"Lam, Le Danh Huynh","cdate":"2025-12-30","uby":"Lam, Le Danh Huynh","udate":"2026-07-06","nyeu":"2025","nmon":"7","nupd":"2026","snok":"1","qty":1,"note":"","isNew":0},{"stt":21,"id":"9763","name":"MMPCGM16RNJ5","ip":"10.138.88.242","unit":"Desktops","code":"10022464","tag":"","serial":"GM16RNJ5","model":"ThinkCentre Neo 50q G4","brand":"Lenovo","status":"Deployed","cond":"Good","store":"10050","dept":"Fresh Floor","division":"OPT","checkout":"MMVN FSD 50, Butchery","phys":"Yes","os":"MS Windows 11 Pro","proc":"","mem":"","fixed":"Yes","fa":"","dispose":"No","support":"Yes","warranty":"36","supplier":"FPT Information System Corporation","pdate":"2025-12-30","startd":"2025-12-30","exp":"2028-12-30","cby":"Lam, Le Danh Huynh","cdate":"2025-12-30","uby":"MMVN FSD 50, Goods Receiving","udate":"2026-07-17","nyeu":"2025","nmon":"7","nupd":"2026","snok":"1","qty":1,"note":"","isNew":0},{"stt":22,"id":"9775","name":"MMPCGM16RNK0","ip":"10.138.88.228","unit":"Desktops","code":"10022464","tag":"","serial":"GM16RNK0","model":"ThinkCentre Neo 50q G4","brand":"Lenovo","status":"Deployed","cond":"Good","store":"10050","dept":"Fresh Floor","division":"OPT","checkout":"MMVN FSD 50, Dry Food 01","phys":"Yes","os":"MS Windows 11 Pro","proc":"","mem":"","fixed":"Yes","fa":"","dispose":"No","support":"Yes","warranty":"36","supplier":"FPT Information System Corporation","pdate":"2025-12-30","startd":"2025-12-30","exp":"2028-12-30","cby":"Lam, Le Danh Huynh","cdate":"2025-12-30","uby":"MMVN FSD 50, Goods Receiving","udate":"2026-07-17","nyeu":"2025","nmon":"7","nupd":"2026","snok":"1","qty":1,"note":"","isNew":0},{"stt":23,"id":"9774","name":"MMPCGM16RNK7","ip":"10.138.88.154","unit":"Desktops","code":"10022464","tag":"","serial":"GM16RNK7","model":"ThinkCentre Neo 50q G4","brand":"Lenovo","status":"Deployed","cond":"Good","store":"10050","dept":"IT & ALC","division":"OPT","checkout":"MMVN FSD 50, Goods Receiving","phys":"Yes","os":"MS Windows 11 Pro","proc":"Intel Core i5-13420H","mem":"","fixed":"Yes","fa":"","dispose":"No","support":"Yes","warranty":"36","supplier":"FPT Information System Corporation","pdate":"2025-12-30","startd":"2025-12-30","exp":"2028-12-30","cby":"Lam, Le Danh Huynh","cdate":"2025-12-30","uby":"Lam, Le Danh Huynh","udate":"2026-07-06","nyeu":"2025","nmon":"7","nupd":"2026","snok":"1","qty":1,"note":"","isNew":0},{"stt":24,"id":"9770","name":"MMPCGM16RNKB","ip":"10.138.88.145","unit":"Desktops","code":"10022464","tag":"","serial":"GM16RNKB","model":"ThinkCentre Neo 50q G4","brand":"Lenovo","status":"Deployed","cond":"Good","store":"10050","dept":"Sales Force","division":"OPT","checkout":"MMVN FSD 50, SF Specialist 01","phys":"Yes","os":"MS Windows 11 Pro","proc":"","mem":"","fixed":"Yes","fa":"","dispose":"No","support":"Yes","warranty":"36","supplier":"FPT Information System Corporation","pdate":"2025-12-30","startd":"2025-12-30","exp":"2028-12-30","cby":"Lam, Le Danh Huynh","cdate":"2025-12-30","uby":"Minh, Ha Anh","udate":"2026-07-29","nyeu":"2025","nmon":"7","nupd":"2026","snok":"1","qty":1,"note":"","isNew":0},{"stt":25,"id":"3437","name":"MMPCPBX3987","unit":"Desktops","code":"10865","tag":"4518CTO","serial":"PBX3987","model":"ThinkCentre M91","brand":"Lenovo","status":"Deployed","cond":"Good","store":"10050","dept":"Sales Force","division":"OPT","checkout":"MMVN FSD 50, SF Specialist 01","phys":"Yes","os":"MS Windows 7 Pro","proc":"Intel Core i5-2500 3.30GHz","mem":"8GB","fixed":"No","fa":"","dispose":"No","support":"Yes","warranty":"36","supplier":"FPT Information System Corporation","pdate":"2012-06-24","startd":"2012-06-24","exp":"2015-06-23","cby":"Duc, Truong Van","cdate":"2025-06-12","uby":"Lam, Le Danh Huynh","udate":"2026-02-26","nyeu":"2012","nmon":"2","nupd":"2026","snok":"1","qty":1,"note":"","isNew":0},{"stt":26,"id":"3436","name":"MMPCPC2BKBEE","ip":"10.138.88.135","unit":"Desktops","code":"10019683","tag":"","serial":"PC2BKBEE","model":"ThinkCentre M70q","brand":"Lenovo","status":"Deployed","cond":"Good","store":"10050","dept":"Sales Force","division":"OPT","checkout":"MMVN FSD 50, SF Specialist 01","phys":"","os":"","proc":"","mem":"","fixed":"","fa":"","dispose":"","support":"Yes","warranty":"36","supplier":"FPT Information System Corporation","pdate":"2022-05-24","startd":"2022-05-24","exp":"2027-05-24","cby":"Duc, Truong Van","cdate":"2025-06-12","uby":"Duc, Truong Van","udate":"2026-02-09","nyeu":"2022","nmon":"2","nupd":"2026","snok":"1","qty":1,"note":"","isNew":0},{"stt":27,"id":"3435","name":"MMPCPC2BKBET","unit":"Desktops","code":"10019683","tag":"","serial":"PC2BKBET","model":"ThinkCentre M70q","brand":"Lenovo","status":"Deployed","cond":"Good","store":"10050","dept":"HR","division":"OPT","checkout":"MMVN FSD 50, HR","phys":"","os":"","proc":"","mem":"","fixed":"","fa":"","dispose":"","support":"Yes","warranty":"36","supplier":"FPT Information System Corporation","pdate":"2022-05-24","startd":"2022-05-24","exp":"2027-05-24","cby":"Duc, Truong Van","cdate":"2025-06-12","uby":"Duc, Truong Van","udate":"2026-02-09","nyeu":"2022","nmon":"2","nupd":"2026","snok":"1","qty":1,"note":"","isNew":0},{"stt":28,"id":"3433","name":"MMPCPC2GTJS7","ip":"10.138.88.177","unit":"Desktops","code":"10019913","tag":"","serial":"PC2GTJS7","model":"ThinkCentre M70q","brand":"Lenovo","status":"Deployed","cond":"Good","store":"10050","dept":"Main Cashier","division":"OPT","checkout":"MMVN FSD 50, Main Cashier","phys":"","os":"MS Windows 10 Pro","proc":"","mem":"","fixed":"","fa":"","dispose":"","support":"Yes","warranty":"36","supplier":"FPT Information System Corporation","pdate":"2022-05-24","startd":"2022-05-24","exp":"2027-05-24","cby":"Duc, Truong Van","cdate":"2025-06-12","uby":"Lam, Le Danh Huynh","udate":"2026-07-06","nyeu":"2022","nmon":"7","nupd":"2026","snok":"1","qty":1,"note":"","isNew":0},{"stt":29,"id":"3434","name":"MMPCPC2GTJSK","ip":"10.138.88.172","unit":"Desktops","code":"10019913","tag":"","serial":"PC2GTJSK","model":"ThinkCentre M70q","brand":"Lenovo","status":"Deployed","cond":"Good","store":"10050","dept":"FM","division":"OPT","checkout":"MMVN FSD 50, Food FM","phys":"","os":"MS Windows 10 Pro","proc":"","mem":"","fixed":"","fa":"","dispose":"","support":"Yes","warranty":"36","supplier":"FPT Information System Corporation","pdate":"2022-05-24","startd":"2022-05-24","exp":"2027-05-24","cby":"Duc, Truong Van","cdate":"2025-06-12","uby":"Lam, Le Danh Huynh","udate":"2026-07-06","nyeu":"2022","nmon":"7","nupd":"2026","snok":"1","qty":1,"note":"","isNew":0},{"stt":30,"id":"3431","name":"MMPCR8DX00N","unit":"Desktops","code":"50NB008","tag":"6234","serial":"R8DX00N","model":"ThinkCentre M58","brand":"Lenovo","status":"Deployed","cond":"Good","store":"10050","dept":"Sales Force","division":"OPT","checkout":"MMVN FSD 50, SF Specialist 01","phys":"Yes","os":"","proc":"Intel Core 2 Duo E8500 3.16GHz","mem":"","fixed":"","fa":"Yes","dispose":"No","support":"Yes","warranty":"36","supplier":"FPT Information System Corporation","pdate":"2011-07-08","startd":"2011-07-08","exp":"2014-07-07","cby":"Duc, Truong Van","cdate":"2025-06-12","uby":"Lam, Le Danh Huynh","udate":"2026-02-26","nyeu":"2011","nmon":"2","nupd":"2026","snok":"1","qty":1,"note":"","isNew":0},{"stt":31,"id":"3430","name":"MMPCR8DX00R","unit":"Desktops","code":"10857","tag":"6234","serial":"R8DX00R","model":"ThinkCentre M58","brand":"Lenovo","status":"Deployed","cond":"Good","store":"10050","dept":"Fresh Floor","division":"OPT","checkout":"MMVN FSD 50, Bakery","phys":"Yes","os":"","proc":"Intel Core 2 Duo E8500 3.16GHz","mem":"","fixed":"","fa":"Yes","dispose":"No","support":"Yes","warranty":"36","supplier":"FPT Information System Corporation","pdate":"2011-07-08","startd":"2011-07-08","exp":"2014-07-07","cby":"Duc, Truong Van","cdate":"2025-06-12","uby":"Lam, Le Danh Huynh","udate":"2026-02-26","nyeu":"2011","nmon":"2","nupd":"2026","snok":"1","qty":1,"note":"","isNew":0},{"stt":32,"id":"3432","name":"MMPCR8N7ZWF","unit":"Desktops","code":"50NB007","tag":"6234","serial":"R8N7ZWF","model":"ThinkCentre M58","brand":"Lenovo","status":"Deployed","cond":"Good","store":"10050","dept":"Delivery","division":"OPT","checkout":"MMVN FSD 50, Delivery 02","phys":"Yes","os":"","proc":"Intel Core 2 Duo E8500 3.16GHz","mem":"","fixed":"","fa":"Yes","dispose":"No","support":"Yes","warranty":"36","supplier":"FPT Information System Corporation","pdate":"2011-07-08","startd":"2011-07-08","exp":"2014-07-07","cby":"Duc, Truong Van","cdate":"2025-06-12","uby":"Lam, Le Danh Huynh","udate":"2026-02-26","nyeu":"2011","nmon":"2","nupd":"2026","snok":"1","qty":1,"note":"","isNew":0},{"stt":33,"id":"3418","name":"MMPCSGH020RQ99","unit":"Desktops","code":"50NB016","tag":"AU247AV","serial":"SGH020RQ98","model":"HP Compaq 8000","brand":"HP","status":"Deployed","cond":"Good","store":"10050","dept":"Sales Force","division":"OPT","checkout":"MMVN FSD 50, SF Specialist 01","phys":"Yes","os":"MS Windows 7 Pro","proc":"Core 2 Duo E8500 3.16GHz","mem":"8GB","fixed":"","fa":"","dispose":"No","support":"Yes","warranty":"36","supplier":"FPT Information System Corporation","pdate":"2010-08-21","startd":"2010-08-21","exp":"2013-09-10","cby":"Duc, Truong Van","cdate":"2025-06-12","uby":"Lam, Le Danh Huynh","udate":"2026-02-26","nyeu":"2010","nmon":"2","nupd":"2026","snok":"1","qty":1,"note":"","isNew":0},{"stt":34,"id":"3413","name":"MMPCSGH023TKJC","unit":"Desktops","code":"5384","tag":"AU247AV","serial":"SGH023TKJC","model":"HP Compaq 8000","brand":"HP","status":"Deployed","cond":"Good","store":"10050","dept":"Dry Food","division":"OPT","checkout":"MMVN FSD 50, Dry Food 01","phys":"Yes","os":"MS Windows 7 Pro","proc":"Core 2 Duo E8500 3.16GHz","mem":"8GB","fixed":"","fa":"","dispose":"No","support":"Yes","warranty":"36","supplier":"FPT Information System Corporation","pdate":"2010-08-21","startd":"2010-08-21","exp":"2013-09-10","cby":"Duc, Truong Van","cdate":"2025-06-12","uby":"Lam, Le Danh Huynh","udate":"2026-02-26","nyeu":"2010","nmon":"2","nupd":"2026","snok":"1","qty":1,"note":"","isNew":0},{"stt":35,"id":"3421","name":"MMPCSGH023TKK0","unit":"Desktops","code":"10848","tag":"AU247AV","serial":"SGH023TKK0","model":"HP Compaq 8000","brand":"HP","status":"Deployed","cond":"Good","store":"10050","dept":"Delivery","division":"OPT","checkout":"MMVN FSD 50, Delivery 02","phys":"Yes","os":"MS Windows 7 Pro","proc":"Core 2 Duo E8500 3.16GHz","mem":"8GB","fixed":"","fa":"","dispose":"No","support":"Yes","warranty":"36","supplier":"FPT Information System Corporation","pdate":"2010-08-21","startd":"2010-08-21","exp":"2013-09-10","cby":"Duc, Truong Van","cdate":"2025-06-12","uby":"Lam, Le Danh Huynh","udate":"2026-02-26","nyeu":"2010","nmon":"2","nupd":"2026","snok":"1","qty":1,"note":"","isNew":0},{"stt":36,"id":"3415","name":"MMPCSGH023TKK1","unit":"Desktops","code":"5407","tag":"AU247AV","serial":"SGH023TKK1","model":"HP Compaq 8000","brand":"HP","status":"Deployed","cond":"Good","store":"10050","dept":"Goods Receiving","division":"OPT","checkout":"MMVN FSD 50, Goods Receiving","phys":"Yes","os":"MS Windows 7 Pro","proc":"Core 2 Duo E8500 3.16GHz","mem":"8GB","fixed":"","fa":"","dispose":"No","support":"Yes","warranty":"36","supplier":"FPT Information System Corporation","pdate":"2010-08-21","startd":"2010-08-21","exp":"2013-09-10","cby":"Duc, Truong Van","cdate":"2025-06-12","uby":"Lam, Le Danh Huynh","udate":"2026-02-26","nyeu":"2010","nmon":"2","nupd":"2026","snok":"1","qty":1,"note":"","isNew":0},{"stt":37,"id":"3416","name":"MMPCSGH023TKKQ","ip":"10.138.88.67","unit":"Desktops","code":"10853","tag":"AU247AV","serial":"SGH023TKKQ","model":"HP Compaq 8000","brand":"HP","status":"Deployed","cond":"Good","store":"10050","dept":"LP","division":"OPT","checkout":"MMVN FSD 50, Loss Prevention","phys":"Yes","os":"MS Windows 7 Pro","proc":"Core 2 Duo E8500 3.16GHz","mem":"8GB","fixed":"","fa":"","dispose":"No","support":"Yes","warranty":"36","supplier":"FPT Information System Corporation","pdate":"2010-08-21","startd":"2010-08-21","exp":"2013-09-10","cby":"Duc, Truong Van","cdate":"2025-06-12","uby":"Lam, Le Danh Huynh","udate":"2026-02-26","nyeu":"2010","nmon":"2","nupd":"2026","snok":"1","qty":1,"note":"","isNew":0},{"stt":38,"id":"3422","name":"MMPCSGH023TKKV","unit":"Desktops","code":"10847","tag":"AU247AV","serial":"SGH023TKKV","model":"HP Compaq 8000","brand":"HP","status":"Deployed","cond":"Good","store":"10050","dept":"Delivery","division":"OPT","checkout":"MMVN FSD 50, Delivery 02","phys":"Yes","os":"MS Windows 7 Pro","proc":"Core 2 Duo E8500 3.16GHz","mem":"8GB","fixed":"","fa":"","dispose":"No","support":"Yes","warranty":"36","supplier":"FPT Information System Corporation","pdate":"2010-08-21","startd":"2010-08-21","exp":"2013-09-10","cby":"Duc, Truong Van","cdate":"2025-06-12","uby":"Lam, Le Danh Huynh","udate":"2026-02-26","nyeu":"2010","nmon":"2","nupd":"2026","snok":"1","qty":1,"note":"","isNew":0},{"stt":39,"id":"3414","name":"MMPCSGH023TKLP","unit":"Desktops","code":"10872","tag":"AU247AV","serial":"SGH023TKLP","model":"HP Compaq 8000","brand":"HP","status":"Deployed","cond":"Good","store":"10050","dept":"Goods Receiving","division":"OPT","checkout":"MMVN FSD 50, Goods Receiving","phys":"Yes","os":"MS Windows 7 Pro","proc":"Core 2 Duo E8500 3.16GHz","mem":"8GB","fixed":"","fa":"","dispose":"No","support":"Yes","warranty":"36","supplier":"FPT Information System Corporation","pdate":"2010-08-21","startd":"2010-08-21","exp":"2013-09-10","cby":"Duc, Truong Van","cdate":"2025-06-12","uby":"Lam, Le Danh Huynh","udate":"2026-02-26","nyeu":"2010","nmon":"2","nupd":"2026","snok":"1","qty":1,"note":"","isNew":0},{"stt":40,"id":"3417","name":"MMPCSGH023TKM6","unit":"Desktops","code":"10876","tag":"AU247AV","serial":"SGH023TKM6","model":"HP Compaq 8000","brand":"HP","status":"Deployed","cond":"Good","store":"10050","dept":"SPRS/QA","division":"OPT","checkout":"MMVN FSD 50, QA","phys":"Yes","os":"MS Windows 7 Pro","proc":"Core 2 Duo E8500 3.16GHz","mem":"8GB","fixed":"","fa":"","dispose":"No","support":"Yes","warranty":"36","supplier":"FPT Information System Corporation","pdate":"2010-08-21","startd":"2010-08-21","exp":"2013-09-10","cby":"Duc, Truong Van","cdate":"2025-06-12","uby":"Lam, Le Danh Huynh","udate":"2026-02-26","nyeu":"2010","nmon":"2","nupd":"2026","snok":"1","qty":1,"note":"","isNew":0},{"stt":41,"id":"3420","name":"MMPCSGH023TKMC","ip":"10.138.126.176","unit":"Desktops","code":"5412","tag":"AU247AV","serial":"SGH023TKMC","model":"HP Compaq 8000","brand":"HP","status":"Deployed","cond":"Good","store":"10050","dept":"Main Cashier","division":"OPT","checkout":"MMVN FSD 50, MC","phys":"Yes","os":"MS Windows 7 Pro","proc":"Core 2 Duo E8500 3.16GHz","mem":"8GB","fixed":"","fa":"","dispose":"No","support":"Yes","warranty":"36","supplier":"FPT Information System Corporation","pdate":"2010-08-21","startd":"2010-08-21","exp":"2013-09-10","cby":"Duc, Truong Van","cdate":"2025-06-12","uby":"Lam, Le Danh Huynh","udate":"2026-02-26","nyeu":"2010","nmon":"2","nupd":"2026","snok":"1","qty":1,"note":"","isNew":0},{"stt":42,"id":"3419","name":"MMPCSGH044TQDG","unit":"Desktops","code":"10874","tag":"AU247AV","serial":"SGH044TQDG","model":"HP Compaq 8000","brand":"HP","status":"Deployed","cond":"Good","store":"10050","dept":"Goods Receiving","division":"OPT","checkout":"MMVN FSD 50, Goods Receiving","phys":"Yes","os":"MS Windows 7 Pro","proc":"Core 2 Duo E8500 3.16GHz","mem":"8GB","fixed":"","fa":"","dispose":"No","support":"Yes","warranty":"36","supplier":"FPT Information System Corporation","pdate":"2010-08-21","startd":"2010-08-21","exp":"2013-09-10","cby":"Duc, Truong Van","cdate":"2025-06-12","uby":"Lam, Le Danh Huynh","udate":"2026-02-26","nyeu":"2010","nmon":"2","nupd":"2026","snok":"1","qty":1,"note":"","isNew":0},{"stt":43,"id":"3423","name":"MMPCSGH113QT9R","ip":"10.138.89.207","unit":"Desktops","code":"10873","tag":"AU247AV","serial":"SGH113QT9R","model":"HP Compaq 8000","brand":"HP","status":"Deployed","cond":"Good","store":"10050","dept":"Delivery","division":"OPT","checkout":"MMVN FSD 50, Delivery 02","phys":"Yes","os":"MS Windows 7 Pro","proc":"Core 2 Duo E8500 3.16GHz","mem":"8GB","fixed":"","fa":"","dispose":"No","support":"Yes","warranty":"36","supplier":"FPT Information System Corporation","pdate":"2010-08-21","startd":"2010-08-21","exp":"2013-09-10","cby":"Duc, Truong Van","cdate":"2025-06-12","uby":"Lam, Le Danh Huynh","udate":"2026-02-26","nyeu":"2010","nmon":"2","nupd":"2026","snok":"1","qty":1,"note":"","isNew":0},{"stt":44,"id":"3428","name":"MMPCSGH652RNTM1","ip":"10.138.126.147","unit":"Desktops","code":"50NB004","tag":"6234","serial":"SGH652RNTM","model":"ProDesk 400 G5","brand":"HP","status":"Deployed","cond":"Good","store":"10050","dept":"Fresh Floor","division":"OPT","checkout":"MMVN FSD 50, Bakery","phys":"","os":"","proc":"","mem":"","fixed":"","fa":"Yes","dispose":"","support":"Yes","warranty":"36","supplier":"CMC Saigon System Intergration Co.,Ltd","pdate":"2018-09-26","startd":"2018-09-26","exp":"2021-11-14","cby":"Duc, Truong Van","cdate":"2025-06-12","uby":"Lam, Le Danh Huynh","udate":"2026-02-26","nyeu":"2018","nmon":"2","nupd":"2026","snok":"1","qty":1,"note":"","isNew":0},{"stt":45,"id":"2795","name":"MMPCSGH726PJVR","unit":"Desktops","code":"50NB009","tag":"Y5W43AV","serial":"SGH726PJVR","model":"ProDesk 400 G4","brand":"HP","status":"Deployed","cond":"Good","store":"10050","dept":"IT & ALC","division":"OPT","checkout":"MMVN FSD 50, Goods Receiving","phys":"","os":"MS Windows 10 Pro","proc":"","mem":"","fixed":"No","fa":"Yes","dispose":"","support":"Yes","warranty":"36","supplier":"CMC Saigon System Intergration Co.,Ltd","pdate":"2017-08-02","startd":"2017-08-02","exp":"2020-08-01","cby":"Duc, Truong Van","cdate":"2025-06-12","uby":"Lam, Le Danh Huynh","udate":"2026-02-26","nyeu":"2017","nmon":"2","nupd":"2026","snok":"1","qty":1,"note":"","isNew":0},{"stt":46,"id":"6424","name":"MMPCSGH726PJW0","ip":"10.138.88.182","unit":"Desktops","code":"50NB009","tag":"Y5W43AV","serial":"SGH726PJW0","model":"ProDesk 400 G4","brand":"HP","status":"Deployed","cond":"Good","store":"10050","dept":"IT & ALC","division":"OPT","checkout":"MMVN FSD 50, Goods Receiving","phys":"","os":"MS Windows 10 Pro","proc":"","mem":"","fixed":"No","fa":"Yes","dispose":"","support":"Yes","warranty":"36","supplier":"CMC Saigon System Intergration Co.,Ltd","pdate":"2017-08-02","startd":"2017-08-02","exp":"2020-08-01","cby":"ITFA","cdate":"2025-06-18","uby":"Lam, Le Danh Huynh","udate":"2026-02-26","nyeu":"2017","nmon":"2","nupd":"2026","snok":"1","qty":1,"note":"","isNew":0},{"stt":47,"id":"3427","name":"MMPCSGH740TMMQ","unit":"Desktops","code":"50NB009","tag":"6234","serial":"SGH740TMMQ","model":"ProDesk 400 G5","brand":"HP","status":"Deployed","cond":"Good","store":"10050","dept":"Fresh Floor","division":"OPT","checkout":"MMVN FSD 50, Bakery","phys":"","os":"","proc":"","mem":"","fixed":"","fa":"Yes","dispose":"","support":"Yes","warranty":"36","supplier":"CMC Saigon System Intergration Co.,Ltd","pdate":"2018-09-26","startd":"2018-09-26","exp":"2021-11-14","cby":"Duc, Truong Van","cdate":"2025-06-12","uby":"Lam, Le Danh Huynh","udate":"2026-02-26","nyeu":"2018","nmon":"2","nupd":"2026","snok":"1","qty":1,"note":"","isNew":0},{"stt":48,"id":"7335","name":"MMPCSGH740TMN7","unit":"Desktops","code":"50NB009","tag":"N4P96AV","serial":"SGH740TMN7","model":"ProDesk 400 G3","brand":"HP","status":"Deployed","cond":"Good","store":"10050","dept":"IT & ALC","division":"OPT","checkout":"MMVN FSD 50, Goods Receiving","phys":"","os":"","proc":"","mem":"","fixed":"","fa":"","dispose":"","support":"Yes","warranty":"36","supplier":"CMC Saigon System Intergration Co.,Ltd","pdate":"2016-12-30","startd":"2016-12-30","exp":"2020-02-17","cby":"ITFA","cdate":"2025-06-23","uby":"Lam, Le Danh Huynh","udate":"2026-02-26","nyeu":"2016","nmon":"2","nupd":"2026","snok":"1","qty":1,"note":"","isNew":0},{"stt":49,"id":"4327","name":"PDAFZ12450014050","unit":"Personal Digital Assistant","code":"10021932","tag":"","serial":"FZ12450014050","model":"Cipher Lab RS36","brand":"Cipher Lab","status":"Deployed","cond":"Good","store":"10050","dept":"Goods Receiving","division":"OPT","checkout":"MMVN FSD 50, Goods Receiving","phys":"Yes","os":"","proc":"","mem":"","fixed":"","fa":"","dispose":"No","support":"Yes","warranty":"12","supplier":"Viet A Technologies JSC","pdate":"2025-05-30","startd":"2025-05-30","exp":"2028-05-30","cby":"ITFA","cdate":"2025-06-13","uby":"Duc, Truong Van","udate":"2026-02-09","nyeu":"2025","nmon":"2","nupd":"2026","snok":"1","qty":1,"note":"","isNew":0},{"stt":50,"id":"4330","name":"PDAFZ12450014597","unit":"Personal Digital Assistant","code":"10021932","tag":"","serial":"FZ12450014597","model":"Cipher Lab RS36","brand":"Cipher Lab","status":"Deployed","cond":"Good","store":"10050","dept":"Goods Receiving","division":"OPT","checkout":"MMVN FSD 50, Goods Receiving","phys":"Yes","os":"","proc":"","mem":"","fixed":"","fa":"","dispose":"No","support":"Yes","warranty":"12","supplier":"Viet A Technologies JSC","pdate":"2025-05-30","startd":"2025-05-30","exp":"2028-05-30","cby":"ITFA","cdate":"2025-06-13","uby":"Duc, Truong Van","udate":"2026-02-09","nyeu":"2025","nmon":"2","nupd":"2026","snok":"1","qty":1,"note":"","isNew":0},{"stt":51,"id":"4325","name":"PDAFZ12450015725","unit":"Personal Digital Assistant","code":"10021932","tag":"","serial":"FZ12450015725","model":"Cipher Lab RS36","brand":"Cipher Lab","status":"Deployed","cond":"Good","store":"10050","dept":"Goods Receiving","division":"OPT","checkout":"MMVN FSD 50, Goods Receiving","phys":"Yes","os":"","proc":"","mem":"","fixed":"","fa":"","dispose":"No","support":"Yes","warranty":"12","supplier":"Viet A Technologies JSC","pdate":"2025-05-30","startd":"2025-05-30","exp":"2028-05-30","cby":"ITFA","cdate":"2025-06-13","uby":"Duc, Truong Van","udate":"2026-02-09","nyeu":"2025","nmon":"2","nupd":"2026","snok":"1","qty":1,"note":"","isNew":0},{"stt":52,"id":"4321","name":"PDAFZ12450015884","unit":"Personal Digital Assistant","code":"10021932","tag":"","serial":"FZ12450015884","model":"Cipher Lab RS36","brand":"Cipher Lab","status":"Deployed","cond":"Good","store":"10050","dept":"Goods Receiving","division":"OPT","checkout":"MMVN FSD 50, Goods Receiving","phys":"Yes","os":"","proc":"","mem":"","fixed":"","fa":"","dispose":"No","support":"Yes","warranty":"12","supplier":"Viet A Technologies JSC","pdate":"2025-05-30","startd":"2025-05-30","exp":"2028-05-30","cby":"ITFA","cdate":"2025-06-13","uby":"Duc, Truong Van","udate":"2026-02-09","nyeu":"2025","nmon":"2","nupd":"2026","snok":"1","qty":1,"note":"","isNew":0},{"stt":53,"id":"4324","name":"PDAFZ12450016036","unit":"Personal Digital Assistant","code":"10021932","tag":"","serial":"FZ12450016036","model":"Cipher Lab RS36","brand":"Cipher Lab","status":"Deployed","cond":"Good","store":"10050","dept":"Goods Receiving","division":"OPT","checkout":"MMVN FSD 50, Goods Receiving","phys":"Yes","os":"","proc":"","mem":"","fixed":"","fa":"","dispose":"No","support":"Yes","warranty":"12","supplier":"Viet A Technologies JSC","pdate":"2025-05-30","startd":"2025-05-30","exp":"2028-05-30","cby":"ITFA","cdate":"2025-06-13","uby":"Duc, Truong Van","udate":"2026-02-09","nyeu":"2025","nmon":"2","nupd":"2026","snok":"1","qty":1,"note":"","isNew":0},{"stt":54,"id":"4323","name":"PDAFZ12450017377","unit":"Personal Digital Assistant","code":"10021932","tag":"","serial":"FZ12450017377","model":"Cipher Lab RS36","brand":"Cipher Lab","status":"Deployed","cond":"Good","store":"10050","dept":"Goods Receiving","division":"OPT","checkout":"MMVN FSD 50, Goods Receiving","phys":"Yes","os":"","proc":"","mem":"","fixed":"","fa":"","dispose":"No","support":"Yes","warranty":"12","supplier":"Viet A Technologies JSC","pdate":"2025-05-30","startd":"2025-05-30","exp":"2028-05-30","cby":"ITFA","cdate":"2025-06-13","uby":"Duc, Truong Van","udate":"2026-02-09","nyeu":"2025","nmon":"2","nupd":"2026","snok":"1","qty":1,"note":"","isNew":0},{"stt":55,"id":"4322","name":"PDAFZ12450017667","unit":"Personal Digital Assistant","code":"10021932","tag":"","serial":"FZ12450017667","model":"Cipher Lab RS36","brand":"Cipher Lab","status":"Deployed","cond":"Good","store":"10050","dept":"Goods Receiving","division":"OPT","checkout":"MMVN FSD 50, Goods Receiving","phys":"Yes","os":"","proc":"","mem":"","fixed":"","fa":"","dispose":"No","support":"Yes","warranty":"12","supplier":"Viet A Technologies JSC","pdate":"2025-05-30","startd":"2025-05-30","exp":"2028-05-30","cby":"ITFA","cdate":"2025-06-13","uby":"Duc, Truong Van","udate":"2026-02-09","nyeu":"2025","nmon":"2","nupd":"2026","snok":"1","qty":1,"note":"","isNew":0},{"stt":56,"id":"4329","name":"PDAFZ12450017805","unit":"Personal Digital Assistant","code":"10021932","tag":"","serial":"FZ12450017805","model":"Cipher Lab RS36","brand":"Cipher Lab","status":"Deployed","cond":"Good","store":"10050","dept":"Goods Receiving","division":"OPT","checkout":"MMVN FSD 50, Goods Receiving","phys":"Yes","os":"","proc":"","mem":"","fixed":"","fa":"","dispose":"No","support":"Yes","warranty":"12","supplier":"Viet A Technologies JSC","pdate":"2025-05-30","startd":"2025-05-30","exp":"2028-05-30","cby":"ITFA","cdate":"2025-06-13","uby":"Duc, Truong Van","udate":"2026-02-09","nyeu":"2025","nmon":"2","nupd":"2026","snok":"1","qty":1,"note":"","isNew":0},{"stt":57,"id":"4328","name":"PDAFZ12450018361","unit":"Personal Digital Assistant","code":"10021932","tag":"","serial":"FZ12450018361","model":"Cipher Lab RS36","brand":"Cipher Lab","status":"Deployed","cond":"Good","store":"10050","dept":"Goods Receiving","division":"OPT","checkout":"MMVN FSD 50, Goods Receiving","phys":"Yes","os":"","proc":"","mem":"","fixed":"","fa":"","dispose":"No","support":"Yes","warranty":"12","supplier":"Viet A Technologies JSC","pdate":"2025-05-30","startd":"2025-05-30","exp":"2028-05-30","cby":"ITFA","cdate":"2025-06-13","uby":"Duc, Truong Van","udate":"2026-02-09","nyeu":"2025","nmon":"2","nupd":"2026","snok":"1","qty":1,"note":"","isNew":0},{"stt":58,"id":"4320","name":"PDAFZ12450018854","unit":"Personal Digital Assistant","code":"10021932","tag":"","serial":"FZ12450018854","model":"Cipher Lab RS36","brand":"Cipher Lab","status":"Deployed","cond":"Good","store":"10050","dept":"Goods Receiving","division":"OPT","checkout":"MMVN FSD 50, Goods Receiving","phys":"Yes","os":"","proc":"","mem":"","fixed":"","fa":"","dispose":"No","support":"Yes","warranty":"12","supplier":"Viet A Technologies JSC","pdate":"2025-05-30","startd":"2025-05-30","exp":"2028-05-30","cby":"ITFA","cdate":"2025-06-13","uby":"Duc, Truong Van","udate":"2026-02-09","nyeu":"2025","nmon":"2","nupd":"2026","snok":"1","qty":1,"note":"","isNew":0},{"stt":59,"id":"4326","name":"PDAFZ12450019119","unit":"Personal Digital Assistant","code":"10021932","tag":"","serial":"FZ12450019119","model":"Cipher Lab RS36","brand":"Cipher Lab","status":"Deployed","cond":"Good","store":"10050","dept":"Goods Receiving","division":"OPT","checkout":"MMVN FSD 50, Goods Receiving","phys":"Yes","os":"","proc":"","mem":"","fixed":"","fa":"","dispose":"No","support":"Yes","warranty":"12","supplier":"Viet A Technologies JSC","pdate":"2025-05-30","startd":"2025-05-30","exp":"2028-05-30","cby":"ITFA","cdate":"2025-06-13","uby":"Duc, Truong Van","udate":"2026-02-09","nyeu":"2025","nmon":"2","nupd":"2026","snok":"1","qty":1,"note":"","isNew":0},{"stt":60,"id":"13619","name":"MMPC96SQ053","ip":"10.138.88.187","unit":"Desktops","code":"10022096","tag":"","serial":"96SQ053","model":"Optiplex 7070","brand":"Dell","status":"Deployed","cond":"Good","store":"10050","dept":"Delivery","division":"OPT","checkout":"MMVN FSD 50, Delivery 01","phys":"Yes","os":"MS Windows 10 Pro","proc":"","mem":"","fixed":"","fa":"","dispose":"No","support":"Yes","warranty":"24","supplier":"IDC GROUP","pdate":"2020-12-24","startd":"2020-12-24","exp":"2025-12-24","cby":"","cdate":"","uby":"","udate":"","nyeu":"","nmon":"","nupd":"","snok":"","qty":1,"note":"","isNew":0},{"stt":61,"id":"13620","name":"MMPC96SW053","ip":"10.138.88.184","unit":"Desktops","code":"10022096","tag":"","serial":"96SW053","model":"Optiplex 7070","brand":"Dell","status":"Deployed","cond":"Good","store":"10050","dept":"Sales Force","division":"OPT","checkout":"MMVN FSD 50, SF Specialist 01","phys":"Yes","os":"MS Windows 10 Pro","proc":"","mem":"","fixed":"","fa":"","dispose":"No","support":"Yes","warranty":"24","supplier":"IDC GROUP","pdate":"2020-12-24","startd":"2020-12-24","exp":"2025-12-24","cby":"","cdate":"","uby":"","udate":"","nyeu":"","nmon":"","nupd":"","snok":"","qty":1,"note":"","isNew":0},{"stt":62,"id":"13621","name":"MMPC96VQ053","ip":"10.138.88.139","unit":"Desktops","code":"10022096","tag":"","serial":"96VQ053","model":"Optiplex 7070","brand":"Dell","status":"Deployed","cond":"Good","store":"10050","dept":"Sales Force","division":"OPT","checkout":"MMVN FSD 50, SF Specialist 01","phys":"Yes","os":"MS Windows 10 Pro","proc":"","mem":"","fixed":"","fa":"","dispose":"No","support":"Yes","warranty":"24","supplier":"IDC GROUP","pdate":"2020-12-24","startd":"2020-12-24","exp":"2025-12-24","cby":"","cdate":"","uby":"","udate":"","nyeu":"","nmon":"","nupd":"","snok":"","qty":1,"note":"","isNew":0},{"stt":63,"id":"13612","name":"MMPCPC2GTJSG","ip":"10.138.88.168","unit":"Desktops","code":"10019683","tag":"","serial":"PC2GTJSG","model":"ThinkCentre M70q","brand":"Lenovo","status":"Deployed","cond":"Good","store":"10050","dept":"Quality Assurance","division":"OPT","checkout":"MMVN FSD 50, SPRS","phys":"Yes","os":"MS Windows 10 Pro","proc":"","mem":"","fixed":"","fa":"","dispose":"No","support":"Yes","warranty":"24","supplier":"FPT Information System Corporation","pdate":"2020-12-24","startd":"2020-12-24","exp":"2025-12-24","cby":"","cdate":"","uby":"","udate":"","nyeu":"","nmon":"","nupd":"","snok":"","qty":1,"note":"","isNew":0},{"stt":64,"id":"13613","name":"PDAFT122C0000383","unit":"Personal Digital Assistant","code":"10021014","tag":"","serial":"FT122C0000383","model":"Cipher Lab RK95","brand":"Cipher Lab","status":"Deployed","cond":"Good","store":"10050","dept":"Goods Receiving","division":"OPT","checkout":"MMVN FSD 50, Goods Receiving","phys":"Yes","os":"","proc":"","mem":"","fixed":"","fa":"","dispose":"No","support":"Yes","warranty":"36","supplier":"Viet A Technologies JSC","pdate":"2024-01-30","startd":"2024-01-30","exp":"2029-01-30","cby":"","cdate":"","uby":"","udate":"","nyeu":"","nmon":"","nupd":"","snok":"","qty":1,"note":"","isNew":0},{"stt":65,"id":"13617","name":"PDAFT122C0000588","unit":"Personal Digital Assistant","code":"10021014","tag":"","serial":"FT122C0000588","model":"Cipher Lab RK95","brand":"Cipher Lab","status":"Deployed","cond":"Good","store":"10050","dept":"Goods Receiving","division":"OPT","checkout":"MMVN FSD 50, Goods Receiving","phys":"Yes","os":"","proc":"","mem":"","fixed":"","fa":"","dispose":"No","support":"Yes","warranty":"36","supplier":"Viet A Technologies JSC","pdate":"2024-01-30","startd":"2024-01-30","exp":"2029-01-30","cby":"","cdate":"","uby":"","udate":"","nyeu":"","nmon":"","nupd":"","snok":"","qty":1,"note":"","isNew":0},{"stt":66,"id":"13615","name":"PDAFT122C0000817","unit":"Personal Digital Assistant","code":"10021014","tag":"","serial":"FT122C0000817","model":"Cipher Lab RK95","brand":"Cipher Lab","status":"Deployed","cond":"Good","store":"10050","dept":"Goods Receiving","division":"OPT","checkout":"MMVN FSD 50, Goods Receiving","phys":"Yes","os":"","proc":"","mem":"","fixed":"","fa":"","dispose":"No","support":"Yes","warranty":"36","supplier":"Viet A Technologies JSC","pdate":"2024-01-30","startd":"2024-01-30","exp":"2029-01-30","cby":"","cdate":"","uby":"","udate":"","nyeu":"","nmon":"","nupd":"","snok":"","qty":1,"note":"","isNew":0},{"stt":67,"id":"13614","name":"PDAFT122C0002745","unit":"Personal Digital Assistant","code":"10021014","tag":"","serial":"FT122C0002745","model":"Cipher Lab RK95","brand":"Cipher Lab","status":"Deployed","cond":"Good","store":"10050","dept":"Goods Receiving","division":"OPT","checkout":"MMVN FSD 50, Goods Receiving","phys":"Yes","os":"","proc":"","mem":"","fixed":"","fa":"","dispose":"No","support":"Yes","warranty":"36","supplier":"Viet A Technologies JSC","pdate":"2024-01-30","startd":"2024-01-30","exp":"2029-01-30","cby":"","cdate":"","uby":"","udate":"","nyeu":"","nmon":"","nupd":"","snok":"","qty":1,"note":"","isNew":0},{"stt":68,"id":"13616","name":"PDAFT12380001650","unit":"Personal Digital Assistant","code":"10021014","tag":"","serial":"FT12380001650","model":"Cipher Lab RK95","brand":"Cipher Lab","status":"Deployed","cond":"Good","store":"10050","dept":"Goods Receiving","division":"OPT","checkout":"MMVN FSD 50, Goods Receiving","phys":"Yes","os":"","proc":"","mem":"","fixed":"","fa":"","dispose":"No","support":"Yes","warranty":"36","supplier":"Viet A Technologies JSC","pdate":"2024-01-30","startd":"2024-01-30","exp":"2029-01-30","cby":"","cdate":"","uby":"","udate":"","nyeu":"","nmon":"","nupd":"","snok":"","qty":1,"note":"","isNew":0},{"stt":69,"id":"13618","name":"PDAFT623C0000020","unit":"Personal Digital Assistant","code":"10021014","tag":"","serial":"FT623C0000020","model":"5SC-RK95","brand":"Cipher Lab","status":"Deployed","cond":"Good","store":"10050","dept":"Goods Receiving","division":"OPT","checkout":"MMVN FSD 50, Goods Receiving","phys":"Yes","os":"","proc":"","mem":"","fixed":"","fa":"","dispose":"No","support":"Yes","warranty":"36","supplier":"Viet A Technologies JSC","pdate":"2024-01-30","startd":"2024-01-30","exp":"2029-01-30","cby":"","cdate":"","uby":"","udate":"","nyeu":"","nmon":"","nupd":"","snok":"","qty":1,"note":"","isNew":0},{"stt":70,"id":"13623","name":"PDAG18HG2213","unit":"Personal Digital Assistant","code":"10022372","tag":"","serial":"G18HG2213","model":"Datalogic Falcon X4","brand":"Datalogic","status":"Deployed","cond":"Good","store":"10050","dept":"Goods Receiving","division":"OPT","checkout":"MMVN FSD 50, Goods Receiving","phys":"Yes","os":"","proc":"","mem":"","fixed":"","fa":"","dispose":"No","support":"Yes","warranty":"36","supplier":"Cty CP Giai Phap TM An Thinh","pdate":"2019-12-30","startd":"2019-12-30","exp":"2021-12-30","cby":"","cdate":"","uby":"","udate":"","nyeu":"","nmon":"","nupd":"","snok":"","qty":1,"note":"","isNew":0},{"stt":71,"id":"13624","name":"PDAG19MF7013","unit":"Personal Digital Assistant","code":"10022372","tag":"","serial":"G19MF7013","model":"Datalogic Falcon X4","brand":"Datalogic","status":"Deployed","cond":"Good","store":"10050","dept":"Goods Receiving","division":"OPT","checkout":"MMVN FSD 50, Goods Receiving","phys":"Yes","os":"","proc":"","mem":"","fixed":"","fa":"","dispose":"No","support":"Yes","warranty":"36","supplier":"Cty CP Giai Phap TM An Thinh","pdate":"2019-12-30","startd":"2019-12-30","exp":"2021-12-30","cby":"","cdate":"","uby":"","udate":"","nyeu":"","nmon":"","nupd":"","snok":"","qty":1,"note":"","isNew":0},{"stt":72,"id":"13622","name":"PDAG19MF7020","unit":"Personal Digital Assistant","code":"10022372","tag":"","serial":"G19MF7020","model":"Datalogic Falcon X4","brand":"Datalogic","status":"Deployed","cond":"Good","store":"10050","dept":"Goods Receiving","division":"OPT","checkout":"MMVN FSD 50, Goods Receiving","phys":"Yes","os":"","proc":"","mem":"","fixed":"","fa":"","dispose":"No","support":"Yes","warranty":"36","supplier":"Cty CP Giai Phap TM An Thinh","pdate":"2019-12-30","startd":"2019-12-30","exp":"2021-12-30","cby":"","cdate":"","uby":"","udate":"","nyeu":"","nmon":"","nupd":"","snok":"","qty":1,"note":"","isNew":0},{"stt":73,"id":"13625","name":"SCA85100812","unit":"Scale","code":"10328","tag":"","serial":"85100812","model":"Mettler Toledo bCom","brand":"Mettler Toledo","status":"Deployed","cond":"Good","store":"10050","dept":"Fresh Food","division":"OPT","checkout":"MMVN FSD 50, Produce","phys":"Yes","os":"","proc":"","mem":"","fixed":"","fa":"","dispose":"No","support":"Yes","warranty":"36","supplier":"Cty CP Giai Phap TM An Thinh","pdate":"2014-06-26","startd":"2014-06-26","exp":"2024-06-26","cby":"","cdate":"","uby":"","udate":"","nyeu":"","nmon":"","nupd":"","snok":"","qty":1,"note":"","isNew":0},{"stt":74,"id":"13626","name":"SCAB404244354","unit":"Scale","code":"10333","tag":"","serial":"B404244354","model":"Mettler Toledo bCom","brand":"Mettler Toledo","status":"Deployed","cond":"Good","store":"10050","dept":"Fresh Food","division":"OPT","checkout":"MMVN FSD 50, Produce","phys":"Yes","os":"","proc":"","mem":"","fixed":"","fa":"","dispose":"No","support":"Yes","warranty":"36","supplier":"Cty CP Giai Phap TM An Thinh","pdate":"2014-07-30","startd":"2014-07-30","exp":"2019-07-30","cby":"","cdate":"","uby":"","udate":"","nyeu":"","nmon":"","nupd":"","snok":"","qty":1,"note":"","isNew":0},{"stt":75,"id":"13627","name":"SCAB404248507","unit":"Scale","code":"10333","tag":"","serial":"B404248507","model":"Mettler Toledo bCom","brand":"Mettler Toledo","status":"Deployed","cond":"Good","store":"10050","dept":"Fresh Food","division":"OPT","checkout":"MMVN FSD 50, Produce","phys":"Yes","os":"","proc":"","mem":"","fixed":"","fa":"","dispose":"No","support":"Yes","warranty":"36","supplier":"Cty CP Giai Phap TM An Thinh","pdate":"2014-07-30","startd":"2014-07-30","exp":"2019-07-30","cby":"","cdate":"","uby":"","udate":"","nyeu":"","nmon":"","nupd":"","snok":"","qty":1,"note":"","isNew":0},{"stt":76,"id":"13633","name":"VPOS56CV102792","unit":"Point-Of-Sale","code":"5108","tag":"","serial":"56CV102792","model":"Beetle /M-II Plus","brand":"Wincor Nixdorf AG","status":"Deployed","cond":"Good","store":"10050","dept":"Main Cashier","division":"OPT","checkout":"MMVN FSD 50, Main Cashier","phys":"Yes","os":"","proc":"","mem":"","fixed":"","fa":"","dispose":"No","support":"Yes","warranty":"36","supplier":"Viet A Technologies JSC","pdate":"2010-10-01","startd":"2010-10-01","exp":"2020-10-01","cby":"","cdate":"","uby":"","udate":"","nyeu":"","nmon":"","nupd":"","snok":"","qty":1,"note":"","isNew":0},{"stt":77,"id":"13628","name":"VPOS56CV102803","unit":"Point-Of-Sale","code":"5108","tag":"","serial":"56CV102803","model":"Beetle /M-II Plus","brand":"Wincor Nixdorf AG","status":"Deployed","cond":"Good","store":"10050","dept":"Main Cashier","division":"OPT","checkout":"MMVN FSD 50, Main Cashier","phys":"Yes","os":"","proc":"","mem":"","fixed":"","fa":"","dispose":"No","support":"Yes","warranty":"36","supplier":"Viet A Technologies JSC","pdate":"2010-10-01","startd":"2010-10-01","exp":"2020-10-01","cby":"","cdate":"","uby":"","udate":"","nyeu":"","nmon":"","nupd":"","snok":"","qty":1,"note":"","isNew":0},{"stt":78,"id":"13630","name":"VPOS56CV102938","unit":"Point-Of-Sale","code":"5108","tag":"","serial":"56CV102938","model":"Beetle /M-II Plus","brand":"Wincor Nixdorf AG","status":"Deployed","cond":"Good","store":"10050","dept":"Main Cashier","division":"OPT","checkout":"MMVN FSD 50, Main Cashier","phys":"Yes","os":"","proc":"","mem":"","fixed":"","fa":"","dispose":"No","support":"Yes","warranty":"36","supplier":"Viet A Technologies JSC","pdate":"2010-10-01","startd":"2010-10-01","exp":"2020-10-01","cby":"","cdate":"","uby":"","udate":"","nyeu":"","nmon":"","nupd":"","snok":"","qty":1,"note":"","isNew":0},{"stt":79,"id":"13632","name":"VPOS56CV104781","unit":"Point-Of-Sale","code":"5108","tag":"","serial":"56CV104781","model":"Beetle /M-II Plus","brand":"Wincor Nixdorf AG","status":"Deployed","cond":"Good","store":"10050","dept":"Main Cashier","division":"OPT","checkout":"MMVN FSD 50, Main Cashier","phys":"Yes","os":"","proc":"","mem":"","fixed":"","fa":"","dispose":"No","support":"Yes","warranty":"36","supplier":"Viet A Technologies JSC","pdate":"2010-10-01","startd":"2010-10-01","exp":"2020-10-01","cby":"","cdate":"","uby":"","udate":"","nyeu":"","nmon":"","nupd":"","snok":"","qty":1,"note":"","isNew":0},{"stt":80,"id":"13631","name":"VPOS56CV104792","unit":"Point-Of-Sale","code":"5108","tag":"","serial":"56CV104792","model":"Beetle /M-II Plus","brand":"Wincor Nixdorf AG","status":"Deployed","cond":"Good","store":"10050","dept":"Main Cashier","division":"OPT","checkout":"MMVN FSD 50, Main Cashier","phys":"Yes","os":"","proc":"","mem":"","fixed":"","fa":"","dispose":"No","support":"Yes","warranty":"36","supplier":"Viet A Technologies JSC","pdate":"2010-10-01","startd":"2010-10-01","exp":"2020-10-01","cby":"","cdate":"","uby":"","udate":"","nyeu":"","nmon":"","nupd":"","snok":"","qty":1,"note":"","isNew":0},{"stt":81,"id":"13629","name":"VPOS56CV105258","unit":"Point-Of-Sale","code":"5108","tag":"","serial":"56CV105258","model":"Beetle /M-II Plus","brand":"Wincor Nixdorf AG","status":"Deployed","cond":"Good","store":"10050","dept":"Main Cashier","division":"OPT","checkout":"MMVN FSD 50, Main Cashier","phys":"Yes","os":"","proc":"","mem":"","fixed":"","fa":"","dispose":"No","support":"Yes","warranty":"36","supplier":"Viet A Technologies JSC","pdate":"2010-10-01","startd":"2010-10-01","exp":"2020-10-01","cby":"","cdate":"","uby":"","udate":"","nyeu":"","nmon":"","nupd":"","snok":"","qty":1,"note":"","isNew":0}];
+
+// Vị trí mặc định BACK OFFICE cho toàn bộ thiết bị
+ALL.forEach(function(r){ const t = String(r.vitri == null ? '' : r.vitri).trim(); if (!t) r.vitri = 'BACK OFFICE'; });
+// Ảnh thật: gắn dataURL/đường dẫn theo STT, ví dụ IMGS[10] = "img/may-01.jpg". Trống → thumbnail SVG tự sinh.
+const IMGS = {};
+// Glyph minh họa theo STT (theo nhóm thiết bị)
+const GLYPHS = {"1": "🔍", "2": "💻", "3": "💻", "4": "🖥", "5": "🖥", "6": "🖥", "7": "🖥", "8": "🖥", "9": "🖥", "10": "🖥", "11": "🖥", "12": "🖥", "13": "🖥", "14": "🖥", "15": "🖥", "16": "🖥", "17": "🖥", "18": "🖥", "19": "🖥", "20": "🖥", "21": "🖥", "22": "🖥", "23": "🖥", "24": "🖥", "25": "🖥", "26": "🖥", "27": "🖥", "28": "🖥", "29": "🖥", "30": "🖥", "31": "🖥", "32": "🖥", "33": "🖥", "34": "🖥", "35": "🖥", "36": "🖥", "37": "🖥", "38": "🖥", "39": "🖥", "40": "🖥", "41": "🖥", "42": "🖥", "43": "🖥", "44": "🖥", "45": "🖥", "46": "🖥", "47": "🖥", "48": "🖥", "49": "📦", "50": "📦", "51": "📦", "52": "📦", "53": "📦", "54": "📦", "55": "📦", "56": "📦", "57": "📦", "58": "📦", "59": "📦", "60": "🖥", "61": "🖥", "62": "🖥", "63": "🖥", "64": "📦", "65": "📦", "66": "📦", "67": "📦", "68": "📦", "69": "📦", "70": "📦", "71": "📦", "72": "📦", "73": "⚖", "74": "⚖", "75": "⚖", "76": "📦", "77": "📦", "78": "📦", "79": "📦", "80": "📦", "81": "📦"};
+const ADJ = {}; // stt -> số lượng sau khi bấm +/-
+const HIST = []; // [{t, stt, name, from, to} | {t, reset:true, count}]
+const CUSTOM = []; // thiết bị tự thêm [{stt, name, unit, qty, note, custom:true}]
+const NOTES = {}; // stt -> ghi chú đang gõ (chỉ lưu chênh lệch với gốc)
+const ORIG_NOTES = {}; // stt -> ghi chú gốc (Excel / lúc tạo mới)
+let SAVED_NOTES = {}; // ảnh ghi chú đã chốt lần Lưu trước
+// Mô hình chốt khi Lưu: +/− chỉ đổi số tạm (ADJ); bấm Lưu mới ghi lịch sử + lưu cứng.
+// Lưu trữ: SL đã chốt + lịch sử + thời điểm lưu (giữ lại khi tải lại trang)
+// Form truong (tong tu Excel) - hien thi trong modal + xuat CSV
+const FIELDS = [["id", "ID hệ thống"], ["name", "Tên thiết bị"], ["unit", "Nhóm"], ["code", "Mã thiết bị"], ["tag", "Asset Tag"], ["ip", "Địa chỉ IP"], ["serial", "Serial"], ["model", "Model"], ["brand", "Hãng"], ["status", "Trạng thái"], ["cond", "Tình trạng"], ["store", "Kho/Vị trí"], ["vitri", "Vị trí thiết bị"], ["dept", "Bộ phận"], ["division", "Division"], ["checkout", "CHECK_OUT_TO"], ["phys", "Có sẵn vật lý"], ["os", "Hệ điều hành"], ["proc", "CPU"], ["mem", "RAM"], ["fixed", "FIXED_ASSET"], ["fa", "FA_STATUS"], ["dispose", "is Dispose"], ["support", "IT Support"], ["warranty", "Bảo hành (tháng)"], ["supplier", "Nhà cung cấp"], ["pdate", "Ngày mua"], ["startd", "Start Date"], ["exp", "Hết bảo hành"], ["cby", "Người tạo"], ["cdate", "Ngày tạo"], ["uby", "Người cập nhật"], ["udate", "Ngày cập nhật"], ["nyeu", "Năm sinh dữ liệu"], ["nmon", "Tháng cập nhật"], ["nupd", "Năm cập nhật"], ["snok", "Check Serial"]];
+// Sua truc tiep trong modal: stt -> {field: value}
+const EDIT = {};
+let SAVED_EDIT = {};  // anh da chot (Luu)
+function diffEditCount(){ let n = 0; const keys = {};
+  Object.keys(EDIT).forEach(function(k){keys[k]=1}); Object.keys(SAVED_EDIT).forEach(function(k){keys[k]=1});
+  Object.keys(keys).forEach(function(stt){
+    const a = EDIT[stt] || {}, b = SAVED_EDIT[stt] || {};
+    const fs = {}; Object.keys(a).forEach(function(k){fs[k]=1}); Object.keys(b).forEach(function(k){fs[k]=1});
+    Object.keys(fs).forEach(function(f){ if (String(a[f] === undefined ? '' : a[f]) !== String(b[f] === undefined ? '' : b[f])) n++; });
+  });
+  return n;
+}
+function editDiffEntries(){ const out = [];
+  Object.keys(EDIT).forEach(function(stt){
+    const it = ALL.filter(function(x){ return String(x.stt) === String(stt); })[0];
+    if (!it) return;
+    Object.keys(EDIT[stt]).forEach(function(f){
+      const nv = String(EDIT[stt][f] === undefined ? '' : EDIT[stt][f]);
+      const ov = String((SAVED_EDIT[stt] && SAVED_EDIT[stt][f] !== undefined) ? SAVED_EDIT[stt][f] : (it['__orig_' + f] !== undefined ? it['__orig_' + f] : (it[f] !== undefined ? it[f] : '')));
+      if (nv !== ov){
+        it['__orig_' + f] = ov;
+        out.push({t: 0, stt: Number(stt), name: it.name, field: f, from: ov, to: nv, isEdit: true});
+      }
+    });
+  });
+  out.sort(function(x,y){ return x.stt - y.stt }); return out;
+}
+const LS_KEY = 'itAsset10050_v2';
+// Trạng thái chuẩn theo list IT Asset (01..08) + Other
+const STATUS_OPTIONS = ['01.Deployable','02.Deployed','03.In-Stock','04.Lost/Stolen','05.Pending','06.Repairing','07.Write-off','08.Disposed','Other'];
+function statusOpt(v){
+  v = String(v == null ? '' : v).trim();
+  if (!v) return '';
+  let s = v.replace(/^\d{2}\./, '').toLowerCase().replace('_','-');
+  let m = null;
+  STATUS_OPTIONS.forEach(function(o){
+    const o2 = o.replace(/^\d{2}\./, '').toLowerCase();
+    if (!m && (o2 === s || o2.indexOf(s) >= 0 && s.length > 3 || s.indexOf(o2) >= 0 && o2.length > 3)) m = o;
+  });
+  return m || /^other$/i.test(v) ? (m || (STATUS_OPTIONS.indexOf(v) >= 0 ? v : v)) : (m || v);
+}
+function statusSel(r){
+  const cur = statusOpt(r.status);
+  let opts = STATUS_OPTIONS.slice();
+  if (cur && opts.indexOf(cur) < 0) opts.push(cur);
+  return '<select class="note-inp" style="max-width:130px;font-size:11.5px" data-status-stt="' + r.stt + '" aria-label="Trạng thái">' +
+    '<option value=""' + (cur ? '' : ' selected') + '>(trống)</option>' +
+    opts.map(function(o){ return '<option value="' + esc(o) + '"' + (o === cur ? ' selected' : '') + '>' + esc(o) + '</option>'; }).join('') +
+    '</select>';
+}
+// Ngành hàng (division) - sửa inline
+const LOC_OPTIONS = ['BACK OFFICE','KHO'];
+function locSel(r, attr){
+  const cur = String(r.vitri == null ? '' : r.vitri).trim().toUpperCase();
+  let opts = LOC_OPTIONS.slice();
+  if (cur && opts.indexOf(cur) < 0) opts.push(cur);
+  const lc = cur === 'BACK OFFICE' ? 'color:var(--gold-2);font-weight:600' : (cur === 'KHO' ? 'color:#4EA6E8;font-weight:600' : '');
+  return '<select class="note-inp" style="max-width:115px;font-size:11.5px;' + lc + '" ' + (attr || ('data-loc-stt="' + r.stt + '"')) + ' aria-label="Vị trí">' +
+    '<option value=""' + (cur ? '' : ' selected') + '>(trống)</option>' +
+    opts.map(function(o){ return '<option value="' + esc(o) + '"' + (o === cur ? ' selected' : '') + '>' + esc(o) + '</option>'; }).join('') +
+    '</select>';
+}
+// Vị trí (BACK OFFICE / KHO): commit
+function commitLoc(stt, v){
+  stt = parseInt(stt, 10);
+  const r = ALL.filter(function(x){ return x.stt === stt; })[0];
+  if (!r) return;
+  const nv = String(v == null ? '' : v).trim();
+  const ov = String(r.vitri == null ? '' : r.vitri).trim();
+  if (nv === ov) return;
+  if (typeof r['__orig_vitri'] === 'undefined') r['__orig_vitri'] = ov;
+  r.vitri = nv;
+  if (nv){
+    EDIT[stt] = EDIT[stt] || {}; EDIT[stt]['vitri'] = nv;
+  } else {
+    if (EDIT[stt]) delete EDIT[stt]['vitri'];
+  }
+  updateSaveState(); render();
+}
+function divCell(r){
+  const v = String(r.dept == null ? '' : r.dept).trim() || String(r.division == null ? '' : r.division).trim();
+  const bh = (r.pdate || r.exp) ? '<div style="color:var(--muted);font-size:11px;margin-top:3px">Mua: ' + esc(r.pdate || '-') + ' · BH: ' + esc(r.exp || '-') + '</div>'
+    : '<div style="color:var(--muted);font-size:11px;margin-top:3px">Mua: -</div>';
+  return '<input class="note-inp" style="max-width:160px;font-size:12px" list="divList" data-div-stt="' + r.stt + '" type="text" value="' + esc(v) + '" placeholder="—" aria-label="Ngành hàng">' +
+    '<div style="color:var(--muted);font-size:11px;margin-top:3px">' + esc(r.division || '') + '</div>' + bh;
+}
+// Xóa thiết bị (mọi loại) + hoàn tác
+const DELETED = {};
+let lastDeleted = null;
+function deleteDevice(stt){
+  stt = parseInt(stt, 10);
+  const r = ALL.filter(function(x){ return x.stt === stt; })[0];
+  if (!r) return false;
+  if (!confirm('Xóa "' + String(r.name) + '" khỏi danh sách?')) return false;
+  HIST.push({t: Date.now(), stt: r.stt, name: String(r.name), from: effQty(r), to: 0, isDel: true});
+  lastDeleted = {stt: r.stt, customItem: null};
+  const ix = ALL.findIndex(function(x){ return x.stt === stt && x.custom; });
+  if (ix >= 0){
+    lastDeleted.customItem = Object.assign({}, r);
+    ALL.splice(ix, 1);
+    const cx = CUSTOM.findIndex(function(x){ return x.stt === stt; });
+    if (cx >= 0) CUSTOM.splice(cx, 1);
+  } else {
+    DELETED[String(stt)] = 1;
+  }
+  delete ADJ[stt]; delete NOTES[stt]; delete ORIG_NOTES[stt]; delete EDIT[stt];
+  buildChips(); persist(true); runSearch(); renderHist();
+  toast('Đã xóa <b>' + esc(String(r.name)) + '</b>. <button type="button" class="clr" style="margin-left:8px;padding:2px 10px" onclick="undoLastDelete()">Hoàn tác</button>');
+  return true;
+}
+function undoLastDelete(){
+  if (!lastDeleted) return;
+  delete DELETED[String(lastDeleted.stt)];
+  for (let i = HIST.length - 1; i >= 0; i--){
+    if (HIST[i].stt === lastDeleted.stt && HIST[i].isDel){ HIST.splice(i, 1); break; }
+  }
+  if (lastDeleted.customItem){
+    const it = Object.assign({}, lastDeleted.customItem);
+    ALL.push(it); CUSTOM.push(it);
+    ORIG_NOTES[it.stt] = it.note || '';
+  }
+  lastDeleted = null; buildChips(); persist(true); runSearch(); renderHist();
+  toast('Đã hoàn tác xóa.');
+}
+// Chọn trạng thái (main + modal): chuẩn hóa & ghi EDIT
+function commitStatus(stt, v){
+  stt = parseInt(stt, 10);
+  const r = ALL.filter(function(x){ return x.stt === stt; })[0];
+  if (!r) return;
+  const nv = String(v == null ? '' : v).trim();
+  const ov = String(r.status == null ? '' : r.status).trim();
+  if (statusOpt(nv) === statusOpt(ov)){
+    if (ov !== nv){ if (typeof r['__orig_status'] === 'undefined') r['__orig_status'] = ov; r.status = nv; }
+    return;
+  }
+  if (typeof r['__orig_status'] === 'undefined') r['__orig_status'] = ov;
+  r.status = nv;
+  if (nv){
+    EDIT[stt] = EDIT[stt] || {}; EDIT[stt]['status'] = nv;
+  } else {
+    if (EDIT[stt]) delete EDIT[stt]['status'];
+  }
+  updateSaveState(); render();
+}
+let savedAt = 0;
+let SAVED_ADJ = {}; // ảnh SL đã chốt lần Lưu trước (để so sánh thay đổi)
+let histDirty = false; // true khi lịch sử bị xóa nhưng chưa Lưu
+try {
+  const saved = JSON.parse(localStorage.getItem(LS_KEY) || '{}');
+  if (saved.adj) Object.keys(saved.adj).forEach(function(k){
+    ADJ[k] = saved.adj[k];
+    SAVED_ADJ[k] = saved.adj[k];
+  });
+  if (Array.isArray(saved.hist)) saved.hist.forEach(function(h){ HIST.push(h); });
+  if (saved.savedAt) savedAt = saved.savedAt;
+  // Ghi chú đã chốt lần trước (áp dụng sau khi đã gộp CUSTOM)
+  let _savedNotes = {};
+  if (saved.notes) Object.keys(saved.notes).forEach(function(k){ _savedNotes[k] = String(saved.notes[k]); });
+  // Thiết bị tự thêm (lưu cùng file, chèn vào ALL để mọi bảng/modal/CSV dùng chung)
+  if (Array.isArray(saved.custom)) saved.custom.forEach(function(r){
+    if (r && isFinite(r.stt) && String(r.name || '').trim() && String(r.unit || '').trim() && isFinite(r.qty)){
+      const it = Object.assign({}, r);
+      it.custom = true; it.isNew = 1;
+      CUSTOM.push(it);
+      ALL.push(it);
+    }
+  });
+  if (saved.deleted) Object.keys(saved.deleted).forEach(function(k){ DELETED[k] = 1; });
+  // Chụp ghi chú gốc + áp dụng ghi chú đã chốt
+  ALL.forEach(function(r){
+    ORIG_NOTES[r.stt] = r.note || '';
+    if (_savedNotes[r.stt] !== undefined && _savedNotes[r.stt] !== ORIG_NOTES[r.stt]){
+      NOTES[r.stt] = _savedNotes[r.stt];
+      r.note = _savedNotes[r.stt];
+    }
+  });
+  SAVED_NOTES = {};
+  Object.keys(NOTES).forEach(function(k){ SAVED_NOTES[k] = NOTES[k]; });
+  // Sua truc tiep da chot lan truoc -> ap dung lai vao ALL
+  if (saved.edit) Object.keys(saved.edit).forEach(function(stt){
+    EDIT[stt] = Object.assign({}, saved.edit[stt]);
+    SAVED_EDIT[stt] = Object.assign({}, saved.edit[stt]);
+    Object.keys(saved.edit[stt]).forEach(function(f){
+      const r = ALL.filter(function(x){ return String(x.stt) === String(stt); })[0];
+      if (r && f !== 'stt'){ r[f] = saved.edit[stt][f]; }
+    });
+  });
+} catch (e) {}
+// So sánh SL đang chỉnh với SL đã chốt -> danh sách thay đổi
+function diffAdj(oldA, newA){
+  const out = [], keys = {};
+  Object.keys(oldA || {}).forEach(function(k){ keys[k] = 1; });
+  Object.keys(newA || {}).forEach(function(k){ keys[k] = 1; });
+  Object.keys(keys).forEach(function(k){
+    const r = ALL.filter(function(x){ return String(x.stt) === String(k); })[0];
+    if (!r) return;
+    const a = (oldA[k] !== undefined) ? oldA[k] : r.qty;
+    const b = (newA[k] !== undefined) ? newA[k] : r.qty;
+    if (Math.abs(a - b) > 1e-9) out.push({stt: r.stt, name: r.name, from: a, to: b});
+  });
+  out.sort(function(x, y){ return x.stt - y.stt; });
+  return out;
+}
+function effNoteOf(stt, map){
+  if (map[stt] !== undefined) return map[stt];
+  if (ORIG_NOTES[stt] !== undefined) return ORIG_NOTES[stt];
+  return '';
+}
+// So sánh ghi chú đang gõ với ghi chú đã chốt
+function diffNotes(oldM, newM){
+  const out = [], keys = {};
+  Object.keys(oldM || {}).forEach(function(k){ keys[k] = 1; });
+  Object.keys(newM || {}).forEach(function(k){ keys[k] = 1; });
+  Object.keys(NOTES).forEach(function(k){ keys[k] = 1; });
+  Object.keys(keys).forEach(function(k){
+    const from = effNoteOf(k, oldM || {});
+    const to = effNoteOf(k, newM || {});
+    if (from !== to){
+      const r = ALL.filter(function(x){ return String(x.stt) === String(k); })[0];
+      if (!r) return;
+      out.push({stt: r.stt, name: r.name, from: from, to: to});
+    }
+  });
+  out.sort(function(x, y){ return x.stt - y.stt; });
+  return out;
+}
+function persist(stamp){
+  try {
+    if (stamp) savedAt = Date.now();
+    SAVED_ADJ = {};
+    Object.keys(ADJ).forEach(function(k){ SAVED_ADJ[k] = ADJ[k]; });
+    SAVED_NOTES = {};
+    Object.keys(NOTES).forEach(function(k){ SAVED_NOTES[k] = NOTES[k]; });
+    SAVED_EDIT = {};
+    Object.keys(EDIT).forEach(function(k){ SAVED_EDIT[k] = Object.assign({}, EDIT[k]); });
+    histDirty = false;
+    localStorage.setItem(LS_KEY, JSON.stringify({adj: ADJ, hist: HIST.slice(-500), savedAt: savedAt, custom: CUSTOM, notes: NOTES, deleted: DELETED, edit: EDIT}));
+  } catch (e) {}
+  updateSaveState();
+}
+function fmtTime(t){
+  const d = new Date(t), p = function(n){ return String(n).padStart(2, '0'); };
+  return p(d.getDate()) + '/' + p(d.getMonth() + 1) + '/' + d.getFullYear() + ' ' +
+    p(d.getHours()) + ':' + p(d.getMinutes()) + ':' + p(d.getSeconds());
+}
+function fmtClock(t){
+  const d = new Date(t), p = function(n){ return String(n).padStart(2, '0'); };
+  return p(d.getHours()) + ':' + p(d.getMinutes()) + ':' + p(d.getSeconds());
+}
+let toastTimer = null;
+function toast(html){
+  const el = document.getElementById('toast');
+  if (!el) return;
+  el.innerHTML = html;
+  el.classList.add('show');
+  if (toastTimer) clearTimeout(toastTimer);
+  toastTimer = setTimeout(function(){ el.classList.remove('show'); }, 3200);
+}
+function updateSaveState(){
+  const el = document.getElementById('saveState');
+  if (!el) return;
+  const n = diffAdj(SAVED_ADJ, ADJ).length + diffNotes(SAVED_NOTES, NOTES).length + diffEditCount();
+  if (n || histDirty){
+    el.innerHTML = '';
+  } else if (savedAt){
+    el.innerHTML = '<b>✓ Đã lưu</b> ' + fmtTime(savedAt);
+  } else {
+    el.innerHTML = 'Chưa có thay đổi';
+  }
+}
+function stepOf(r){ return (String(r.unit).toLowerCase() === 'bao') ? 0.5 : 1; }
+function effQty(r){ return (ADJ[r.stt] !== undefined) ? ADJ[r.stt] : r.qty; }
+function fmtStep(n){ return (Math.round(n*100)/100).toLocaleString('vi-VN'); }
+function shortQ(s){
+  s = String(s == null ? '' : s);
+  if (!s) return '<span style="color:var(--muted)">(trống)</span>';
+  return '“' + esc(s.length > 36 ? s.slice(0, 36) + '…' : s) + '”';
+}
+
+function catOf(u){
+  const s = norm(u || '');
+  if (/scale|kiem dinh|do luong/.test(s)) return {key:'kho', label:'CÂN · ĐO LƯỜNG'};
+  return {key:'tb', label:'THIẾT BỊ IT'};
+}
+function stTag(st){
+  const s = String(st || '');
+  if (/Deployed/.test(s)) return '<span class="tag tb">DEPLOYED</span>';
+  if (/Deployable/.test(s)) return '<span class="tag tb">DEPLOYABLE</span>';
+  if (/In-Stock/i.test(s)) return '<span class="tag vpp">IN-STOCK</span>';
+  if (/Pending/i.test(s)) return '<span class="tag vpp">PENDING</span>';
+  if (/Repairing/i.test(s)) return '<span class="tag vpp">REPAIRING</span>';
+  if (/Lost/i.test(s)) return '<span class="tag kho">LOST/STOLEN</span>';
+  if (/Write/i.test(s)) return '<span class="tag kho">WRITE-OFF</span>';
+  if (/Disposed/i.test(s)) return '<span class="tag kho">DISPOSED</span>';
+  if (/Other/i.test(s)) return '<span class="tag kho">OTHER</span>';
+  return '<span style="color:var(--muted)">—</span>';
+}
+function deptOf(r){
+  const d = String(r.dept || '').split('//')[0].trim();
+  if (d) return d;
+  return String(r.store || '—');
+}
+
+function thumbSVG(stt, size){
+  size = size || 52;
+  const g = GLYPHS[stt] || "📦";
+  const fs = Math.round(size * 0.52);
+  return '<svg class="thumb" width="'+size+'" height="'+size+'" viewBox="0 0 52 52" role="img" aria-label="Ảnh minh họa">' +
+    '<defs><linearGradient id="thg'+stt+'x'+size+'" x1="0" y1="0" x2="0" y2="1">' +
+    '<stop offset="0" stop-color="#1B1B22"/><stop offset="1" stop-color="#0C0C10"/></linearGradient></defs>' +
+    '<rect x="1" y="1" width="50" height="50" rx="11" fill="url(#thg'+stt+'x'+size+')" stroke="#C9A227" stroke-opacity=".55"/>' +
+    '<text x="26" y="30" text-anchor="middle" font-size="'+fs+'">'+g+'</text></svg>';
+}
+function prodImg(stt, size){
+  if (IMGS[stt]) return '<img class="thumb" width="'+size+'" height="'+size+'" src="'+IMGS[stt]+'" alt="Ảnh sản phẩm" loading="lazy" onerror="this.outerHTML=thumbSVG('+stt+','+size+')">';
+  return thumbSVG(stt, size);
+}
+
+let filtered = [];
+let page = 1;
+let curUnit = '';
+let newOnly = false;
+
+const $q = document.getElementById('q');
+const stat = document.getElementById('bar');
+const tbody = document.getElementById('tbody');
+const pageInfo = document.getElementById('pageInfo');
+const prev = document.getElementById('prev');
+const next = document.getElementById('next');
+const ps = document.getElementById('ps');
+
+// Bỏ dấu tiếng Việt + lowercase để tìm không dấu
+function norm(s){
+  return String(s == null ? '' : s).toLowerCase()
+    .normalize('NFD').replace(/[\u0300-\u036f]/g, '')
+    .replace(/đ/g, 'd').replace(/Đ/g, 'D');
+}
+function esc(s){
+  return String(s == null ? '' : s).replace(/[&<>"']/g, function(c){
+    return {'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c];
+  });
+}
+
+function buildChips(){
+  const counts = {};
+  ALL.forEach(function(r){ if (!DELETED[String(r.stt)]) counts[r.unit] = (counts[r.unit] || 0) + 1; });
+  const dl2 = document.getElementById('divList');
+  if (dl2){
+    const dv = {};
+    ALL.forEach(function(r){ const d = String(r.dept || '').trim(); if (d && !DELETED[String(r.stt)]) dv[d] = 1; });
+    dl2.innerHTML = Object.keys(dv).sort().map(function(d){ return '<option value="' + esc(d) + '">'; }).join('');
+  }
+  const units = Object.keys(counts).sort();
+  const tray = document.getElementById('chiptray');
+  let html = '<span class="chips-label">Nhóm thiết bị</span>';
+  html += '<button class="fchip active" data-unit="">Tất cả <span class="cnt">' + ALL.length.toLocaleString('vi-VN') + '</span></button>';
+  units.forEach(function(u){
+    html += '<button class="fchip" data-unit="' + esc(u) + '">' + esc(u) +
+      ' <span class="cnt">' + counts[u].toLocaleString('vi-VN') + '</span></button>';
+  });
+  html += '<button class="fchip" id="btnNewOnly">★ Mới thêm</button>';
+  html += '<span class="save-state" id="saveState"></span>';
+  tray.innerHTML = html;
+  if (!tray.dataset.bound){
+    tray.dataset.bound = '1';
+    tray.addEventListener('click', function(e){
+      const nb = e.target.closest('#btnNewOnly');
+      if (nb){ newOnly = !newOnly; nb.classList.toggle('active', newOnly); runSearch(); return; }
+      const b = e.target.closest('.fchip');
+      if (!b) return;
+      tray.querySelectorAll('.fchip').forEach(function(x){ x.classList.remove('active'); });
+      b.classList.add('active');
+      curUnit = b.getAttribute('data-unit') || '';
+      runSearch();
+    });
+  }
+}
+
+function pageSize(){ const v = parseInt(ps.value, 10); return v > 0 ? v : filtered.length || ALL.length; }
+function filter_active(){ return $q.value.trim() !== '' || curUnit !== ''; }
+
+function runSearch(){
+  const q = norm($q.value.trim());
+  filtered = ALL.filter(function(r){
+    if (DELETED[String(r.stt)]) return false;
+    if (curUnit && r.unit !== curUnit) return false;
+    if (newOnly && !r.isNew) return false;
+    if (q && !(norm(r.name).includes(q) || norm(r.unit).includes(q) || norm(r.serial || '').includes(q) || norm(r.model || '').includes(q) || norm(r.brand || '').includes(q) || norm(r.supplier || '').includes(q) || norm(String(r.dept || '')).includes(q) || norm(String(r.store || '')).includes(q) || norm(String(r.vitri || '')).includes(q) || String(r.stt) === q)) return false;
+    return true;
+  });
+  page = 1;
+  render();
+}
+
+function adjCount(){ return Object.keys(ADJ).length; }
+
+function render(){
+  const total = filtered.length;
+  const P = pageSize();
+  const pages = Math.max(1, Math.ceil(total / P));
+  if (page > pages) page = pages;
+  const i0 = (page - 1) * P;
+
+  // KPI (tính trên tập đang lọc)
+  const units = new Set(), sups = new Set();
+  let nNew = 0, nDep = 0;
+  filtered.forEach(function(r){ units.add(r.unit); if (r.supplier) sups.add(r.supplier); if (r.isNew) nNew++; if (/Deployed/.test(r.status || '')) nDep++; });
+  document.getElementById('kpiLines').textContent = total.toLocaleString('vi-VN');
+  document.getElementById('kpiQty').textContent = nNew.toLocaleString('vi-VN');
+  document.getElementById('kpiUnit').textContent = units.size.toLocaleString('vi-VN');
+  document.getElementById('kpiAdj').textContent = nDep.toLocaleString('vi-VN');
+  document.getElementById('kpiItems').textContent = sups.size.toLocaleString('vi-VN');
+
+  // stat bar
+  const searchWord = $q.value.trim();
+  let msg;
+  if (filter_active()){
+    msg = 'Kết quả lọc: <b>' + total.toLocaleString('vi-VN') + '</b> dòng';
+    if (curUnit) msg += ' · ĐVT: <b>' + esc(curUnit) + '</b>';
+    if (searchWord) msg += ' · Từ khóa: <b>&#8220;' + esc(searchWord) + '&#8221;</b>';
+    if (total === 0) msg += ' — thử từ khóa khác hoặc bỏ đơn vị tính';
+  } else {
+    msg = 'Hiển thị <b>' + total.toLocaleString('vi-VN') + '</b> dòng — toàn bộ tủ thiết bị';
+  }
+  const _nn = filtered.filter(function(r){ return r.isNew; }).length;
+  if (_nn) msg += ' · <b>' + _nn + '</b> dòng mới thêm';
+  stat.innerHTML = msg;
+
+  // rows
+  const slice = filtered.slice(i0, i0 + P);
+  if (!slice.length){
+    tbody.innerHTML = '<tr><td colspan="8"><div class="empty"><span class="ic">🔍</span>' +
+      '<div class="t-text">Không tìm thấy kết quả nào</div>' +
+      '<div class="s-text">Điều chỉnh từ khóa tìm kiếm hoặc bỏ đơn vị tính đang lọc</div></div></td></tr>';
+  } else {
+    tbody.innerHTML = slice.map(function(r){
+      const c = catOf(r.unit);
+      return '<tr>' +
+        '<td class="stt">' + r.stt + '</td>' +
+        '<td>' + prodImg(r.stt, 52) + '</td>' +
+        '<td><button type="button" class="ano-btn" data-ano="' + r.stt + '">' + esc(r.name) + '</button>' +
+          '<div style="margin-top:4px"><span class="tag ' + c.key + '">' + c.label + '</span>' +
+          (r.isNew ? '<span class="tag new">★ MỚI THÊM</span>' : '') +
+          '<button type="button" class="h-del row-del" data-del-stt="' + r.stt + '" title="Xóa thiết bị" aria-label="Xóa thiết bị">×</button>' +
+          '</div>' +
+          (r.code ? '<div style="color:var(--gold-3);font-size:11px;margin-top:3px">Mã: ' + esc(r.code) + '</div>' : '') +
+          '</td>' +
+        '<td><div style="font-weight:700;color:var(--gold-1)">' + esc(r.serial || '—') + '</div>' +
+          '<div style="color:var(--muted);font-size:12px;margin-top:2px">' + esc(r.model || '') + '</div>' +
+          (/^(MMPC|MMNB)/i.test(String(r.name || '').replace(/[^A-Za-z0-9]/g,'')) || r.ip ?'<div style="margin-top:3px"><span style="color:#4EA6E8;font-size:11px;font-weight:600">IP </span>' +'<input class="note-inp" style="max-width:112px;font-size:11px;color:#4EA6E8;font-weight:600" data-ip-stt="' + r.stt + '" type="text" value="' + esc(r.ip || '') + '" placeholder="—">' +'</div>' : '') + '</td>' +
+        '<td class="ctr">' + statusSel(r) +
+          (r.cond ? '<div style="color:var(--muted);font-size:11px;margin-top:3px">' + esc(r.cond) + '</div>' : '') + '</td>' +
+        '<td>' + divCell(r) + '</td>' +
+        '<td class="ctr">' + locSel(r) + '</td>' +
+        '<td><input class="note-inp" data-note-stt="' + r.stt + '" type="text" maxlength="300" value="' + esc(r.note || '') + '" placeholder="—" autocomplete="off" aria-label="Ghi chú"></td>' +
+      '</tr>';
+    }).join('');
+  }
+
+  // pager
+  pageInfo.innerHTML = 'Trang <b>' + page + '</b> / ' + pages.toLocaleString('vi-VN');
+  prev.disabled = page <= 1;
+  next.disabled = page >= pages;
+
+  const _dep = filtered.filter(function(r){ return /Deployed/.test(r.status || ''); }).length;
+  const _new = filtered.filter(function(r){ return r.isNew; }).length;
+  document.getElementById('tfoot').innerHTML = '<tr>' +
+    '<td colspan="2">Tổng hợp · ' + total.toLocaleString('vi-VN') + ' dòng</td>' +
+    '<td>Nhóm: ' + units.size.toLocaleString('vi-VN') + '</td>' +
+    '<td colspan="2">Deployed: ' + _dep.toLocaleString('vi-VN') + ' · Mới thêm: ' + _new.toLocaleString('vi-VN') + '</td>' +
+    '<td colspan="2">—</td>' +
+  '</tr>';
+
+  renderTop10();
+}
+
+function renderTop10(){
+  const el = document.getElementById('top10Chart');
+  if (!el) return;
+  const mCnt = {};
+  ALL.forEach(function(r){ const k = r.model || r.name; mCnt[k] = (mCnt[k] || 0) + 1; });
+  const arr = Object.keys(mCnt).map(function(k){ return {name:k, qty:mCnt[k]}; });
+  arr.sort(function(a, b){ return b.qty - a.qty; });
+  const top = arr.slice(0, 10);
+  if (!top.length){ el.innerHTML = '<div style="text-align:center;color:var(--muted);padding:24px">Không có dữ liệu</div>'; return; }
+  const max = top[0].qty || 1;
+  el.innerHTML = top.map(function(it, idx){
+    const pct = Math.round(it.qty / max * 100);
+    return '<div class="t10-row">' +
+      '<div class="t10-rank">' + (idx + 1) + '</div>' +
+      '<div class="t10-mid">' +
+        '<div class="t10-name"><span>' + esc(it.name) + '</span></div>' +
+        '<div class="t10-bar"><i style="width:' + Math.max(4, pct) + '%"></i></div>' +
+      '</div>' +
+      '<div class="t10-val"><b>' + fmtStep(it.qty) + '</b><small>' + pct + '%</small></div>' +
+    '</div>';
+  }).join('');
+}
+
+// Gõ ghi chú trực tiếp (commit khi rời ô / Enter; chốt khi bấm Lưu)
+tbody.addEventListener('change', function(e){
+  const lcEl = e.target.closest('[data-loc-stt]');
+  if (lcEl){ commitLoc(parseInt(lcEl.getAttribute('data-loc-stt'), 10), String(lcEl.value || '').trim()); return; }
+  const ipEl = e.target.closest('[data-ip-stt]');
+  if (ipEl){
+    const stt = parseInt(ipEl.getAttribute('data-ip-stt'), 10);
+    const r = ALL.filter(function(x){ return x.stt === stt; })[0];
+    if (!r) return;
+    const v = String(ipEl.value == null ? '' : ipEl.value).trim();
+    const ov = String(r.ip == null ? '' : r.ip).trim();
+    if (v === ov) return;
+    if (typeof r['__orig_ip'] === 'undefined') r['__orig_ip'] = ov;
+    r.ip = v;
+    EDIT[stt] = EDIT[stt] || {};
+    EDIT[stt]['ip'] = v;
+    updateSaveState();
+    return;
+  }
+  const stEl = e.target.closest('[data-status-stt]');
+  if (stEl){ commitStatus(parseInt(stEl.getAttribute('data-status-stt'), 10), String(stEl.value || '').trim()); return; }
+  const dvEl = e.target.closest('[data-div-stt]');
+  if (dvEl){
+    const stt = parseInt(dvEl.getAttribute('data-div-stt'), 10);
+    const r = ALL.filter(function(x){ return x.stt === stt; })[0];
+    if (!r) return;
+    const v = String(dvEl.value || '').trim();
+    const ov = (r.division === undefined || r.division === null) ? '' : String(r.division).trim();
+    if (v === ov) return;
+    if (typeof r['__orig_dept'] === 'undefined') r['__orig_dept'] = ov;
+    r.dept = v;
+    EDIT[stt] = EDIT[stt] || {};
+    EDIT[stt]['dept'] = v;
+    updateSaveState();
+    return;
+  }
+  const inp = e.target.closest('[data-note-stt]');
+  if (!inp) return;
+  const stt = parseInt(inp.getAttribute('data-note-stt'), 10);
+  const r = ALL.filter(function(x){ return x.stt === stt; })[0];
+  if (!r) return;
+  const v = inp.value.trim();
+  const orig = (ORIG_NOTES[stt] !== undefined) ? ORIG_NOTES[stt] : '';
+  r.note = v;
+  if (v === orig) delete NOTES[stt]; else NOTES[stt] = v;
+  updateSaveState();
+});
+tbody.addEventListener('keydown', function(e){
+  if (e.key === 'Enter' && e.target.closest && e.target.closest('[data-note-stt]')) e.target.blur();
+});
+// +/− điều chỉnh số lượng + xóa thiết bị tự thêm (event delegation trên tbody)
+tbody.addEventListener('click', function(e){
+  const del = e.target.closest('[data-del-stt]');
+  if (del){
+    deleteDevice(parseInt(del.getAttribute('data-del-stt'), 10));
+    return;
+  }
+  const b = e.target.closest('.step-btn');
+  if (b){
+    const stt = parseInt(b.getAttribute('data-stt'), 10);
+    const dir = parseInt(b.getAttribute('data-step'), 10);
+    const r = ALL.filter(function(x){ return x.stt === stt; })[0];
+    if (!r) return;
+    const cur = effQty(r);
+    let nv = Math.round((cur + dir * stepOf(r)) * 100) / 100;
+    if (nv < 0) nv = 0;
+    if (nv === r.qty) delete ADJ[stt]; else ADJ[stt] = nv;
+    updateSaveState(); // chưa ghi lịch sử, chưa lưu — chờ bấm Lưu
+    render();
+    return;
+  }
+  const a = e.target.closest('.ano-btn');
+  if (a && window.tubeOpenDetail){ window.tubeOpenDetail(a.getAttribute('data-ano')); }
+});
+
+document.getElementById('btnSearch').addEventListener('click', runSearch);
+document.getElementById('btnHist').addEventListener('click', function(){
+  renderHist();
+  const p = document.querySelector('.hist');
+  if (p){
+    p.scrollIntoView({behavior: 'smooth', block: 'start'});
+    p.classList.remove('flash');
+    setTimeout(function(){ p.classList.add('flash'); }, 60);
+    setTimeout(function(){ p.classList.remove('flash'); }, 1800);
+  }
+});
+$q.addEventListener('keydown', function(e){ if (e.key === 'Enter') runSearch(); });
+$q.addEventListener('input', function(){ runSearch(); });
+prev.addEventListener('click', function(){ if (page > 1){ page--; render(); } });
+next.addEventListener('click', function(){ if (page < Math.ceil(filtered.length / pageSize())){ page++; render(); } });
+ps.addEventListener('change', function(){ page = 1; render(); });
+
+buildChips();
+runSearch();
+renderHist();
+updateSaveState();
+// Ngày hiện tại trên chip header (VD: 15-Sep-26)
+(function(){
+  const d = new Date(), M = ['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'];
+  const p = function(n){ return String(n).padStart(2, '0'); };
+  const el = document.getElementById('chipDate');
+  if (el) el.textContent = p(d.getDate()) + '-' + M[d.getMonth()] + '-' + String(d.getFullYear()).slice(2);
+})();
+
+/* ---------- Import Excel / CSV (thay cho Thêm thiết bị) ---------- */
+function nextStt(){
+  let m = 0;
+  ALL.forEach(function(r){ if (r.stt > m) m = r.stt; });
+  return m + 1;
+}
+const ALIAS = {
+  name: ['asset name','tên thiết bị','ten thiet bi','thiet bi','tên tb','device name'],
+  serial: ['serial'],
+  model: ['model'],
+  brand: ['manufacturer','hãng','brand'],
+  code: ['asset code','mã thiết bị','ma thiet bi','mã tb','code'],
+  ip: ['ip','địa chỉ ip','dia chi ip','ip address'],
+  tag: ['asset tag','tag'],
+  unit: ['category','nhóm','nhom','unit','loại'],
+  status: ['status','trạng thái','trang thai'],
+  cond: ['condition','tình trạng','tinh trang'],
+  store: ['locations','location','kho','store'],
+  dept: ['department','bộ phận','bo phan','dept','ngành hàng','nganh hang'],
+  division: ['division'],
+  supplier: ['supplier','nhà cung cấp','ncc'],
+  pdate: ['purchase date','ngày mua','ngay mua','pdate'],
+  exp: ['expired warranty','hết bảo hành','het bao hanh','warranty expire'],
+  note: ['note','ghi chu','ghi chú','notes'],
+  qty: ['quantity','số lượng','so luong','qty'],
+  os: ['os','hệ điều hành','os_name'],
+  proc: ['processor','cpu'],
+  mem: ['memory','ram'],
+  checkout: ['check_out_to','checkout'],
+  phys: ['physical','physical_available'],
+  fixed: ['fixed_asset','fixed_asset?','is fixed asset'],
+  fa: ['fa_status'],
+  dispose: ['dispose','disposable','is dispose'],
+  support: ['it support','it_support','it support?'],
+  warranty: ['warranty'],
+  startd: ['start date'],
+  vitri: ['vi tri','vitri','vị trí thiết bị','vị trí','location']
+};
+function normKey(s){ return norm(s == null ? '' : String(s)).replace(/\s+/g,' ').trim().toLowerCase(); }
+function csvParseLine(line){
+  const out = []; let cur = '', inQ = false;
+  for (let i = 0; i < line.length; i++){
+    const ch = line[i];
+    if (inQ){
+      if (ch === '"'){ if (line[i+1] === '"'){ cur += '"'; i++; } else inQ = false; }
+      else cur += ch;
+    } else {
+      if (ch === '"') inQ = true;
+      else if (ch === ','){ out.push(cur); cur = ''; }
+      else cur += ch;
+    }
+  }
+  out.push(cur);
+  return out;
+}
+function parseTable(text){
+  text = String(text == null ? '' : text).replace(/^\uFEFF/, '').replace(/\r\n/g, '\n').replace(/\r/g, '\n');
+  const rowsL = text.split('\n').filter(function(l){ return l.replace(/\s/g, '') !== ''; });
+  if (!rowsL.length) return [];
+  if (rowsL[0].indexOf('\t') >= 0) return rowsL.map(function(l){ return l.split('\t'); });
+  return rowsL.map(csvParseLine);
+}
+let impRows = [];
+function mapHeader(hrow){
+  const out = {};
+  hrow.forEach(function(h, i){
+    const k = normKey(h);
+    if (!k) return;
+    Object.keys(ALIAS).forEach(function(f){
+      if (out[f] === undefined && ALIAS[f].some(function(a){ return k === a || k.indexOf(a) >= 0; })) out[f] = i;
+    });
+  });
+  return out;
+}
+function runParse(){
+  const rows = parseTable(document.getElementById('impPaste').value);
+  const msg = document.getElementById('impMsg');
+  const err = document.getElementById('formErr');
+  err.textContent = '';
+  const prev = document.getElementById('impPreview');
+  if (!rows.length){ msg.textContent = 'Chưa có dữ liệu.'; prev.innerHTML = ''; impRows = []; return; }
+  const map = mapHeader(rows[0]);
+  if (map.name === undefined || map.serial === undefined){
+    msg.textContent = 'Không tìm thấy cột Tên/Serial — hàng đầu tiên phải là tiêu đề (ví dụ: Tên thiết bị, Serial, Model…).';
+    prev.innerHTML = ''; impRows = []; return;
+  }
+  impRows = [];
+  const seen = {};
+  ALL.forEach(function(r){ if (r && r.name) seen[normKey(r.name) + '|' + normKey(r.serial || '')] = 1; });
+  let ndup = 0;
+  for (let i = 1; i < rows.length; i++){
+    const row = rows[i];
+    const get = function(k){
+      return (map[k] !== undefined && map[k] < row.length) ? String(row[map[k]] == null ? '' : row[map[k]]).trim() : '';
+    };
+    const name = get('name');
+    if (!name) continue;
+    const serial = get('serial');
+    const dup = !!seen[normKey(name) + '|' + normKey(serial)];
+    if (dup) ndup++;
+    const qy = parseInt(get('qty'), 10);
+    impRows.push({
+      name: name, serial: serial,
+      code: get('code'), tag: get('tag'), ip: get('ip').trim(),
+      unit: get('unit') || 'Khác',
+      model: get('model'), brand: get('brand'),
+      status: statusOpt(get('status')), cond: get('cond'),
+      store: get('store') || '10050', dept: get('dept'), division: get('division'),
+      supplier: get('supplier'),
+      pdate: get('pdate'), exp: get('exp'), startd: get('startd'),
+      os: get('os'), proc: get('proc'), mem: get('mem'),
+      checkout: get('checkout'), phys: get('phys'),
+      fixed: get('fixed'), fa: get('fa'), dispose: get('dispose'),
+      support: get('support'), warranty: get('warranty'),
+      note: get('note'), qty: (isFinite(qy) && qy > 0) ? qy : 1,
+      vitri: (statusOpt(get('vitri')) || '').toString().trim() && get('vitri').trim() ? get('vitri').trim().toUpperCase() : '',
+      id: get('id') || '', division: get('division'),
+      dup: dup, ck: !dup,
+    });
+  }
+  renderImpPreview();
+  msg.textContent = impRows.length
+    ? ('Nhận ' + impRows.length + ' dòng' + (ndup ? ' · ' + ndup + ' dòng trùng đã bỏ tick' : ''))
+    : 'Không tìm thấy dòng dữ liệu nào.';
+}
+function renderImpPreview(){
+  const el = document.getElementById('impPreview');
+  if (!impRows.length){ el.innerHTML = '<div style="color:var(--muted);padding:8px 0">Chưa có dòng dữ liệu</div>'; return; }
+  const dvMap = {};
+  ALL.forEach(function(r){ const d = String(r.dept || '').trim(); if (d) dvMap[d] = 1; });
+  const dvHtml = Object.keys(dvMap).sort().map(function(d){ return '<option value="' + esc(d) + '">'; }).join('');
+  const rows = impRows.map(function(r, i){
+    const opts = STATUS_OPTIONS.map(function(o){ return '<option value="' + esc(o) + '"' + (o === r.status ? ' selected' : '') + '>' + esc(o) + '</option>'; }).join('');
+    const valid = r.name ? true : false;
+    return '<tr style="border-bottom:1px solid var(--line-soft)' + (r.dup ? ';opacity:.55' : '') + '" data-imp-i="' + i + '">' +
+      '<td class="ctr" style="padding:6px 4px"><input type="checkbox" data-imp-ck="' + i + '"' + (r.ck && valid ? ' checked' : '') + '></td>' +
+      '<td style="padding:6px 8px">' + (valid ? '' : '<span style="color:#E28B8B">⚠ Thiếu tên</span> ') + '<b>' + esc(r.name) + '</b>' +
+        '<div style="color:var(--muted);font-size:11px">' + esc(r.serial || '') + (r.model ? ' · ' + esc(r.model) : '') + '</div>' +
+        (r.dup ? '<div style="color:#E2B84B">trùng device có sẵn trong danh sách</div>' : '') + '</td>' +
+      '<td style="padding:6px 8px">' + esc(r.code || '') + '</td>' +
+      '<td style="padding:6px 8px">' + esc(r.unit || '') + '</td>' +
+      '<td style="padding:6px 8px"><input data-imp-div="' + i + '" type="text" list="impDivList" value="' + esc((String(r.dept || '').trim() || String(r.division || '').trim())) + '" placeholder="—" style="width:120px;background:transparent;border:1px solid var(--line);color:var(--text);border-radius:8px;padding:4px 8px"><datalist id="impDivList">' + dvHtml + '</datalist></td>' +
+      '<td class="ctr" style="padding:6px 8px">' + locSel(r, 'data-imp-loc="' + i + '"') + '</td>' +
+      '<td style="padding:6px 8px"><select data-imp-status="' + i + '" style="max-width:150px;background:transparent;border:1px solid var(--line);color:var(--text);border-radius:8px;padding:4px">' +
+        '<option value=""' + (r.status ? '' : ' selected') + '>(trống)</option>' + opts + '</select></td>' +
+      '<td style="padding:6px 8px"><input data-imp-note="' + i + '" type="text" value="' + esc(r.note || '') + '" style="width:160px;background:transparent;border:1px solid var(--line);color:var(--text);border-radius:8px;padding:4px 8px"></td>' +
+      '</tr>';
+  }).join('');
+  el.innerHTML = '<table style="width:100%;border-collapse:collapse"><thead><tr style="color:var(--gold-1);font-size:11px;text-transform:uppercase">' +
+    '<th style="padding:6px 4px">✓</th><th style="padding:6px 8px;text-align:left">Tên thiết bị</th><th style="text-align:left;padding:6px 8px">Mã</th>' +
+    '<th style="text-align:left;padding:6px 8px">Nhóm</th><th style="text-align:left;padding:6px 8px">Ngành hàng</th><th style="text-align:left;padding:6px 8px">Vị trí</th>' +
+    '<th style="text-align:left;padding:6px 8px">Trạng thái</th><th style="text-align:left;padding:6px 8px">Ghi chú</th></tr></thead>' +
+    '<tbody>' + rows + '</tbody></table>';
+}
+function openImport(){
+  document.getElementById('impPaste').value = '';
+  document.getElementById('impMsg').textContent = 'Hỗ trợ .xlsx/.xls/.csv hoặc dán trực tiếp. Có thể chỉnh Trạng thái / Ngành hàng / Ghi chú ngay trong bảng xem trước.';
+  document.getElementById('impPreview').innerHTML = '<div style="color:var(--muted);padding:8px 0">Chọn file hoặc dán Ctrl+V rồi bấm "Xem trước".</div>';
+  document.getElementById('formErr').textContent = '';
+  document.getElementById('impFile').value = '';
+  impRows = [];
+  document.getElementById('addOverlay').classList.add('open');
+  document.getElementById('addOverlay').setAttribute('aria-hidden', 'false');
+  document.body.style.overflow = 'hidden';
+}
+function closeImport(){
+  const ov = document.getElementById('addOverlay');
+  ov.classList.remove('open');
+  ov.setAttribute('aria-hidden', 'true');
+  document.body.style.overflow = '';
+}
+document.getElementById('btnAdd').addEventListener('click', openImport);
+document.getElementById('addClose').addEventListener('click', closeImport);
+document.getElementById('addCancel').addEventListener('click', closeImport);
+document.getElementById('addBackdrop').addEventListener('click', closeImport);
+document.addEventListener('keydown', function(e){
+  if (e.key === 'Escape'){
+    const ov = document.getElementById('addOverlay');
+    if (ov && ov.classList.contains('open')) closeImport();
+  }
+});
+document.getElementById('impPick').addEventListener('click', function(){
+  document.getElementById('impFile').click();
+});
+document.getElementById('impFile').addEventListener('change', function(){
+  const f = document.getElementById('impFile').files[0];
+  if (!f) return;
+  const ext = String(f.name.toLowerCase()).split('.').pop();
+  const fr = new FileReader();
+  const msg = document.getElementById('impMsg');
+  if (ext === 'csv'){
+    fr.onload = function(){
+      document.getElementById('impPaste').value = fr.result;
+      runParse();
+      msg.textContent = 'Đã nạp ' + f.name;
+    };
+    fr.readAsText(f);
+  } else {
+    if (!window.XLSX){
+      msg.textContent = 'Không tải được bộ đọc Excel (thường do không có internet). Cách khác: lưu file thành .csv, hoặc copy vùng Excel rồi Ctrl+V vào ô bên dưới.';
+      return;
+    }
+    fr.onload = function(){
+      try {
+        const wb = XLSX.read(new Uint8Array(fr.result), {type: 'array'});
+        const ws = wb.Sheets[wb.SheetNames[0]];
+        const arr = XLSX.utils.sheet_to_json(ws, {header: 1, raw: false});
+        document.getElementById('impPaste').value = arr.map(function(r){ return (r || []).join('\t'); }).join('\n');
+        runParse();
+        msg.textContent = 'Đã nạp ' + f.name + ' · sheet: ' + wb.SheetNames[0];
+      } catch(e2){
+        msg.textContent = 'Lỗi đọc file: ' + e2.message;
+      }
+    };
+    fr.readAsArrayBuffer(f);
+  }
+});
+document.getElementById('impParse').addEventListener('click', runParse);
+document.getElementById('impPaste').addEventListener('paste', function(){ setTimeout(runParse, 80); });
+document.getElementById('impPreview').addEventListener('change', function(e){
+  const ck = e.target.closest && e.target.closest('[data-imp-ck]');
+  if (ck){ impRows[Number(ck.getAttribute('data-imp-ck'))].ck = ck.checked; return; }
+  const lc = e.target.closest && e.target.closest('[data-imp-loc]');
+  if (lc){ impRows[Number(lc.getAttribute('data-imp-loc'))].vitri = lc.value; return; }
+  const st = e.target.closest('[data-imp-status]');
+  if (st){ impRows[Number(st.getAttribute('data-imp-status'))].status = st.value; return; }
+  const dv = e.target.closest('[data-imp-div]');
+  if (dv){ impRows[Number(dv.getAttribute('data-imp-div'))].dept = dv.value; return; }
+  const nt = e.target.closest('[data-imp-note]');
+  if (nt){ impRows[Number(nt.getAttribute('data-imp-note'))].note = nt.value; return; }
+});
+document.getElementById('addOk').addEventListener('click', function(){
+  const chosen = impRows.filter(function(r){ return r.ck && r.name; });
+  const err = document.getElementById('formErr');
+  if (!chosen.length){
+    err.textContent = 'Chưa có dòng hợp lệ nào được chọn (mỗi dòng cần Tên thiết bị). Tick hoặc có dòng mới được nhập.';
+    return;
+  }
+  let nstt = nextStt();
+  const now = Date.now();
+  chosen.forEach(function(r){
+    const it = Object.assign({}, r);
+    delete it.i; delete it.ck; delete it.dup;
+    it.stt = nstt++;
+    it.isNew = 1;
+    it.custom = true;
+    if (!it.unit) it.unit = 'Khác';
+    ALL.push(it);
+    CUSTOM.push(it);
+    ORIG_NOTES[it.stt] = it.note || '';
+    HIST.push({t: now, stt: it.stt, name: it.name, from: 0, to: it.qty});
+  });
+  $q.value = ''; curUnit = '';
+  buildChips(); persist(true); runSearch(); renderHist(); closeImport();
+  toast('Đã import <b>' + chosen.length + ' thiết bị</b> từ Excel vào danh sách.');
+});
+
+/* ---------- Nút Lưu + khôi phục khi mở file ---------- */
+document.getElementById('btnSave').addEventListener('click', function(){
+  const diffs = diffAdj(SAVED_ADJ, ADJ);
+  const now = Date.now();
+  diffs.forEach(function(d){ HIST.push({t: now, stt: d.stt, name: d.name, from: d.from, to: d.to}); });
+  const noteDiffs = diffNotes(SAVED_NOTES, NOTES);
+  const nowE = Date.now();
+  editDiffEntries().forEach(function(d){ d.t = nowE; HIST.push(d); });
+  noteDiffs.forEach(function(d){ HIST.push({t: now, stt: d.stt, name: d.name, from: d.from, to: d.to, isNote: true}); });
+  persist(true);
+  renderHist();
+  const total = diffs.length + noteDiffs.length;
+  toast('<b>✓ Đã lưu</b> lúc ' + fmtTime(savedAt) + '<br>' +
+    (total
+      ? 'Đã ghi <b>' + total + ' thay đổi</b> vào lịch sử. Toàn bộ sẽ giữ nguyên khi mở lại file.'
+      : (histDirty ? '' : 'Không có thay đổi mới. ') + 'Lịch sử hiện có ' + HIST.length + ' mục, đã được lưu.'));
+});
+// Báo ngay khi mở file nếu có số liệu đã lưu từ lần trước
+(function(){
+  const n = Object.keys(ADJ).length;
+  if (n || HIST.length){
+    setTimeout(function(){
+      toast('<b>↺ Đã khôi phục</b> dữ liệu lần lưu trước (' + fmtTime(savedAt || Date.now()) + ')<br>' +
+        (n ? 'Đang giữ dữ liệu lần lưu trước — KHÔNG bị trả về số gốc.'
+           : 'Dữ liệu đang ở bản gốc · lịch sử còn ' + HIST.length + ' mục.'));
+    }, 600);
+  }
+})();
+
+/* ---------- Lịch sử + Xuất CSV ---------- */
+function renderHist(){
+  const el = document.getElementById('histList');
+  const cnt = document.getElementById('histCount');
+  if (!el) return;
+  cnt.textContent = HIST.length ? '(' + HIST.length + ')' : '';
+  if (!HIST.length){
+    el.innerHTML = '<div class="h-row"><span style="color:var(--muted)">Chưa có thay đổi nào. Thêm thiết bị hoặc sửa ghi chú để ghi lịch sử.</span></div>';
+    return;
+  }
+  const rows = HIST.slice().reverse().slice(0, 200).map(function(h, i){
+    const hi = HIST.length - 1 - i; // index thật trong HIST (danh sách đang hiển thị mới nhất trước)
+    const del = '<button type="button" class="h-del" data-hi="' + hi + '" title="Xóa dòng này" aria-label="Xóa dòng lịch sử">×</button>';
+    if (h.reset) return '<div class="h-row"><span class="h-time">' + fmtTime(h.t) + '</span>' +
+      '<span class="h-name">↺ Đặt lại toàn bộ (' + h.count + ' dòng) về số gốc</span>' + del + '</div>';
+if (h.isEdit) return '<div class="h-row"><span class="h-time">' + fmtTime(h.t) + '</span>' +
+      '<span class="h-name">#' + h.stt + ' · ' + esc(h.name) + '</span>' +
+      '<span class="h-chg">' + esc(h.field) + ': ' + shortQ(h.from) + ' → ' + shortQ(h.to) + '</span><span></span>' + del + '</div>';
+    if (h.isDel) return '<div class="h-row"><span class="h-time">' + fmtTime(h.t) + '</span>' +
+      '<span class="h-name">#' + h.stt + ' · ' + esc(h.name) + '</span>' +
+      '<span class="h-chg">XÓA THIẾT BỊ (' + fmtStep(h.from) + ' → 0)</span><span></span>' + del + '</div>';
+    if (h.isNote) return '<div class="h-row"><span class="h-time">' + fmtTime(h.t) + '</span>' +
+      '<span class="h-name">#' + h.stt + ' · ' + esc(h.name) + '</span>' +
+      '<span class="h-chg">Ghi chú: ' + shortQ(h.from) + ' → ' + shortQ(h.to) + '</span><span></span>' + del + '</div>';
+    const d = Math.round((h.to - h.from) * 100) / 100;
+    const cls = d >= 0 ? 'h-plus' : 'h-minus';
+    return '<div class="h-row"><span class="h-time">' + fmtTime(h.t) + '</span>' +
+      '<span class="h-name">#' + h.stt + ' · ' + esc(h.name) + '</span>' +
+      '<span class="h-chg">' + fmtStep(h.from) + ' → <b>' + fmtStep(h.to) + '</b></span>' +
+      '<span class="' + cls + '">' + (d >= 0 ? '+' : '') + fmtStep(d) + '</span>' + del + '</div>';
+  }).join('');
+  el.innerHTML = rows + (HIST.length > 200 ? '<div class="h-row"><span style="color:var(--muted)">… và ' + (HIST.length - 200) + ' mục cũ hơn</span></div>' : '');
+}
+function csvCell(v){
+  v = String(v == null ? '' : v);
+  return (/[",\n]/.test(v)) ? '"' + v.replace(/"/g, '""') + '"' : v;
+}
+function downloadCSV(name, rows){
+  const txt = '\uFEFF' + rows.map(function(r){ return r.map(csvCell).join(','); }).join('\r\n');
+  const blob = new Blob([txt], {type: 'text/csv;charset=utf-8'});
+  const a = document.createElement('a');
+  a.href = URL.createObjectURL(blob);
+  a.download = name;
+  document.body.appendChild(a);
+  a.click();
+  setTimeout(function(){ URL.revokeObjectURL(a.href); a.remove(); }, 800);
+}
+function stampName(prefix){
+  const d = new Date(), p = function(n){ return String(n).padStart(2, '0'); };
+  return prefix + '_' + d.getFullYear() + p(d.getMonth() + 1) + p(d.getDate()) + '_' + p(d.getHours()) + p(d.getMinutes()) + '.csv';
+}
+document.getElementById('btnCsv').addEventListener('click', function(){
+  const rows = [ ['STT','So luong','Moi them'].concat(FIELDS.map(function(f){ return f[1]; }), ['Ghi chu']) ];
+  ALL.forEach(function(r){
+    const vals = FIELDS.map(function(f){ return (r[f[0]] === undefined || r[f[0]] === null) ? '' : String(r[f[0]]); });
+    rows.push([r.stt, effQty(r), r.isNew ? 'Co' : 'Khong'].concat(vals, [r.note || '']));
+  });
+  downloadCSV(stampName('thiet-bi-it-10050'), rows);
+});
+document.getElementById('btnHistCsv').addEventListener('click', function(){
+  const rows = [['Thoi gian', 'STT', 'Ten dung cu', 'Tu', 'Den', 'Thay doi']];
+  HIST.forEach(function(h){
+    if (h.reset) rows.push([fmtTime(h.t), '', 'DAT LAI TOAN BO (' + h.count + ' dong)', '', '', '']);
+    else rows.push([fmtTime(h.t), h.stt, h.name, h.from, h.to, Math.round((h.to - h.from) * 100) / 100]);
+  });
+  downloadCSV(stampName('thiet-bi-it-10050_lich-su'), rows);
+});
+document.getElementById('btnHistClear').addEventListener('click', function(){
+  HIST.length = 0;
+  histDirty = true; // chốt xóa khi bấm Lưu
+  updateSaveState();
+  renderHist();
+});
+// Xóa từng dòng lịch sử (chỉ xóa log, không đổi số lượng hiện tại; chốt khi bấm Lưu)
+document.getElementById('histList').addEventListener('click', function(e){
+  const b = e.target.closest('.h-del');
+  if (!b) return;
+  const hi = parseInt(b.getAttribute('data-hi'), 10);
+  if (isNaN(hi) || hi < 0 || hi >= HIST.length) return;
+  HIST.splice(hi, 1);
+  histDirty = true;
+  updateSaveState();
+  renderHist();
+});
+</script>
+
+<script>
+/* ============ DETAIL OVERLAY + CHARTS (SVG, offline) ============ */
+(function(){
+  const overlay = document.getElementById('overlay');
+  const detail = document.getElementById('detail');
+  const backdrop = document.getElementById('backdrop');
+  if (!overlay || !detail) return;
+
+  const PALETTE = ['#F0D68A','#C9A227','#E8B84B','#98720F','#7A5B0D','#F6E9C2','#A9841C','#D9B95C','#8C6A10','#EFD9A0'];
+
+  function esc(s){
+    return String(s == null ? '' : s).replace(/[&<>"']/g, function(c){
+      return {'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c];
+    });
+  }
+  function fmtNum(n){
+    n = Number(n) || 0;
+    const neg = n < 0 ? '-' : ''; n = Math.abs(n);
+    const s = (Math.round(n * 100) / 100).toString();
+    const parts = s.split('.');
+    let i = parts[0].length - 3;
+    while (i > 0){ parts[0] = parts[0].slice(0, i) + '.' + parts[0].slice(i); i -= 3; }
+    return neg + parts.join(',');
+  }
+  function polar(cx, cy, r, a0, a1){
+    const p0x = cx + r * Math.cos(a0), p0y = cy + r * Math.sin(a0);
+    const p1x = cx + r * Math.cos(a1), p1y = cy + r * Math.sin(a1);
+    const large = (a1 - a0) > Math.PI ? 1 : 0;
+    return [p0x, p0y, p1x, p1y, large];
+  }
+
+  function donutSVG(groups, size, unitLabel){
+    size = size || 220;
+    const cx = size / 2, cy = (size / 2) + 4, r = (size / 2) - 22, ir = r - 34;
+    const total = groups.reduce(function(s, g){ return s + g.val; }, 0);
+    if (total <= 0) return '<div style="text-align:center;color:var(--muted);padding:30px 0">Không có dữ liệu</div>';
+    let angle = -Math.PI / 2, out = '', i = 0;
+    groups.forEach(function(g){
+      const frac = g.val / total;
+      if (frac <= 0.0001) return;
+      const a0 = angle, a1 = angle + frac * 2 * Math.PI;
+      const col = PALETTE[i % PALETTE.length];
+      const P = polar(cx, cy, r, a0, a1), Q = polar(cx, cy, ir, a0, a1);
+      const larc = (a1 - a0) > Math.PI ? 1 : 0;
+      const d = 'M' + P[0].toFixed(2) + ',' + P[1].toFixed(2) + ' A' + r + ',' + r + ' 0 ' + larc + ' 1 ' +
+        P[2].toFixed(2) + ',' + P[3].toFixed(2) + ' L' + Q[2].toFixed(2) + ',' + Q[3].toFixed(2) +
+        ' A' + ir + ',' + ir + ' 0 ' + larc + ' 0 ' + Q[0].toFixed(2) + ',' + Q[1].toFixed(2) + ' Z';
+      out += '<path d="' + d + '" fill="' + col + '" stroke="#101014" stroke-width="1.5"><title>' +
+        esc(g.name) + ': ' + fmtNum(g.val) + ' (' + (frac * 100).toFixed(1) + '%)</title></path>';
+      angle = a1; i++;
+    });
+    const unit = unitLabel || '';
+    const html = '<svg viewBox="0 0 ' + size + ' ' + size + '" width="100%" role="img" aria-label="Biểu đồ phân bổ">' + out +
+      '<text x="' + cx + '" y="' + (cy - 4) + '" text-anchor="middle" font-size="26" font-weight="700" fill="#F0D68A" font-family="Georgia,serif">' + fmtNum(Math.round(total * 100) / 100) + '</text>' +
+      '<text x="' + cx + '" y="' + (cy + 16) + '" text-anchor="middle" font-size="11" fill="#8F8877">' + esc(unit) + '</text></svg>';
+    const legend = groups.map(function(g, idx){
+      const frac = g.val / total;
+      return '<div class="legend-row"><span class="legend-swatch" style="background:' + PALETTE[idx % PALETTE.length] + '"></span>' +
+        '<span class="legend-name" title="' + esc(g.name) + '">' + esc(g.name) + '</span>' +
+        '<span class="legend-val">' + fmtNum(g.val) + ' <span style="color:#8F8877">(' + (frac * 100).toFixed(1) + '%)</span></span></div>';
+    }).join('');
+    return html + '<div class="legend">' + legend + '</div>';
+  }
+
+  function barSVG(rows, sizeW){
+    sizeW = sizeW || 420;
+    const h = 230, padL = 46, padR = 10, padT = 16, padB = 40;
+    let max = 0;
+    rows.forEach(function(r){ if (r.val > max) max = r.val; });
+    if (max <= 0) return '<div style="text-align:center;color:var(--muted);padding:30px 0">Không có dữ liệu</div>';
+    const plotW = sizeW - padL - padR, plotH = h - padT - padB;
+    const n = rows.length, bw = plotW / n, wbar = Math.max(6, bw * 0.5);
+    let out = '', rowDivs = '';
+    rows.forEach(function(r, i){
+      const bh = Math.max(2, (r.val / max) * plotH);
+      const x = padL + bw * i + (bw - wbar) / 2, y = padT + plotH - bh;
+      out += '<rect x="' + x.toFixed(1) + '" y="' + y.toFixed(1) + '" width="' + wbar.toFixed(1) + '" height="' + bh.toFixed(1) +
+        '" rx="3" fill="url(#barGrad)"><title>' + esc(r.name) + ': ' + fmtNum(r.val) + '</title></rect>';
+      if (r.val > 0) out += '<text x="' + (x + wbar / 2).toFixed(1) + '" y="' + (y - 5).toFixed(1) +
+        '" text-anchor="middle" font-size="10" fill="#F0D68A">' + fmtNum(Math.round(r.val * 100) / 100) + '</text>';
+    });
+    for (let t = 0; t <= 4; t++){
+      const val = max * (1 - t / 4), yy = padT + (t / 4) * plotH;
+      rowDivs += '<line x1="' + padL + '" x2="' + (sizeW - padR) + '" y1="' + yy.toFixed(1) + '" y2="' + yy.toFixed(1) +
+        '" stroke="#23232D" stroke-width="1"/>' +
+        '<text x="' + (padL - 6) + '" y="' + (yy + 3).toFixed(1) + '" text-anchor="end" font-size="9" fill="#8F8877">' +
+        fmtNum(Math.round(val * 100) / 100) + '</text>';
+    }
+    const xLab = rows.map(function(r, i){
+      let l = esc(r.name);
+      if (l.length > 8) l = l.slice(0, 8) + '…';
+      const lx = (padL + bw * i + bw / 2).toFixed(1), ly = padT + plotH + 16;
+      return '<text x="' + lx + '" y="' + ly + '" transform="rotate(-35 ' + lx + ' ' + ly + ')" text-anchor="end" font-size="9.5" fill="#8F8877">' + l + '</text>';
+    }).join('');
+    return '<svg viewBox="0 0 ' + sizeW + ' ' + h + '" width="100%" role="img" aria-label="Biểu đồ cột" style="min-width:' + Math.min(sizeW, rows.length * 60 + 70) + 'px">' +
+      '<defs><linearGradient id="barGrad" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#F6E9C2"/><stop offset="1" stop-color="#98720F"/></linearGradient></defs>' +
+      rowDivs + '<g font-family="Segoe UI,sans-serif">' + xLab + '</g>' + out + '</svg>';
+  }
+
+  const curSttV = { stt: 0 };
+  function openDetail(stt){
+    stt = parseInt(stt, 10);
+    const r0 = ALL.filter(function(x){ return x.stt === stt; })[0];
+    if (!r0) return;
+    curSttV.stt = stt;
+    if (!r0) return;
+    const c = catOf(r0.unit);
+    const badgeCls = c.key === 'kho'
+      ? 'background:rgba(64,120,180,.18);color:#8FC1E9;border:1px solid rgba(64,120,180,.5)'
+      : 'background:rgba(44,107,63,.18);color:#7BD89C;border:1px solid rgba(44,107,63,.5)';
+    const frowEdit = function(lbl, field){
+      if (field === 'vitri'){
+        return '<div style="display:flex;gap:10px;align-items:center;padding:6px 0;border-bottom:1px solid var(--line-soft);font-size:13px">' +
+          '<span style="min-width:130px;flex-shrink:0;color:var(--muted)">' + esc(lbl) + '</span>' +
+          locSel(r0, 'data-ef="vitri"') + '</div>';
+      }
+      if (field === 'status'){
+        const cur = statusOpt(r0.status);
+        let opts = STATUS_OPTIONS.slice();
+        if (cur && opts.indexOf(cur) < 0) opts.push(cur);
+        return '<div style="display:flex;gap:10px;align-items:center;padding:6px 0;border-bottom:1px solid var(--line-soft);font-size:13px">' +
+          '<span style="min-width:130px;flex-shrink:0;color:var(--muted)">' + esc(lbl) + '</span>' +
+          '<select class="note-inp" style="flex:1;min-width:0" data-ef="status" aria-label="' + esc(lbl) + '">' +
+          '<option value=""' + (cur ? '' : ' selected') + '>(trống)</option>' +
+          opts.map(function(o){ return '<option value="' + esc(o) + '"' + (o === cur ? ' selected' : '') + '>' + esc(o) + '</option>'; }).join('') +
+          '</select></div>';
+      }
+      const val = (r0[field] === undefined || r0[field] === null) ? '' : String(r0[field]);
+      return '<div style="display:flex;gap:10px;align-items:center;padding:6px 0;border-bottom:1px solid var(--line-soft);font-size:13px">' +
+        '<span style="min-width:130px;flex-shrink:0;color:var(--muted)">' + esc(lbl) + '</span>' +
+        '<input class="note-inp" style="flex:1;min-width:0" type="text" data-ef="' + esc(field) + '" value="' + esc(val) + '" placeholder="—" autocomplete="off" aria-label="' + esc(lbl) + '">' +
+        '</div>';
+    };
+    const catGroups = {};
+    ALL.forEach(function(r){ catGroups[r.unit] = (catGroups[r.unit] || 0) + 1; });
+    const catArr = Object.keys(catGroups).map(function(k){ return {name:k, val:catGroups[k]}; }).sort(function(x, y){ return y.val - x.val; });
+    const mCnt2 = {};
+    ALL.forEach(function(r){ const k = r.model || '(chưa rõ model)'; mCnt2[k] = (mCnt2[k] || 0) + 1; });
+    const top2 = Object.keys(mCnt2).map(function(k){ return {name:k, val:mCnt2[k]}; }).sort(function(x, y){ return y.val - x.val; }).slice(0, 10);
+    detail.innerHTML = '<div class="detail-head">' +
+      '<div class="d-title"><div class="d-ano">THIẾT BỊ №&nbsp;' + r0.stt + (r0.isNew ? ' · MỚI THÊM' : '') + '</div>' +
+      '<div class="d-name">' + esc(r0.name) + '</div>' +
+      '<span class="d-badge" style="' + badgeCls + '">' + esc(c.label) + '</span>' +
+      '<span class="d-badge" style="background:rgba(255,255,255,.05);color:var(--text);border:1px solid var(--line)">' + esc(r0.status || '—') + '</span></div>' +
+      '<button class="d-close" id="dDel" title="Xóa thiết bị" aria-label="Xóa thiết bị" style="color:#E28B8B">🗑</button>' +
+      '<button class="d-close" id="dClose" aria-label="Đóng">×</button></div>' +
+      '<div class="d-body">' +
+      '<div class="d-hero"><div class="big">' + prodImg(r0.stt, 120) + '</div>' +
+        '<div style="flex:1;min-width:220px">' +
+        '<div style="font-family:Georgia,serif;font-size:15px;color:var(--gold-1);margin-bottom:6px">Sửa trực tiếp — mọi ô đều ghi history nhờ nút Lưu</div>' +
+        '</div></div>' +
+      '<div style="max-height:46vh;overflow:auto;margin-top:6px;padding-right:4px">' +
+      FIELDS.map(function(f){ return frowEdit(f[1], f[0]); }).join('') +
+      '<div style="display:flex;gap:10px;align-items:center;padding:6px 0;border-bottom:1px solid var(--line-soft);font-size:13px">' +
+        '<span style="min-width:130px;flex-shrink:0;color:var(--muted)">Ghi chú</span>' +
+        '<input class="note-inp" style="flex:1;min-width:0" type="text" data-ef="__note" value="' + esc(r0.note || '') + '" placeholder="—" autocomplete="off" aria-label="Ghi chú">' +
+      '</div>' +
+      '</div>' +
+      '<div class="charts">' +
+        '<div class="chart-card"><div class="chart-title">Phân bổ theo nhóm (toàn danh sách)</div>' + donutSVG(catArr, 220, 'thiết bị') + '</div>' +
+        '<div class="chart-card"><div class="chart-title">Top 10 Model nhiều nhất</div>' + barSVG(top2, 420) + '</div>' +
+      '</div></div>';
+    document.getElementById('dClose').addEventListener('click', closeOverlay);
+    document.getElementById('dDel').addEventListener('click', function(){
+      if (deleteDevice(r0.stt)) closeOverlay();
+    });
+    overlay.classList.add('open');
+    overlay.setAttribute('aria-hidden', 'false');
+    document.body.style.overflow = 'hidden';
+  }
+  function closeOverlay(){
+    overlay.classList.remove('open');
+    overlay.setAttribute('aria-hidden', 'true');
+    document.body.style.overflow = '';
+  }
+  backdrop.addEventListener('click', closeOverlay);
+  document.addEventListener('keydown', function(e){ if (e.key === 'Escape') closeOverlay(); });
+  // Luu thay doi truc tiep tu modal (commit ngay + ghi vao EDIT de "Luu" chot)
+  detail.addEventListener('change', function(e){
+    const inp = e.target.closest('[data-ef]');
+    if (!inp) return;
+    const stt = curSttV.stt;
+    const field = inp.getAttribute('data-ef');
+    const r = ALL.filter(function(x){ return x.stt === stt; })[0];
+    if (!r || field === 'stt') return;
+    const v = String(inp.value == null ? '' : inp.value).trim();
+    const ov = (r[field] === undefined || r[field] === null) ? '' : String(r[field]);
+    if (v === ov) return;
+    if (field === 'status' && statusOpt(v) === statusOpt(ov)) return;
+    if (field === '__note'){
+      r.note = v;
+      if (typeof r['__orig___note'] === 'undefined') r['__orig___note'] = ov;
+      const on = (ORIG_NOTES[stt] !== undefined) ? ORIG_NOTES[stt] : '';
+      if (v === on) delete NOTES[stt]; else NOTES[stt] = v;
+      updateSaveState();
+      return;
+    }
+    if (typeof r['__orig_' + field] === 'undefined') r['__orig_' + field] = ov;
+    r[field] = v;
+    if (field === 'vitri'){
+      const uv = String(v).trim().toUpperCase();
+      const colr = uv === 'BACK OFFICE' ? 'var(--gold-2)' : (uv === 'KHO' ? '#4EA6E8' : '');
+      inp.style.color = colr; inp.style.fontWeight = colr ? '600' : '';
+    }
+    EDIT[stt] = EDIT[stt] || {};
+    EDIT[stt][field] = v;
+    if (['name','unit'].indexOf(field) >= 0){ buildChips(); } // Ten/Nhom doi -> refilter chips
+    updateSaveState();
+    render();
+  });
+  detail.addEventListener('keydown', function(e){
+    if (e.key === 'Enter' && e.target.closest && e.target.closest('[data-ef]')) e.target.blur();
+  });
+  window.tubeOpenDetail = openDetail;
+})();
+</script>
+
+</body>
+</html>
