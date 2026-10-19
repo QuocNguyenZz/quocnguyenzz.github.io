@@ -224,7 +224,8 @@
   .save-state{font-size:12px;color:var(--muted);white-space:nowrap;margin-left:auto}
   .save-state b{color:#7BD89C}
   .save-state i{color:var(--gold-1);font-style:normal}
-  .save-state.it-sync{margin-left:12px;font-weight:600}
+  .save-state.it-sync{margin-left:12px;font-weight:600;cursor:pointer}
+  .save-state.it-sync:hover{text-decoration:underline}
   .it-sync.it-ok{color:#7BD89C}
   .it-sync.it-warn{color:var(--gold-1)}
   .it-sync.it-err{color:#E28B8B}
@@ -823,7 +824,7 @@ function buildChips(){
   });
   html += '<button class="fchip" id="btnNewOnly">★ Mới thêm</button>';
   html += '<span class="save-state" id="saveState"></span>';
-  html += '<span class="save-state it-sync it-muted" id="itSyncState"></span>';
+  html += '<span class="save-state it-sync it-muted" id="itSyncState" title="Dong bo giua cac PC: bam de nhap/doi GitHub token" onclick="if(window.itSyncAsk)window.itSyncAsk()"></span>';
   tray.innerHTML = html;
   if (!tray.dataset.bound){
     tray.dataset.bound = '1';
@@ -1666,6 +1667,114 @@ document.getElementById('histList').addEventListener('click', function(e){
   });
   var BASE = null, MODE = null, ready = false, pushing = false, lastPush = 0;
 
+  /* ---------- GitHub: luu thang tren GitHub (giong trang Tu Thiet Bi) ---------- */
+  var GH_OWNER = 'QuocNguyenZz', GH_REPO = 'fsd50-tb-data', GH_FILE = 'it-assets-10050.json';
+  var GH_APP = 'it-assets-10050';
+  var TOK_KEY = 'tuThietBi_pat';
+
+  function ghToken(){
+    try { return localStorage.getItem(TOK_KEY) || localStorage.getItem('itAsset10050_pat') || ''; }
+    catch (e) { return ''; }
+  }
+  function ghReady(){ return !!ghToken(); }
+  function b64e(s){ return btoa(unescape(encodeURIComponent(s))); }
+  function b64d(s){ return decodeURIComponent(escape(atob(String(s || '').replace(/\s+/g, '')))); }
+  function ghUrl(){ return 'https://api.github.com/repos/' + GH_OWNER + '/' + GH_REPO + '/contents/' + GH_FILE; }
+  function ghHeaders(){ return {'Accept':'application/vnd.github+json','Authorization':'Bearer ' + ghToken()}; }
+  function askToken(force){
+    var cur = ghToken();
+    var msg = cur
+      ? 'Token GitHub dang dung: ' + cur.slice(0, 4) + '...' + cur.slice(-4) + '\nNhap token moi (Enter de giu nguyen):'
+      : 'Nhap GitHub sync token (chi 1 lan tren may nay, duoc luu trong trinh duyet):';
+    var v = window.prompt(msg, '');
+    if (v === null) return false;
+    v = v.trim();
+    if (!v) return !!cur;
+    try { localStorage.setItem(TOK_KEY, v); } catch (e) {}
+    chip('\u2601 GitHub: \u0111\u00e3 l\u01b0u token', 'ok');
+    setTimeout(function(){ pull(false); }, 300);
+    return true;
+  }
+  window.itSyncAsk = function(){ askToken(true); };
+  function ghState(){
+    return {app: GH_APP, v: 1, savedAt: savedAt, adj: ADJ, hist: HIST.slice(-500),
+            custom: CUSTOM, notes: NOTES, deleted: DELETED, edit: EDIT};
+  }
+  function ghMeta(){
+    return tf(ghUrl() + '?t=' + Date.now(), {headers: ghHeaders(), cache:'no-store'}, 9000)
+      .then(function(r){
+        if (r.status === 404) return null;
+        if (r.status === 401 || r.status === 403) throw new Error('HTTP ' + r.status + ': token sai/het han');
+        if (!r.ok) throw new Error('HTTP ' + r.status);
+        return r.json();
+      });
+  }
+  function ghPut(obj, sha){
+    var body = {message: GH_APP + ' sync ' + new Date().toISOString(), content: b64e(JSON.stringify(obj))};
+    if (sha) body.sha = sha;
+    return tf(ghUrl(), {method:'PUT', headers: Object.assign({'Content-Type':'application/json'}, ghHeaders()),
+      body: JSON.stringify(body)}, 15000);
+  }
+  function countState(o){
+    return Object.keys((o && o.adj) || {}).length + ((o && o.hist) || []).length +
+           ((o && o.custom) || []).length + Object.keys((o && o.notes) || {}).length;
+  }
+  function ghPush(){
+    pushing = true;
+    chip('\u2601 GitHub: \u0111ang \u0111\u1ea9y l\u00ean...', 'warn');
+    var obj = ghState();
+    ghMeta().then(function(meta){
+      if (meta && meta.content){
+        var ro = null;
+        try { ro = JSON.parse(b64d(meta.content)); } catch (e) {}
+        if (ro && countState(obj) === 0 && countState(ro) > 0) return {skipped: true};
+      }
+      return ghPut(obj, meta && meta.sha).then(function(pr){
+        if (pr.ok) return pr;
+        if (pr.status === 409 || pr.status === 422){
+          return ghMeta().then(function(m2){ return ghPut(obj, m2 && m2.sha); });
+        }
+        return pr;
+      });
+    }).then(function(pr){
+      if (pr && pr.skipped){ chip('\u2601 GitHub: b\u1ea3n n\u00e0y tr\u1ed1ng n\u00ean kh\u00f4ng ghi \u0111\u00e8', 'warn'); return; }
+      if (pr && pr.ok){
+        lastPush = Date.now();
+        chip('\u2601 GitHub: \u0111\u00e3 \u0111\u1ea9y ' + clock(lastPush) + ' \u2014 PC kh\u00e1c nh\u1eadn khi m\u1edf trang', 'ok');
+      } else {
+        chip('\u2601 GitHub: \u0111\u1ea9y l\u00ean l\u1ed7i (' + ((pr && pr.status) || '?') + ')', 'err');
+      }
+    }).catch(function(e){
+      chip('\u2601 GitHub: ' + ((e && e.message) || 'm\u1ea5t m\u1ea1ng/kh\u00f4ng g\u1ecdi \u0111\u01b0\u1ee3c API'), 'err');
+    }).then(function(){ pushing = false; });
+  }
+  function ghPull(auto){
+    if (!ghReady()) return lanPull(auto);
+    ghMeta().then(function(meta){
+      if (!meta || !meta.content){ chip('\u2601 GitHub: ch\u01b0a c\u00f3 d\u1eef li\u1ec7u \u0111\u1ed3ng b\u1ed9', 'muted'); return; }
+      var o = null;
+      try { o = JSON.parse(b64d(meta.content)); } catch (e) {}
+      if (!o || o.app !== GH_APP){ chip('\u2601 GitHub: d\u1eef li\u1ec7u kh\u00f4ng \u0111\u00fang \u0111\u1ecbnh d\u1ea1ng', 'err'); return; }
+      var remoteAt = +o.savedAt || 0, localAt = localSavedAt();
+      if (remoteAt > localAt + 500){
+        if (auto && dirtyCount()){
+          chip('\u2601 GitHub c\u00f3 b\u1ea3n m\u1edbi ' + clock(remoteAt) + ' \u2014 b\u1ea5m L\u01b0u \u0111\u1ec3 ghi \u0111\u00e8 ho\u1eb7c t\u1ea3i l\u1ea1i', 'warn');
+          return;
+        }
+        localStorage.setItem(LSKEY, JSON.stringify({
+          adj: o.adj || {}, hist: o.hist || [], savedAt: remoteAt,
+          custom: o.custom || [], notes: o.notes || {}, deleted: o.deleted || {}, edit: o.edit || {}
+        }));
+        chip('\u2601 \u0110\u00e3 nh\u1eadn b\u1ea3n GitHub (' + clock(remoteAt) + '), \u0111ang t\u1ea3i l\u1ea1i...', 'ok');
+        setTimeout(function(){ location.reload(); }, 800);
+        return;
+      }
+      chip(lastPush ? '\u2601 GitHub: \u0111\u00e3 \u0111\u1ed3ng b\u1ed9 ' + clock(lastPush) : '\u2601 GitHub: s\u1eb5n s\u00e0ng', 'ok');
+    }).catch(function(e){
+      chip('\u2601 GitHub: ' + ((e && e.message) || 'kh\u00f4ng k\u1ebft n\u1ed1i \u0111\u01b0\u1ee3c'), 'err');
+    });
+  }
+
   function chip(msg, cls){
     var el = document.getElementById('itSyncState');
     if (!el) return;
@@ -1755,18 +1864,18 @@ document.getElementById('histList').addEventListener('click', function(e){
     try { return diffAdj(SAVED_ADJ, ADJ).length + diffNotes(SAVED_NOTES, NOTES).length + diffEditCount() + (histDirty ? 1 : 0); }
     catch (e) { return 1; }
   }
-  function pull(auto){
+  function lanPull(auto){
     if (!ready) return;
     readState().then(function(remote){
       if (!remote){
-        chip('\u2601 Ch\u01b0a c\u00f3 b\u1ea3n \u0111\u1ed3ng b\u1ed9 n\u00e0o', 'muted');
+        chip('\u2601 LAN: ch\u01b0a c\u00f3 b\u1ea3n \u0111\u1ed3ng b\u1ed9 n\u00e0o', 'muted');
         return;
       }
       var localAt = localSavedAt();
       if (remote.savedAt > localAt + 500){
         if (sessionStorage.getItem(GUARD) === String(remote.savedAt)) return;
         if (auto && dirtyCount()){
-          chip('\u2601 C\u00f3 b\u1ea3n m\u1edbi ' + clock(remote.savedAt) + ' t\u1eeb PC kh\u00e1c \u2014 b\u1ea5m L\u01b0u \u0111\u1ec3 ghi \u0111\u00e8 ho\u1eb7c t\u1ea3i l\u1ea1i', 'warn');
+          chip('\u2601 LAN c\u00f3 b\u1ea3n m\u1edbi ' + clock(remote.savedAt) + ' t\u1eeb PC kh\u00e1c \u2014 b\u1ea5m L\u01b0u \u0111\u1ec3 ghi \u0111\u00e8 ho\u1eb7c t\u1ea3i l\u1ea1i', 'warn');
           return;
         }
         sessionStorage.setItem(GUARD, String(remote.savedAt));
@@ -1775,41 +1884,64 @@ document.getElementById('histList').addEventListener('click', function(e){
           custom: remote.custom || [], notes: remote.notes || {},
           deleted: remote.deleted || {}, edit: remote.edit || {}
         }));
-        chip('\u2601 \u0110\u00e3 nh\u1eadn b\u1ea3n t\u1eeb PC kh\u00e1c (' + clock(remote.savedAt) + '), \u0111ang t\u1ea3i l\u1ea1i...', 'ok');
+        chip('\u2601 LAN: \u0111\u00e3 nh\u1eadn b\u1ea3n t\u1eeb PC kh\u00e1c (' + clock(remote.savedAt) + '), \u0111ang t\u1ea3i l\u1ea1i...', 'ok');
         setTimeout(function(){ location.reload(); }, 700);
         return;
       }
-      chip(lastPush ? '\u2601 \u0110\u00e3 \u0111\u1ed3ng b\u1ed9 ' + clock(lastPush)
-                    : '\u2601 \u0110\u00e3 k\u1ebft n\u1ed1i m\u00e1y ch\u1ee7 \u0111\u1ed3ng b\u1ed9', 'ok');
+      chip(lastPush ? '\u2601 LAN: \u0111\u00e3 \u0111\u1ed3ng b\u1ed9 ' + clock(lastPush)
+                    : '\u2601 LAN: \u0111\u00e3 k\u1ebft n\u1ed1i m\u00e1y ch\u1ee7 \u0111\u1ed3ng b\u1ed9', 'ok');
     }).catch(function(){
-      chip('\u2601 Kh\u00f4ng th\u1ea5y m\u00e1y ch\u1ee7 \u0111\u1ed3ng b\u1ed9', 'err');
+      chip('\u2601 LAN: kh\u00f4ng th\u1ea5y m\u00e1y ch\u1ee7 \u0111\u1ed3ng b\u1ed9', 'err');
     });
   }
-  function push(){
+  function lanPush(){
     if (!ready || pushing) return;
     pushing = true;
-    chip('\u2601 \u0110ang \u0111\u1ed3ng b\u1ed9...', 'warn');
+    chip('\u2601 LAN: \u0111ang \u0111\u1ed3ng b\u1ed9...', 'warn');
     writeState({v:1, savedAt: savedAt, adj: ADJ, hist: HIST.slice(-500), custom: CUSTOM,
                 notes: NOTES, deleted: DELETED, edit: EDIT})
       .then(function(){
         lastPush = Date.now();
-        chip('\u2601 \u0110\u00e3 \u0111\u1ed3ng b\u1ed9 ' + clock(lastPush) + ' \u2014 PC kh\u00e1c nh\u1eadn khi m\u1edf trang', 'ok');
+        chip('\u2601 LAN: \u0111\u00e3 \u0111\u1ed3ng b\u1ed9 ' + clock(lastPush) + ' \u2014 PC kh\u00e1c nh\u1eadn khi m\u1edf trang', 'ok');
       })
       .catch(function(e){
-        chip('\u2601 Ch\u01b0a \u0111\u1ed3ng b\u1ed9 \u0111\u01b0\u1ee3c (' + ((e && e.message) || 'l\u1ed7i m\u1ea1ng') + ') \u2014 \u0111\u00e3 l\u01b0u tr\u00ean m\u00e1y n\u00e0y', 'err');
+        chip('\u2601 LAN: ch\u01b0a \u0111\u1ed3ng b\u1ed9 \u0111\u01b0\u1ee3c (' + ((e && e.message) || 'l\u1ed7i m\u1ea1ng') + ') \u2014 \u0111\u00e3 l\u01b0u tr\u00ean m\u00e1y n\u00e0y', 'err');
       })
       .then(function(){ pushing = false; });
+  }
+
+  /* ---------- Chon kenh dong bo: GitHub (co token) -> LAN (may chu noi bo) ---------- */
+  function pull(auto){
+    if (!ready) return;
+    if (pushing || Date.now() - lastPush < 3000) return;
+    if (ghReady()) return ghPull(auto);
+    if (location.protocol === 'https:'){
+      chip('\u2601 Ch\u01b0a c\u1ea5u h\u00ecnh GitHub \u2014 b\u1ea5m v\u00e0o \u0111\u00e2y \u0111\u1ec3 nh\u1eadp token', 'muted');
+      return;
+    }
+    return lanPull(auto);
+  }
+  function push(){
+    if (!ready || pushing) return;
+    if (ghReady()) return ghPush();
+    var skipPrompt = false;
+    try { skipPrompt = sessionStorage.getItem('itAsset10050_noTok') === '1'; } catch (e) {}
+    if (!skipPrompt){
+      if (askToken(false)) return ghPush();
+      try { sessionStorage.setItem('itAsset10050_noTok', '1'); } catch (e) {}
+    }
+    if (location.protocol === 'https:'){
+      chip('\u2601 GitHub: ch\u01b0a c\u00f3 token \u2014 ch\u1ec9 l\u01b0u tr\u00ean m\u00e1y n\u00e0y', 'err');
+      return;
+    }
+    return lanPush();
   }
 
   window.itSyncPush = push;
   window.itSyncPull = function(){ pull(false); };
 
-  if (location.protocol === 'https:'){
-    setTimeout(function(){ chip('\u2601 B\u1ea3n GitHub: ch\u1ec9 \u0111\u1ed3ng b\u1ed9 khi m\u1edf t\u1eeb \u1ed5 H: (LAN)', 'muted'); }, 500);
-    return;
-  }
   setTimeout(function(){ ready = true; pull(false); }, 700);
-  setInterval(function(){ pull(true); }, 120000);
+  setInterval(function(){ pull(true); }, 30000);
   window.addEventListener('focus', function(){ pull(true); });
 })();
 </script>
