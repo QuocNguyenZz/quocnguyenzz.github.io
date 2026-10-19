@@ -224,6 +224,11 @@
   .save-state{font-size:12px;color:var(--muted);white-space:nowrap;margin-left:auto}
   .save-state b{color:#7BD89C}
   .save-state i{color:var(--gold-1);font-style:normal}
+  .save-state.it-sync{margin-left:12px;font-weight:600}
+  .it-sync.it-ok{color:#7BD89C}
+  .it-sync.it-warn{color:var(--gold-1)}
+  .it-sync.it-err{color:#E28B8B}
+  .it-sync.it-muted{color:var(--muted);font-weight:400}
   .btn-save{border:1.5px solid var(--gold-2);background:linear-gradient(180deg,var(--gold-1),var(--gold-2));
     color:#0B0B0E;border-radius:10px;padding:11px 18px;cursor:pointer;font-weight:800;font-size:13.5px;
     transition:filter .15s;box-shadow:0 2px 10px rgba(201,162,39,.25)}
@@ -694,6 +699,7 @@ function persist(stamp){
     localStorage.setItem(LS_KEY, JSON.stringify({adj: ADJ, hist: HIST.slice(-500), savedAt: savedAt, custom: CUSTOM, notes: NOTES, deleted: DELETED, edit: EDIT}));
   } catch (e) {}
   updateSaveState();
+  if (stamp && window.itSyncPush) { try { window.itSyncPush(); } catch (e) {} }
 }
 function fmtTime(t){
   const d = new Date(t), p = function(n){ return String(n).padStart(2, '0'); };
@@ -817,6 +823,7 @@ function buildChips(){
   });
   html += '<button class="fchip" id="btnNewOnly">★ Mới thêm</button>';
   html += '<span class="save-state" id="saveState"></span>';
+  html += '<span class="save-state it-sync it-muted" id="itSyncState"></span>';
   tray.innerHTML = html;
   if (!tray.dataset.bound){
     tray.dataset.bound = '1';
@@ -1644,6 +1651,166 @@ document.getElementById('histList').addEventListener('click', function(e){
     if (e.key === 'Enter' && e.target.closest && e.target.closest('[data-ef]')) e.target.blur();
   });
   window.tubeOpenDetail = openDetail;
+})();
+</script>
+
+<script>
+/* ---------- Dong bo giua cac PC (qua may chu SCServer noi bo) ---------- */
+(function(){
+  var LSKEY = 'itAsset10050_v2';
+  var GUARD = 'itAsset10050_syncAt';
+  var BASES = [];
+  if (location.protocol === 'http:' || location.protocol === 'https:') BASES.push(location.origin);
+  ['http://127.0.0.1:8080','http://mmpcsgh740tmmq:8080','http://10.138.126.148:8080'].forEach(function(b){
+    if (BASES.indexOf(b) < 0) BASES.push(b);
+  });
+  var BASE = null, MODE = null, ready = false, pushing = false, lastPush = 0;
+
+  function chip(msg, cls){
+    var el = document.getElementById('itSyncState');
+    if (!el) return;
+    el.className = 'save-state it-sync' + (cls ? ' it-' + cls : '');
+    el.innerHTML = msg;
+    el.title = 'Dong bo trang thai (so luong, ghi chu, sua, xoa, lich su) giua cac PC qua may chu noi bo';
+  }
+  function clock(t){
+    var d = new Date(t), p = function(n){ return String(n).padStart(2, '0'); };
+    return p(d.getHours()) + ':' + p(d.getMinutes());
+  }
+  function tf(url, opt, ms){
+    if (!window.AbortController) return fetch(url, opt);
+    var c = new AbortController(), t = setTimeout(function(){ c.abort(); }, ms || 4000);
+    return fetch(url, Object.assign({}, opt, {signal: c.signal})).then(function(r){
+      clearTimeout(t); return r;
+    }, function(e){ clearTimeout(t); throw e; });
+  }
+  function probe(b){
+    return tf(b + '/api/it?t=' + Date.now(), {cache:'no-store'}, 2500).then(function(r){
+      if (r.ok) return 'it';
+      return tf(b + '/api/data?t=' + Date.now(), {cache:'no-store'}, 2500).then(function(r2){
+        return r2.ok ? 'data' : null;
+      });
+    }, function(){
+      return tf(b + '/api/data?t=' + Date.now(), {cache:'no-store'}, 2500).then(function(r2){
+        return r2.ok ? 'data' : null;
+      });
+    });
+  }
+  function findBase(){
+    if (BASE) return Promise.resolve(BASE);
+    var i = 0;
+    function next(){
+      if (i >= BASES.length) return Promise.resolve(null);
+      var b = BASES[i++];
+      return probe(b).then(function(mode){
+        if (mode){ BASE = b; MODE = mode; return b; }
+        return next();
+      });
+    }
+    return next();
+  }
+  function readState(){
+    return findBase().then(function(b){
+      if (!b) throw new Error('offline');
+      if (MODE === 'it'){
+        return tf(b + '/api/it?t=' + Date.now(), {cache:'no-store'}, 5000).then(function(r){
+          if (!r.ok) throw new Error('HTTP ' + r.status);
+          return r.text();
+        }).then(function(txt){
+          if (!txt || !txt.trim() || txt.trim() === '{}') return null;
+          var o = JSON.parse(txt);
+          return (o && typeof o.savedAt === 'number') ? o : null;
+        });
+      }
+      return tf(b + '/api/data?t=' + Date.now(), {cache:'no-store'}, 6000).then(function(r){
+        if (!r.ok) throw new Error('HTTP ' + r.status);
+        return r.json();
+      }).then(function(o){
+        return (o && o.it && typeof o.it.savedAt === 'number') ? o.it : null;
+      });
+    });
+  }
+  function writeState(obj){
+    return findBase().then(function(b){
+      if (!b) throw new Error('offline');
+      if (MODE === 'it'){
+        return tf(b + '/api/it', {method:'POST', headers:{'Content-Type':'application/json'}, body: JSON.stringify(obj)}, 9000)
+          .then(function(r){ if (!r.ok) throw new Error('HTTP ' + r.status); });
+      }
+      return tf(b + '/api/data?t=' + Date.now(), {cache:'no-store'}, 6000).then(function(r){
+        return r.ok ? r.json() : {};
+      }).then(function(all){
+        all = (all && typeof all === 'object') ? all : {};
+        all.it = obj;
+        return tf(b + '/api/data', {method:'POST', headers:{'Content-Type':'application/json'}, body: JSON.stringify(all)}, 9000)
+          .then(function(r){ if (!r.ok) throw new Error('HTTP ' + r.status); });
+      });
+    });
+  }
+  function localSavedAt(){
+    try { return +(JSON.parse(localStorage.getItem(LSKEY) || '{}').savedAt || 0); }
+    catch (e) { return 0; }
+  }
+  function dirtyCount(){
+    try { return diffAdj(SAVED_ADJ, ADJ).length + diffNotes(SAVED_NOTES, NOTES).length + diffEditCount() + (histDirty ? 1 : 0); }
+    catch (e) { return 1; }
+  }
+  function pull(auto){
+    if (!ready) return;
+    readState().then(function(remote){
+      if (!remote){
+        chip('\u2601 Ch\u01b0a c\u00f3 b\u1ea3n \u0111\u1ed3ng b\u1ed9 n\u00e0o', 'muted');
+        return;
+      }
+      var localAt = localSavedAt();
+      if (remote.savedAt > localAt + 500){
+        if (sessionStorage.getItem(GUARD) === String(remote.savedAt)) return;
+        if (auto && dirtyCount()){
+          chip('\u2601 C\u00f3 b\u1ea3n m\u1edbi ' + clock(remote.savedAt) + ' t\u1eeb PC kh\u00e1c \u2014 b\u1ea5m L\u01b0u \u0111\u1ec3 ghi \u0111\u00e8 ho\u1eb7c t\u1ea3i l\u1ea1i', 'warn');
+          return;
+        }
+        sessionStorage.setItem(GUARD, String(remote.savedAt));
+        localStorage.setItem(LSKEY, JSON.stringify({
+          adj: remote.adj || {}, hist: remote.hist || [], savedAt: remote.savedAt,
+          custom: remote.custom || [], notes: remote.notes || {},
+          deleted: remote.deleted || {}, edit: remote.edit || {}
+        }));
+        chip('\u2601 \u0110\u00e3 nh\u1eadn b\u1ea3n t\u1eeb PC kh\u00e1c (' + clock(remote.savedAt) + '), \u0111ang t\u1ea3i l\u1ea1i...', 'ok');
+        setTimeout(function(){ location.reload(); }, 700);
+        return;
+      }
+      chip(lastPush ? '\u2601 \u0110\u00e3 \u0111\u1ed3ng b\u1ed9 ' + clock(lastPush)
+                    : '\u2601 \u0110\u00e3 k\u1ebft n\u1ed1i m\u00e1y ch\u1ee7 \u0111\u1ed3ng b\u1ed9', 'ok');
+    }).catch(function(){
+      chip('\u2601 Kh\u00f4ng th\u1ea5y m\u00e1y ch\u1ee7 \u0111\u1ed3ng b\u1ed9', 'err');
+    });
+  }
+  function push(){
+    if (!ready || pushing) return;
+    pushing = true;
+    chip('\u2601 \u0110ang \u0111\u1ed3ng b\u1ed9...', 'warn');
+    writeState({v:1, savedAt: savedAt, adj: ADJ, hist: HIST.slice(-500), custom: CUSTOM,
+                notes: NOTES, deleted: DELETED, edit: EDIT})
+      .then(function(){
+        lastPush = Date.now();
+        chip('\u2601 \u0110\u00e3 \u0111\u1ed3ng b\u1ed9 ' + clock(lastPush) + ' \u2014 PC kh\u00e1c nh\u1eadn khi m\u1edf trang', 'ok');
+      })
+      .catch(function(e){
+        chip('\u2601 Ch\u01b0a \u0111\u1ed3ng b\u1ed9 \u0111\u01b0\u1ee3c (' + ((e && e.message) || 'l\u1ed7i m\u1ea1ng') + ') \u2014 \u0111\u00e3 l\u01b0u tr\u00ean m\u00e1y n\u00e0y', 'err');
+      })
+      .then(function(){ pushing = false; });
+  }
+
+  window.itSyncPush = push;
+  window.itSyncPull = function(){ pull(false); };
+
+  if (location.protocol === 'https:'){
+    setTimeout(function(){ chip('\u2601 B\u1ea3n GitHub: ch\u1ec9 \u0111\u1ed3ng b\u1ed9 khi m\u1edf t\u1eeb \u1ed5 H: (LAN)', 'muted'); }, 500);
+    return;
+  }
+  setTimeout(function(){ ready = true; pull(false); }, 700);
+  setInterval(function(){ pull(true); }, 120000);
+  window.addEventListener('focus', function(){ pull(true); });
 })();
 </script>
 
