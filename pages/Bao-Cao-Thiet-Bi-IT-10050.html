@@ -142,6 +142,10 @@
   .note-inp::placeholder{color:var(--muted)}
   .note-inp:hover{border-color:var(--line)}
   .note-inp:focus{background:#0A0A0E;border-color:var(--gold-2);color:var(--text);box-shadow:0 0 0 2px rgba(201,162,39,.15)}
+  th.sortable{cursor:pointer;user-select:none;white-space:nowrap}
+  th.sortable:hover{color:var(--gold-1)}
+  th.sortable .sq{display:inline-block;font-size:9px;margin-left:4px;color:var(--gold-2);opacity:.85}
+  th.sortable.on{color:var(--gold-1)}
   .thumb{display:block;width:52px;height:52px;border-radius:12px;overflow:hidden;flex-shrink:0}
   /* steppers +/- */
   .stepper{display:inline-flex;align-items:center;gap:2px;background:var(--bg-2);border:1px solid var(--line);
@@ -345,7 +349,7 @@
   <div class="panel">
     <div class="toolbar">
       <div class="search">
-        <input id="q" type="text" placeholder="Tìm tên, serial, model, hãng, NCC… (gõ không dấu vẫn ra)" aria-label="Tìm kiếm">
+        <input id="q" type="text" placeholder="Tìm tên, serial, model, hãng, NCC, vị trí, ghi chú… (gõ không dấu vẫn ra)" aria-label="Tìm kiếm">
         <button id="btnSearch" aria-label="Tìm">Tìm</button>
       </div>
       <button class="clr" id="btnHist">📜 Lịch sử</button>
@@ -363,8 +367,8 @@
           <col style="width:56px"><col style="width:84px"><col><col style="width:230px"><col style="width:150px"><col style="width:140px"><col style="width:120px"><col>
         </colgroup>
         <thead><tr>
-          <th style="width:52px">STT</th><th>Ảnh</th><th>Tên thiết bị</th><th>Serial / Model</th>
-          <th class="ctr">Trạng thái</th><th>Ngành hàng</th><th class="ctr">Vị trí</th><th>Ghi chú</th>
+          <th style="width:52px">STT</th><th>Ảnh</th><th>Tên thiết bị</th><th class="sortable" data-sort="serialmodel" title="Bấm để sắp xếp A-Z / Z-A">Serial / Model<span class="sq"></span></th>
+          <th class="ctr">Trạng thái</th><th>Ngành hàng</th><th class="ctr sortable" data-sort="vitri" title="Bấm để sắp xếp A-Z / Z-A">Vị trí<span class="sq"></span></th><th>Ghi chú</th>
         </tr></thead>
         <tbody id="tbody"></tbody>
         <tfoot id="tfoot"></tfoot>
@@ -872,15 +876,52 @@ function buildChips(){
 function pageSize(){ const v = parseInt(ps.value, 10); return v > 0 ? v : filtered.length || ALL.length; }
 function filter_active(){ return $q.value.trim() !== '' || curUnit !== ''; }
 
+// === SAP XEP A-Z (Serial/Model, Vi tri) ===
+let sortKey = '';
+let sortDir = 1;
+function sortValue(r, key){
+  if (key === 'serialmodel') return String((r.serial || '') + ' ' + (r.model || '')).trim();
+  if (key === 'vitri') return String(r.vitri || '').replace(/^\s+|\s+$/g, '');
+  return '';
+}
+function applySort(){
+  if (!sortKey) return;
+  filtered.sort(function(a, b){
+    const va = sortValue(a, sortKey), vb = sortValue(b, sortKey);
+    if (!va && vb) return 1;
+    if (va && !vb) return -1;
+    const c = va.localeCompare(vb, 'vi', {sensitivity: 'base', numeric: true});
+    return c === 0 ? (a.stt - b.stt) : (c * sortDir);
+  });
+}
+function updateSortInd(){
+  document.querySelectorAll('th[data-sort]').forEach(function(th){
+    const on = th.getAttribute('data-sort') === sortKey;
+    th.classList.toggle('on', on);
+    const sq = th.querySelector('.sq');
+    if (sq) sq.textContent = on ? (sortDir > 0 ? '▲' : '▼') : '';
+  });
+}
+document.querySelectorAll('th[data-sort]').forEach(function(th){
+  th.addEventListener('click', function(){
+    const key = th.getAttribute('data-sort');
+    if (sortKey === key){ sortDir = -sortDir; }
+    else { sortKey = key; sortDir = 1; }
+    updateSortInd();
+    runSearch();
+  });
+});
+
 function runSearch(){
   const q = norm($q.value.trim());
   filtered = ALL.filter(function(r){
     if (DELETED[String(r.stt)]) return false;
     if (curUnit && r.unit !== curUnit) return false;
     if (newOnly && !r.isNew) return false;
-    if (q && !(norm(r.name).includes(q) || norm(r.unit).includes(q) || norm(r.serial || '').includes(q) || norm(r.model || '').includes(q) || norm(r.brand || '').includes(q) || norm(r.supplier || '').includes(q) || norm(String(r.dept || '')).includes(q) || norm(String(r.store || '')).includes(q) || norm(String(r.vitri || '')).includes(q) || String(r.stt) === q)) return false;
+    if (q && !(norm(r.name).includes(q) || norm(r.unit).includes(q) || norm(r.serial || '').includes(q) || norm(r.model || '').includes(q) || norm(r.brand || '').includes(q) || norm(r.supplier || '').includes(q) || norm(String(r.dept || '')).includes(q) || norm(String(r.store || '')).includes(q) || norm(String(r.vitri || '')).includes(q) || norm(String(r.note || '')).includes(q) || norm(String(r.code || '')).includes(q) || String(r.stt) === q)) return false;
     return true;
   });
+  applySort();
   page = 1;
   render();
 }
