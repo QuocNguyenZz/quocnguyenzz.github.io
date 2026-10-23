@@ -1320,6 +1320,8 @@ function renderImpPreview(){
 }
 function openImport(){
   document.getElementById('impPaste').value = '';
+  impUnitPick = '';
+  document.getElementById('impUnit').innerHTML = '<option value="">— Theo file —</option>' + unitOptionsHtml('');
   document.getElementById('impMsg').textContent = 'Hỗ trợ .xlsx/.xls/.csv hoặc dán trực tiếp. Có thể chỉnh Trạng thái / Ngành hàng / Ghi chú ngay trong bảng xem trước.';
   document.getElementById('impPreview').innerHTML = '<div style="color:var(--muted);padding:8px 0">Chọn file hoặc dán Ctrl+V rồi bấm "Xem trước".</div>';
   document.getElementById('formErr').textContent = '';
@@ -1382,6 +1384,11 @@ document.getElementById('impFile').addEventListener('change', function(){
   }
 });
 document.getElementById('impParse').addEventListener('click', runParse);
+document.getElementById('impUnit').addEventListener('change', function(){
+  impUnitPick = this.value;
+  if (impUnitPick) impRows.forEach(function(r){ r.unit = impUnitPick; r.unitFixed = true; });
+  renderImpPreview();
+});
 document.getElementById('impPaste').addEventListener('paste', function(){ setTimeout(runParse, 80); });
 document.getElementById('impPreview').addEventListener('change', function(e){
   const ck = e.target.closest && e.target.closest('[data-imp-ck]');
@@ -1413,7 +1420,9 @@ document.getElementById('addOk').addEventListener('click', function(){
     it.isNew = 1;
     it.custom = true;
     if (!it.unit) it.unit = 'Khác';
-    (function(){ const g = autoGroupOf(it); if (g && g !== it.unit) it.unit = g; })();
+    it.unit = fixUnit(it.unit) || 'Khác';
+    if (!it.unitFixed) { const g = autoGroupOf(it); if (g && g !== it.unit) it.unit = g; }
+    delete it.unitFixed;
     ALL.push(it);
     CUSTOM.push(it);
     ORIG_NOTES[it.stt] = it.note || '';
