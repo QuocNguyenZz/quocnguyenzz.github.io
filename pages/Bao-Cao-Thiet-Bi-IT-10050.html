@@ -266,6 +266,8 @@
     transition:all .15s}
   .d-close:hover{background:var(--gold-2);color:#0B0B0E;border-color:var(--gold-2)}
   .d-body{padding:18px 22px 22px}
+  .d-fields{max-height:46vh;overflow:auto;margin-top:6px;padding-right:4px}
+  .d-flabel{min-width:130px;flex-shrink:0;color:var(--muted)}
   .d-hero{display:flex;gap:18px;align-items:center;flex-wrap:wrap}
   .d-hero .big{width:120px;height:120px;border-radius:18px;overflow:hidden;flex-shrink:0}
   .d-badge{display:inline-block;padding:4px 12px;border-radius:999px;font-size:11.5px;font-weight:700;letter-spacing:.3px;margin:8px 6px 0 0}
@@ -289,19 +291,75 @@
     align-items:center;justify-content:space-between;border-top:1px solid var(--line-soft)}
   footer b{color:var(--gold-1)}
 
+  /* ---------- Sap xep cho dien thoai ---------- */
+  select.mob-sort{display:none}
+
   /* ---------- Responsive ---------- */
   @media (max-width:1080px){.kpis{grid-template-columns:repeat(3,1fr)}}
   @media (max-width:900px){.kpis{grid-template-columns:repeat(3,1fr)}.charts{grid-template-columns:1fr}}
   @media (max-width:760px){
     .wrap{padding:16px 12px}
-    header{padding:0 16px}
+    header{height:auto;padding:10px 12px;overflow:visible}
+    .header-inner{flex-wrap:wrap;gap:8px}
+    .header-left{flex:1 1 100%}
+    .header-right{flex:1 1 100%;justify-content:flex-start;gap:6px;flex-wrap:wrap}
+    .seal{width:34px;height:34px;font-size:11px}
+    .brand-name{font-size:15px;white-space:normal;overflow:visible}
+    .brand-sub{display:none}
+    .chip{font-size:10.5px;padding:5px 10px}
     .brand-div,.brand-tag{display:none}
     .kpis{grid-template-columns:repeat(2,1fr);gap:10px}
     .charts{grid-template-columns:1fr}
     .d-thumbs{grid-template-columns:repeat(2,1fr)}
-    thead th{position:static}
-    .bar{flex-direction:column;align-items:flex-start}
+    .bar{display:block;line-height:1.75}
     .pager{flex-direction:column;align-items:flex-start}
+    .overlay{padding:8px}
+    .detail{max-height:96vh;border-radius:14px}
+    .detail-head{padding:14px 14px 12px;gap:10px}
+    .d-name{font-size:18px}
+    .d-body{padding:14px 14px 16px}
+    .d-hero .big{width:84px;height:84px}
+    .d-flabel{min-width:92px !important;font-size:12px !important}
+    .detail .note-inp{font-size:12.5px}
+
+    /* --- Bang thiet bi -> the doc: du thong tin, khong tran/khong de len nhau --- */
+    .tbl{overflow:visible}
+    #mainTable{display:block;width:100%;min-width:0;table-layout:auto;font-size:13px}
+    #mainTable colgroup,#mainTable thead,#mainTable tfoot{display:none}
+    #mainTable tbody{display:block}
+    #mainTable tbody tr{
+      display:grid;grid-template-columns:54px minmax(0,1fr) minmax(0,1fr);
+      column-gap:12px;row-gap:9px;align-items:start;position:relative;
+      padding:14px 14px 15px;border-top:1px solid var(--line-soft);background:transparent}
+    #mainTable tbody tr:nth-child(even){background:var(--bg-2)}
+    #mainTable tbody tr:hover{background:#18150D}
+    #mainTable tbody td{display:block;padding:0;border:0;min-width:0;overflow-wrap:anywhere;word-break:break-word;text-align:left}
+    #mainTable tbody td.ctr{text-align:left}
+    #mainTable tbody td:nth-child(1){grid-area:1/1/2/2;font-size:11px;font-weight:700;color:var(--muted);font-variant-numeric:tabular-nums}
+    #mainTable tbody td:nth-child(2){grid-area:2/1/3/2}
+    #mainTable tbody td:nth-child(3){grid-area:1/2/3/4}
+    #mainTable tbody td:nth-child(4){grid-area:3/1/4/4}
+    #mainTable tbody td:nth-child(5){grid-area:4/1/5/3}
+    #mainTable tbody td:nth-child(6){grid-area:5/1/6/4}
+    #mainTable tbody td:nth-child(7){grid-area:4/3/5/4}
+    #mainTable tbody td:nth-child(8){grid-area:6/1/7/4}
+    #mainTable tbody td:nth-child(n+4)::before{content:attr(data-label);display:block;
+      font-size:9.5px;letter-spacing:.8px;text-transform:uppercase;color:var(--muted);font-weight:700;margin-bottom:4px}
+    #mainTable tbody td.empty-cell{grid-area:1/1/2/4}
+    #mainTable tbody td.empty-cell::before{content:none}
+    #mainTable tbody td:nth-child(3){padding-right:34px}
+    #mainTable tbody td:nth-child(3) .row-del{position:absolute;top:12px;right:11px;margin:0}
+    .d-fields{max-height:62vh}
+    .ano-btn{font-size:14.5px}
+    .tag{white-space:normal}
+    .thumb{width:52px;height:52px}
+    #mainTable tbody td .note-inp{max-width:none !important;width:100%;min-width:0}
+    .note-inp{padding:8px 10px;background:#0B0B0E;border-color:var(--line)}
+    select.note-inp{width:100%}
+    .stepper{gap:1px}
+    .step-btn{width:26px;height:26px;font-size:15px}
+    .step-val{width:58px;font-size:13px}
+    select.mob-sort{display:block;width:100%;padding:11px 12px;font-size:13px}
   }
   @media print{
     body{background:#111 !important;-webkit-print-color-adjust:exact;print-color-adjust:exact}
@@ -357,6 +415,13 @@
       <button class="clr" id="btnCsv">⬇ Xuất CSV</button>
       <button class="clr" id="btnAuto" title="Tự phân chia nhóm thiết bị theo từ khóa (Scale / Personal Digital Assistant / Scanner)">◈ Tự phân nhóm</button>
       <button class="btn-save" id="btnSave">💾 Lưu</button>
+      <select class="ps mob-sort" id="mobSort" aria-label="Sắp xếp danh sách">
+        <option value="">Sắp xếp: mặc định</option>
+        <option value="serialmodel:1">Serial / Model A → Z</option>
+        <option value="serialmodel:-1">Serial / Model Z → A</option>
+        <option value="vitri:1">Vị trí A → Z</option>
+        <option value="vitri:-1">Vị trí Z → A</option>
+      </select>
     </div>
     <div class="chips" id="chiptray"></div>
     <datalist id="divList"></datalist>
@@ -919,6 +984,8 @@ function updateSortInd(){
     const sq = th.querySelector('.sq');
     if (sq) sq.textContent = on ? (sortDir > 0 ? '▲' : '▼') : '';
   });
+  const ms = document.getElementById('mobSort');
+  if (ms) ms.value = sortKey ? (sortKey + ':' + sortDir) : '';
 }
 document.querySelectorAll('th[data-sort]').forEach(function(th){
   th.addEventListener('click', function(){
@@ -929,6 +996,18 @@ document.querySelectorAll('th[data-sort]').forEach(function(th){
     runSearch();
   });
 });
+// Sap xep bang select (dien thoai - header bang bi an)
+(function(){
+  const ms = document.getElementById('mobSort');
+  if (!ms) return;
+  ms.addEventListener('change', function(){
+    const v = String(ms.value || '');
+    if (!v){ sortKey = ''; sortDir = 1; }
+    else { const p = v.split(':'); sortKey = p[0]; sortDir = parseInt(p[1], 10) || 1; }
+    updateSortInd();
+    runSearch();
+  });
+})();
 
 function runSearch(){
   const q = norm($q.value.trim());
@@ -981,30 +1060,30 @@ function render(){
   // rows
   const slice = filtered.slice(i0, i0 + P);
   if (!slice.length){
-    tbody.innerHTML = '<tr><td colspan="8"><div class="empty"><span class="ic">🔍</span>' +
+    tbody.innerHTML = '<tr><td colspan="8" class="empty-cell"><div class="empty"><span class="ic">🔍</span>' +
       '<div class="t-text">Không tìm thấy kết quả nào</div>' +
       '<div class="s-text">Điều chỉnh từ khóa tìm kiếm hoặc bỏ đơn vị tính đang lọc</div></div></td></tr>';
   } else {
     tbody.innerHTML = slice.map(function(r){
       const c = catOf(r.unit);
       return '<tr>' +
-        '<td class="stt">' + r.stt + '</td>' +
-        '<td>' + prodImg(r.stt, 52) + '</td>' +
-        '<td><button type="button" class="ano-btn" data-ano="' + r.stt + '">' + esc(r.name) + '</button>' +
+        '<td class="stt" data-label="STT">' + r.stt + '</td>' +
+        '<td data-label="Ảnh">' + prodImg(r.stt, 52) + '</td>' +
+        '<td data-label="Tên thiết bị"><button type="button" class="ano-btn" data-ano="' + r.stt + '">' + esc(r.name) + '</button>' +
           '<div style="margin-top:4px"><span class="tag ' + c.key + '">' + c.label + '</span>' +
           (r.isNew ? '<span class="tag new">★ MỚI THÊM</span>' : '') +
           '<button type="button" class="h-del row-del" data-del-stt="' + r.stt + '" title="Xóa thiết bị" aria-label="Xóa thiết bị">×</button>' +
           '</div>' +
           (r.code ? '<div style="color:var(--gold-3);font-size:11px;margin-top:3px">Mã: ' + esc(r.code) + '</div>' : '') +
           '</td>' +
-        '<td><div style="font-weight:700;color:var(--gold-1)">' + esc(r.serial || '—') + '</div>' +
+        '<td data-label="Serial / Model"><div style="font-weight:700;color:var(--gold-1)">' + esc(r.serial || '—') + '</div>' +
           '<div style="color:var(--muted);font-size:12px;margin-top:2px">' + esc(r.model || '') + '</div>' +
           (/^(MMPC|MMNB)/i.test(String(r.name || '').replace(/[^A-Za-z0-9]/g,'')) || r.ip ?'<div style="margin-top:3px"><span style="color:#4EA6E8;font-size:11px;font-weight:600">IP </span>' +'<input class="note-inp" style="max-width:112px;font-size:11px;color:#4EA6E8;font-weight:600" data-ip-stt="' + r.stt + '" type="text" value="' + esc(r.ip || '') + '" placeholder="—">' +'</div>' : '') + '</td>' +
-        '<td class="ctr">' + statusSel(r) +
+        '<td class="ctr" data-label="Trạng thái">' + statusSel(r) +
           (r.cond ? '<div style="color:var(--muted);font-size:11px;margin-top:3px">' + esc(r.cond) + '</div>' : '') + '</td>' +
-        '<td>' + divCell(r) + '</td>' +
-        '<td class="ctr">' + locSel(r) + '</td>' +
-        '<td><input class="note-inp" data-note-stt="' + r.stt + '" type="text" maxlength="300" value="' + esc(r.note || '') + '" placeholder="—" autocomplete="off" aria-label="Ghi chú"></td>' +
+        '<td data-label="Ngành hàng">' + divCell(r) + '</td>' +
+        '<td class="ctr" data-label="Vị trí">' + locSel(r) + '</td>' +
+        '<td data-label="Ghi chú"><input class="note-inp" data-note-stt="' + r.stt + '" type="text" maxlength="300" value="' + esc(r.note || '') + '" placeholder="—" autocomplete="off" aria-label="Ghi chú"></td>' +
       '</tr>';
     }).join('');
   }
@@ -1668,7 +1747,7 @@ document.getElementById('histList').addEventListener('click', function(e){
     const frowEdit = function(lbl, field){
       if (field === 'vitri'){
         return '<div style="display:flex;gap:10px;align-items:center;padding:6px 0;border-bottom:1px solid var(--line-soft);font-size:13px">' +
-          '<span style="min-width:130px;flex-shrink:0;color:var(--muted)">' + esc(lbl) + '</span>' +
+          '<span class="d-flabel">' + esc(lbl) + '</span>' +
           locSel(r0, 'data-ef="vitri"') + '</div>';
       }
       if (field === 'status'){
@@ -1676,7 +1755,7 @@ document.getElementById('histList').addEventListener('click', function(e){
         let opts = STATUS_OPTIONS.slice();
         if (cur && opts.indexOf(cur) < 0) opts.push(cur);
         return '<div style="display:flex;gap:10px;align-items:center;padding:6px 0;border-bottom:1px solid var(--line-soft);font-size:13px">' +
-          '<span style="min-width:130px;flex-shrink:0;color:var(--muted)">' + esc(lbl) + '</span>' +
+          '<span class="d-flabel">' + esc(lbl) + '</span>' +
           '<select class="note-inp" style="flex:1;min-width:0" data-ef="status" aria-label="' + esc(lbl) + '">' +
           '<option value=""' + (cur ? '' : ' selected') + '>(trống)</option>' +
           opts.map(function(o){ return '<option value="' + esc(o) + '"' + (o === cur ? ' selected' : '') + '>' + esc(o) + '</option>'; }).join('') +
@@ -1684,7 +1763,7 @@ document.getElementById('histList').addEventListener('click', function(e){
       }
       const val = (r0[field] === undefined || r0[field] === null) ? '' : String(r0[field]);
       return '<div style="display:flex;gap:10px;align-items:center;padding:6px 0;border-bottom:1px solid var(--line-soft);font-size:13px">' +
-        '<span style="min-width:130px;flex-shrink:0;color:var(--muted)">' + esc(lbl) + '</span>' +
+        '<span class="d-flabel">' + esc(lbl) + '</span>' +
         '<input class="note-inp" style="flex:1;min-width:0" type="text" data-ef="' + esc(field) + '" value="' + esc(val) + '" placeholder="—" autocomplete="off" aria-label="' + esc(lbl) + '">' +
         '</div>';
     };
@@ -1706,10 +1785,10 @@ document.getElementById('histList').addEventListener('click', function(e){
         '<div style="flex:1;min-width:220px">' +
         '<div style="font-family:Georgia,serif;font-size:15px;color:var(--gold-1);margin-bottom:6px">Sửa trực tiếp — mọi ô đều ghi history nhờ nút Lưu</div>' +
         '</div></div>' +
-      '<div style="max-height:46vh;overflow:auto;margin-top:6px;padding-right:4px">' +
+      '<div class="d-fields">' +
       FIELDS.map(function(f){ return frowEdit(f[1], f[0]); }).join('') +
       '<div style="display:flex;gap:10px;align-items:center;padding:6px 0;border-bottom:1px solid var(--line-soft);font-size:13px">' +
-        '<span style="min-width:130px;flex-shrink:0;color:var(--muted)">Ghi chú</span>' +
+        '<span class="d-flabel">Ghi chú</span>' +
         '<input class="note-inp" style="flex:1;min-width:0" type="text" data-ef="__note" value="' + esc(r0.note || '') + '" placeholder="—" autocomplete="off" aria-label="Ghi chú">' +
       '</div>' +
       '</div>' +
