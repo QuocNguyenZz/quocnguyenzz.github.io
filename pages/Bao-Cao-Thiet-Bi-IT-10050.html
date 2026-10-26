@@ -292,44 +292,21 @@
   footer b{color:var(--gold-1)}
 
   /* ---------- Sap xep cho dien thoai ---------- */
-  select.mob-sort{display:none}
+  select.{display:none}
 
   /* ---------- Responsive ---------- */
   @media (max-width:1080px){.kpis{grid-template-columns:repeat(3,1fr)}}
   @media (max-width:900px){.kpis{grid-template-columns:repeat(3,1fr)}.charts{grid-template-columns:1fr}}
-  @media (max-width:760px){
+    @media (max-width:760px){
     .wrap{padding:16px 12px}
-    header{height:auto;padding:10px 12px;overflow:visible}
-    .header-inner{flex-wrap:wrap;gap:8px}
-    .header-left{flex:1 1 100%}
-    .header-right{flex:1 1 100%;justify-content:flex-start;gap:6px;flex-wrap:wrap}
-    .seal{width:34px;height:34px;font-size:11px}
-    .brand-name{font-size:15px;white-space:normal;overflow:visible}
-    .brand-sub{display:none}
-    .chip{font-size:10.5px;padding:5px 10px}
+    header{padding:0 16px}
     .brand-div,.brand-tag{display:none}
     .kpis{grid-template-columns:repeat(2,1fr);gap:10px}
     .charts{grid-template-columns:1fr}
     .d-thumbs{grid-template-columns:repeat(2,1fr)}
-    .bar{display:block;line-height:1.75}
+    thead th{position:static}
+    .bar{flex-direction:column;align-items:flex-start}
     .pager{flex-direction:column;align-items:flex-start}
-    .overlay{padding:8px}
-    .detail{max-height:96vh;border-radius:14px}
-    .detail-head{padding:14px 14px 12px;gap:10px}
-    .d-name{font-size:18px}
-    .d-body{padding:14px 14px 16px}
-    .bar{display:block;line-height:1.75}
-    .pager{flex-direction:column;align-items:flex-start}
-    .overlay{padding:8px}
-    .detail{max-height:96vh;border-radius:14px}
-    .detail-head{padding:14px 14px 12px;gap:10px}
-    .d-name{font-size:18px}
-    .d-body{padding:14px 14px 16px}
-    .d-hero{gap:12px}
-    .d-hero .big{width:84px;height:84px}
-    .d-fields{max-height:58vh;padding-right:2px}
-    .d-flabel{min-width:92px !important;font-size:12px !important}
-    .detail .note-inp{font-size:12.5px}
   }
 
   @media (max-width:400px){
@@ -412,7 +389,7 @@
     .stepper{gap:1px}
     .step-btn{width:26px;height:26px;font-size:15px}
     .step-val{width:58px;font-size:13px}
-    select.mob-sort{display:block;width:100%;padding:11px 12px;font-size:13px}
+    select.{display:block;width:100%;padding:11px 12px;font-size:13px}
   }
   @media print{
     body{background:#111 !important;-webkit-print-color-adjust:exact;print-color-adjust:exact}
@@ -468,14 +445,7 @@
       <button class="clr" id="btnCsv">⬇ Xuất CSV</button>
       <button class="clr" id="btnAuto" title="Tự phân chia nhóm thiết bị theo từ khóa (Scale / Personal Digital Assistant / Scanner)">◈ Tự phân nhóm</button>
       <button class="btn-save" id="btnSave">💾 Lưu</button>
-      <select class="ps mob-sort" id="mobSort" aria-label="Sắp xếp danh sách">
-        <option value="">Sắp xếp: mặc định</option>
-        <option value="serialmodel:1">Serial / Model A → Z</option>
-        <option value="serialmodel:-1">Serial / Model Z → A</option>
-        <option value="vitri:1">Vị trí A → Z</option>
-        <option value="vitri:-1">Vị trí Z → A</option>
-      </select>
-    </div>
+      </div>
     <div class="chips" id="chiptray"></div>
     <datalist id="divList"></datalist>
     <div class="bar" id="bar"></div>
@@ -1049,19 +1019,6 @@ document.querySelectorAll('th[data-sort]').forEach(function(th){
     runSearch();
   });
 });
-// Sap xep bang select (dien thoai - header bang bi an)
-(function(){
-  const ms = document.getElementById('mobSort');
-  if (!ms) return;
-  ms.addEventListener('change', function(){
-    const v = String(ms.value || '');
-    if (!v){ sortKey = ''; sortDir = 1; }
-    else { const p = v.split(':'); sortKey = p[0]; sortDir = parseInt(p[1], 10) || 1; }
-    updateSortInd();
-    runSearch();
-  });
-})();
-
 function runSearch(){
   const q = norm($q.value.trim());
   filtered = ALL.filter(function(r){
@@ -1113,30 +1070,30 @@ function render(){
   // rows
   const slice = filtered.slice(i0, i0 + P);
   if (!slice.length){
-    tbody.innerHTML = '<tr><td colspan="8" class="empty-cell"><div class="empty"><span class="ic">🔍</span>' +
+    tbody.innerHTML = '<tr><td colspan="8"><div class="empty"><span class="ic">🔍</span>' +
       '<div class="t-text">Không tìm thấy kết quả nào</div>' +
       '<div class="s-text">Điều chỉnh từ khóa tìm kiếm hoặc bỏ đơn vị tính đang lọc</div></div></td></tr>';
   } else {
     tbody.innerHTML = slice.map(function(r){
       const c = catOf(r.unit);
       return '<tr>' +
-        '<td class="stt" data-label="STT">' + r.stt + '</td>' +
-        '<td data-label="Ảnh">' + prodImg(r.stt, 52) + '</td>' +
-        '<td data-label="Tên thiết bị"><button type="button" class="ano-btn" data-ano="' + r.stt + '">' + esc(r.name) + '</button>' +
+        '<td class="stt">' + r.stt + '</td>' +
+        '<td>' + prodImg(r.stt, 52) + '</td>' +
+        '<td><button type="button" class="ano-btn" data-ano="' + r.stt + '">' + esc(r.name) + '</button>' +
           '<div style="margin-top:4px"><span class="tag ' + c.key + '">' + c.label + '</span>' +
           (r.isNew ? '<span class="tag new">★ MỚI THÊM</span>' : '') +
           '<button type="button" class="h-del row-del" data-del-stt="' + r.stt + '" title="Xóa thiết bị" aria-label="Xóa thiết bị">×</button>' +
           '</div>' +
           (r.code ? '<div style="color:var(--gold-3);font-size:11px;margin-top:3px">Mã: ' + esc(r.code) + '</div>' : '') +
           '</td>' +
-        '<td data-label="Serial / Model"><div style="font-weight:700;color:var(--gold-1)">' + esc(r.serial || '—') + '</div>' +
+        '<td><div style="font-weight:700;color:var(--gold-1)">' + esc(r.serial || '—') + '</div>' +
           '<div style="color:var(--muted);font-size:12px;margin-top:2px">' + esc(r.model || '') + '</div>' +
           (/^(MMPC|MMNB)/i.test(String(r.name || '').replace(/[^A-Za-z0-9]/g,'')) || r.ip ?'<div style="margin-top:3px"><span style="color:#4EA6E8;font-size:11px;font-weight:600">IP </span>' +'<input class="note-inp" style="max-width:112px;font-size:11px;color:#4EA6E8;font-weight:600" data-ip-stt="' + r.stt + '" type="text" value="' + esc(r.ip || '') + '" placeholder="—">' +'</div>' : '') + '</td>' +
-        '<td class="ctr" data-label="Trạng thái">' + statusSel(r) +
+        '<td class="ctr">' + statusSel(r) +
           (r.cond ? '<div style="color:var(--muted);font-size:11px;margin-top:3px">' + esc(r.cond) + '</div>' : '') + '</td>' +
-        '<td data-label="Ngành hàng">' + divCell(r) + '</td>' +
-        '<td class="ctr" data-label="Vị trí">' + locSel(r) + '</td>' +
-        '<td data-label="Ghi chú"><input class="note-inp" data-note-stt="' + r.stt + '" type="text" maxlength="300" value="' + esc(r.note || '') + '" placeholder="—" autocomplete="off" aria-label="Ghi chú"></td>' +
+        '<td>' + divCell(r) + '</td>' +
+        '<td class="ctr">' + locSel(r) + '</td>' +
+        '<td><input class="note-inp" data-note-stt="' + r.stt + '" type="text" maxlength="300" value="' + esc(r.note || '') + '" placeholder="—" autocomplete="off" aria-label="Ghi chú"></td>' +
       '</tr>';
     }).join('');
   }
