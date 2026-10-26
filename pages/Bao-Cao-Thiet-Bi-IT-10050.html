@@ -1035,10 +1035,11 @@ function render(){
       '<div class="t-text">Không tìm thấy kết quả nào</div>' +
       '<div class="s-text">Điều chỉnh từ khóa tìm kiếm hoặc bỏ đơn vị tính đang lọc</div></div></td></tr>';
   } else {
-    tbody.innerHTML = slice.map(function(r){
+    tbody.innerHTML = slice.map(function(r, idx){
       const c = catOf(r.unit);
+      const sttShow = i0 + idx + 1;
       return '<tr>' +
-        '<td class="stt">' + r.stt + '</td>' +
+        '<td class="stt">' + sttShow + '</td>' +
         '<td>' + prodImg(r.stt, 52) + '</td>' +
         '<td><button type="button" class="ano-btn" data-ano="' + r.stt + '">' + esc(r.name) + '</button>' +
           '<div style="margin-top:4px"><span class="tag ' + c.key + '">' + c.label + '</span>' +
