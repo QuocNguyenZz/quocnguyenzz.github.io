@@ -1,9 +1,9 @@
-<!DOCTYPE html>
+﻿﻿﻿<!DOCTYPE html>
 <html lang="vi">
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>MID-AUTUMN 2026 · Trung Thu Dashboard</title>
+<title>CHRISTMAS 2026 · Christmas Dashboard</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
@@ -89,15 +89,11 @@
   #uploadBtn{background:#fff; color:var(--red-dark); border:none; border-radius:8px; padding:8px 14px; font-size:11px; cursor:pointer; font-weight:700; transition:all .15s; box-shadow:0 2px 8px rgba(0,0,0,.16);}
   #uploadBtn:hover{background:#FCE4E4; box-shadow:0 3px 12px rgba(0,0,0,.2);}
 
-  .hd-lantern{position:absolute; top:0; z-index:2; width:26px; height:46px; transform-origin:50% 0; animation:lanternSwing 6.5s ease-in-out infinite;}
-  .hd-lantern-l{left:14px;}
-  .hd-lantern-r{right:14px; animation-delay:-3.2s;}
-  .hd-lantern .hl-cap{position:absolute; top:0; left:50%; transform:translateX(-50%); width:20px; height:5px; border-radius:2px; background:linear-gradient(180deg,#E9C979,#B98F1F);}
-  .hd-lantern .hl-body{position:absolute; top:5px; left:50%; transform:translateX(-50%); width:24px; height:34px; border-radius:50% 50% 46% 54% / 58% 58% 42% 42%; background:radial-gradient(circle at 32% 26%, #F6E9C2, #D4A72C 62%, #6B4E0A); box-shadow:inset -3px -5px 8px rgba(110,10,10,.55);}
-  .hd-lantern .hl-tassel{position:absolute; top:39px; left:50%; transform:translateX(-50%); width:1.5px; height:9px; background:var(--gold);}
-  @keyframes lanternSwing{0%,100%{transform:rotate(-4deg);}50%{transform:rotate(4deg);}}
-
-  .hd-cloud{position:absolute; z-index:1; border-radius:40px; background:rgba(255,255,255,.16); animation:hdDrift 28s ease-in-out infinite alternate;}
+    .hd-pine{position:absolute; top:6px; font-size:26px; filter:drop-shadow(0 4px 8px rgba(0,0,0,.4)); animation:pineSway 4s ease-in-out infinite;}
+  .hd-pine-l{left:14px;}
+  .hd-pine-r{right:14px; animation-delay:-2s;}
+  @keyframes pineSway{0%,100%{transform:rotate(-4deg);}50%{transform:rotate(4deg);}}
+.hd-cloud{position:absolute; z-index:1; border-radius:40px; background:rgba(255,255,255,.16); animation:hdDrift 28s ease-in-out infinite alternate;}
   .hd-cloud::before,.hd-cloud::after{content:''; position:absolute; border-radius:50%; background:rgba(255,255,255,.16);}
   .hd-cloud.c1{width:150px; height:42px; left:-40px; top:8px;}
   .hd-cloud.c1::before{width:54px; height:54px; left:24px; top:-22px;}
@@ -766,7 +762,7 @@ var pJS=function(e,a){var t=document.querySelector("#"+e+" > .particles-js-canva
   <div id="particles-js" aria-hidden="true"></div>
   <div class="land-ui">
     <div class="fsd50">FSD50</div>
-    <div class="fsd-sub">Trung Thu 2026 · Trung Thu Dashboard</div>
+    <div class="fsd-sub">Trung Thu 2026 · Christmas Dashboard</div>
     <button class="land-cta" id="landCta">Enter Report <span>→</span></button>
   </div>
   <div class="fsd-hint">Click anywhere to enter · Nhấn để vào</div>
@@ -784,8 +780,8 @@ var pJS=function(e,a){var t=document.querySelector("#"+e+" > .particles-js-canva
 </div>
 
 <header id="topHeader">
-  <span class="hd-lantern hd-lantern-l"><span class="hl-cap"></span><span class="hl-body"></span><span class="hl-tassel"></span></span>
-  <span class="hd-lantern hd-lantern-r"><span class="hl-cap"></span><span class="hl-body"></span><span class="hl-tassel"></span></span>
+  <span class="hd-pine hd-pine-l">&#127794;</span>
+  <span class="hd-pine hd-pine-r">&#127876;</span>
   <span class="hd-cloud c1"></span>
   <span class="hd-cloud c2"></span>
 
@@ -794,8 +790,8 @@ var pJS=function(e,a){var t=document.querySelector("#"+e+" > .particles-js-canva
     <div class="header-left" id="homeBtn" title="Về trang chủ FSD50 · Back to home">
       <div class="logo-box">🌕</div>
       <div class="brand-text">
-        <div class="brand-name">MID-AUTUMN 2026</div>
-        <div class="brand-sub">Trung Thu Dashboard · mmbaocao.mmvietnam.com</div>
+        <div class="brand-name">CHRISTMAS 2026</div>
+        <div class="brand-sub">Christmas Dashboard · mmbaocao.mmvietnam.com</div>
       </div>
     </div>
   </div>
@@ -806,7 +802,7 @@ var pJS=function(e,a){var t=document.querySelector("#"+e+" > .particles-js-canva
     <div class="tab" data-tab="top50">TOP 50 Sales</div>
   </div>
   <div class="header-right">
-    <span class="mid-fest">🌕 Red Moon · 🐇 Jade Rabbit</span>
+    <span class="mid-fest">🌕 Merry Christmas · 🐇 Snowfall</span>
     <span id="reportDate"></span>
     <button id="uploadBtn">⟳ Refresh</button>
     <input type="file" id="fileInput" accept=".xlsb,.xlsx,.xls,.xlsm" style="display:none">
@@ -5285,7 +5281,12 @@ window.TOP50_DATA = {"dates": [20261001, 20261002, 20261003, 20261004, 20261005,
     activateTab('sc');
   }
   bl_loadState();
-  var _dataUrls = ['sc-data.json?t=' + Date.now()];
+  var _dataUrls = [];
+  if (location && location.protocol && location.protocol.indexOf('http') === 0){
+    _dataUrls.push('/api/data');
+  }
+  _dataUrls.push('http://10.138.126.148:8080/api/data');
+  _dataUrls.push('http://127.0.0.1:8080/api/data');
   var _autoUrl = null, _autoSig = null;
 
   function _applyServerData(txt){
