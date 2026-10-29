@@ -278,48 +278,13 @@
       isolation: isolate;
     }
 
-    /* gift ribbon */
-    .card::before {
-      content: "";
-      position: absolute;
-      top: -8px;
-      left: 50%;
-      transform: translateX(-50%);
-      width: 26px;
-      height: calc(100% + 16px);
-      background: linear-gradient(180deg, rgba(255, 30, 60, .9) 0%, rgba(180, 20, 45, .9) 100%);
-      box-shadow: 0 0 0 2px rgba(255, 255, 255, .6);
-      z-index: 2;
-      transition: width .25s ease, opacity .25s ease;
-    }
-
-    .card::after {
-      content: "🎀";
-      position: absolute;
-      top: 6px;
-      left: 50%;
-      transform: translateX(-50%);
-      font-size: 22px;
-      z-index: 3;
-      transition: transform .25s ease, opacity .25s ease;
-    }
-
+    /* v20261029: da bo ribbon giua the qua */
     .card:hover {
       transform: translateY(-8px) rotate(-.5deg);
       box-shadow:
         0 28px 56px rgba(0, 0, 0, .4),
         0 0 0 4px rgba(245, 197, 66, .18);
       filter: brightness(1.02);
-    }
-
-    .card:hover::before {
-      width: 0;
-      opacity: 0;
-    }
-
-    .card:hover::after {
-      transform: translateX(-50%) scale(1.4) rotate(12deg);
-      opacity: 0;
     }
 
     .card:focus-visible {
@@ -615,11 +580,6 @@
     @media (max-width: 720px) {
       .lights-bar .quick {
         font-size: .78rem;
-      }
-
-      .card::before,
-      .card::after {
-        display: none;
       }
     }
 
