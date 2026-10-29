@@ -1018,12 +1018,12 @@ var pJS=function(e,a){var t=document.querySelector("#"+e+" > .particles-js-canva
     <div class="kpi-grid cols4" id="topKpis">
       <div class="kpi-card">
         <div class="kpi-icon">🏆</div>
-        <div class="kpi-en">Total Sales</div><div class="kpi-vi">Doanh số hôm nay (+VAT)</div>
+        <div class="kpi-en">Total Sales</div><div class="kpi-vi">Doanh số hôm nay (-VAT)</div>
         <div class="kpi-value" id="tk_sales">0</div>
       </div>
       <div class="kpi-card">
         <div class="kpi-icon">📈</div>
-        <div class="kpi-en">MTD Sales</div><div class="kpi-vi">Doanh số MTD (+VAT)</div>
+        <div class="kpi-en">MTD Sales</div><div class="kpi-vi">Doanh số MTD (-VAT)</div>
         <div class="kpi-value" id="tk_mtd">0</div>
       </div>
       <div class="kpi-card">
@@ -1044,7 +1044,7 @@ var pJS=function(e,a){var t=document.querySelector("#"+e+" > .particles-js-canva
       <div class="table-wrap" style="max-height:420px;">
         <table class="data" id="top50MtdTable"></table>
       </div>
-      <div class="mini-h" style="margin-top:14px;">MTD Sale Amount Trend</div><div class="mini-h-vi">Đường doanh số MTD theo 50 mặt hàng</div>
+      <div class="mini-h" style="margin-top:14px;">MTD Top 10 by Sale Amount</div><div class="mini-h-vi">Top 10 mặt hàng theo doanh số MTD (nguồn PivotTable2)</div>
       <div class="ch-wrap" style="height:280px"><canvas id="lineTop50Mtd"></canvas></div>
     </div>
 
@@ -1089,7 +1089,7 @@ var pJS=function(e,a){var t=document.querySelector("#"+e+" > .particles-js-canva
       <div class="card">
         <div class="mini-h">Top 1 Best-Selling Dept</div><div class="mini-h-vi">Ngành hàng bán chạy nhất theo MTD (+VAT)</div>
         <div class="ch-wrap" style="height:250px"><canvas id="hbarTopDept"></canvas></div>
-        <div class="mini-h" style="margin-top:14px;">Sale VAT(+) Today</div><div class="mini-h-vi">Doanh số hôm nay (+VAT) theo phòng ban</div>
+        <div class="mini-h" style="margin-top:14px;">Sale VAT(-) Today</div><div class="mini-h-vi">Doanh số hôm nay (-VAT) theo phòng ban</div>
         <div class="ch-wrap" style="height:250px"><canvas id="hbarTopDeptToday"></canvas></div>
       </div>
     </div>
@@ -2747,8 +2747,8 @@ function renderTop50(){
   $('topInvoiceLabel').textContent = fmtInt(d.invoices.today) + ' hóa đơn · MTD ' + fmtInt(d.invoices.mtd);
 
   var st = meta.storeTotal;
-  $('tk_sales').textContent = st ? fmtVnd(st.sales_plus) : '0';
-  $('tk_mtd').textContent = st ? fmtVnd(st.mtd_plus) : '0';
+  $('tk_sales').textContent = st ? fmtVnd(st.sales_vat) : '0';
+  $('tk_mtd').textContent = st ? fmtVnd(st.mtd_vat) : '0';
   $('tk_invoice').textContent = fmtInt(d.invoices.today);
   var top1 = meta.top50[0];
   $('tk_top1').textContent = top1 ? top1.name.slice(0, 30) : '-';
@@ -2842,23 +2842,19 @@ function renderTop50(){
 
   var topDept = rank.slice(0, 10);
   var topDeptToday = meta.deptRows.filter(function(r){ return !r.subtotal; })
-    .sort(function(a,b){ return b.sales_plus - a.sales_plus; }).slice(0, 10);
+    .sort(function(a,b){ return b.sales_vat - a.sales_vat; }).slice(0, 10);
 
   var mtdChart = null;
   if (mtdRows){
-    var mLabels = [], mData = [];
-    mtdRows.forEach(function(r, i){
-      mLabels.push(String(i+1) + '. ' + r.name.slice(0, 16));
-      mData.push(Math.round(num(r.amount)));
-    });
-    mtdChart = function(){ mkLine('lineTop50Mtd', mLabels, mData, '#C9A227', false); };
+    var mTop10 = mtdRows.slice(0, 10);
+    mtdChart = function(){ mkHBar('lineTop50Mtd', mTop10.map(function(r){ return r.name.slice(0,26) + ' (' + r.dept + ')'; }), mTop10.map(function(r){ return Number(num(r.amount).toFixed(0)); }), '#D4A72C'); };
   }
 
   _chain('top50', [
     function(){ var mt = $('top50MtdTable'); if (mt) mt.innerHTML = mtdHtml || '<thead><tr><th>#</th></tr></thead>'; },
     function(){ $('top50Table').innerHTML = html; $('topItemsCount').textContent = topRows.length + ' / ' + meta.top50.length + ' items'; },
     function(){ $('topDeptTable').innerHTML = html2 + '</tbody>'; $('topDeptRankTable').innerHTML = html3 + '</tbody>'; },
-    function(){ mkHBar('hbarTop10', items.slice(0,10).map(function(r){ return r.name.slice(0,26) + ' (' + r.dept + ')'; }), items.slice(0,10).map(function(r){ return Number(r.amount.toFixed(0)); }), '#D4A72C'); mkDonut('donutTopDept', deptKeys.map(function(k){ return k + ' · ' + fmtVnd(byDept[k]); }), deptKeys.map(function(k){ return byDept[k]; }), SERIES_COLORS); mkHBar('hbarTopDept', topDept.map(function(r){ return r.name.slice(0,26) + ' (' + r.dept_no + ')'; }), topDept.map(function(r){ return Number(r.mtd_plus.toFixed(0)); }), '#D4A72C'); mkHBar('hbarTopDeptToday', topDeptToday.map(function(r){ return r.name.slice(0,26) + ' (' + r.dept_no + ')'; }), topDeptToday.map(function(r){ return Number(r.sales_plus.toFixed(0)); }), '#C9A227'); renderTopTargetChart(); if (mtdChart) mtdChart(); }
+    function(){ mkHBar('hbarTop10', items.slice(0,10).map(function(r){ return r.name.slice(0,26) + ' (' + r.dept + ')'; }), items.slice(0,10).map(function(r){ return Number(r.amount.toFixed(0)); }), '#D4A72C'); mkDonut('donutTopDept', deptKeys.map(function(k){ return k + ' · ' + fmtVnd(byDept[k]); }), deptKeys.map(function(k){ return byDept[k]; }), SERIES_COLORS); mkHBar('hbarTopDept', topDept.map(function(r){ return r.name.slice(0,26) + ' (' + r.dept_no + ')'; }), topDept.map(function(r){ return Number(r.mtd_plus.toFixed(0)); }), '#D4A72C'); mkHBar('hbarTopDeptToday', topDeptToday.map(function(r){ return r.name.slice(0,26) + ' (' + r.dept_no + ')'; }), topDeptToday.map(function(r){ return Number(r.sales_vat.toFixed(0)); }), '#C9A227'); renderTopTargetChart(); if (mtdChart) mtdChart(); }
   ]);
 }
 
