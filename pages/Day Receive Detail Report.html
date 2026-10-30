@@ -1282,6 +1282,10 @@ html[data-theme="dark"] .tree-bg{opacity:.22; mix-blend-mode:screen; filter:blur
   transition:background var(--t),color var(--t);}
 .xcross a:hover{background:var(--accent);color:var(--on-accent);border-color:var(--accent);}
 .xcross a.cur{background:var(--accent);color:var(--on-accent);border-color:var(--accent);opacity:.95;}
+
+/* v20261030-xcross-top: hang lien ket cheo duoi topbar (dashboard) */
+.xcross-top{margin:10px 16px 2px;padding:8px 12px;border:1px solid var(--border-soft);border-radius:12px;
+  background:var(--surface);box-shadow:var(--shadow-sm);}
 </style>
 <script>
 /* particles.js v2.0.0 embedded inline (offline) - VincentGarreau */
@@ -1465,6 +1469,7 @@ var pJS=function(e,a){var t=document.querySelector("#"+e+" > .particles-js-canva
     <input type="file" id="fileInput" accept=".xlsb,.xlsx,.xls,.xlsm" style="display:none">
   </div>
     </header>
+  <div class="xcross xcross-top"><span class="xcross-t">Báo cáo khác:</span><a href="Day%20Receive%20Detail%20Report.html?v=20261030" class="cur">SC · Day Receive Detail</a><a href="RPT18%20Fillrate%20Report.html?v=20261030">RPT18 Fillrate</a><a href="Bao-Cao-Tu-Thiet-Bi.html?v=20261030">Tủ Thiết Bị</a><a href="Bao-Cao-Thiet-Bi-IT-10050.html?v=20261030">Thiết Bị IT · 10050</a><a href="RPT18-dashboard.html?v=20261030">RPT18-dashboard</a></div>
 <div id="emptyState">
   <div class="icon" aria-hidden="true">🎄</div>
   <div class="t1">No Data Yet · Chưa có dữ liệu</div>
@@ -1792,7 +1797,7 @@ var pJS=function(e,a){var t=document.querySelector("#"+e+" > .particles-js-canva
   <footer>
     <span>Nguồn: <b>File tổng hợp Dụng Cụ _ Thiết Bị.xlsx</b> · Sheet1 · Cập nhật 31/08/2026 &nbsp;·&nbsp; GOR</span>
     <span class="chip"><b>GOR</b>&nbsp;· TỦ THIẾT BỊ</span>
-  <div class="xcross"><span class="xcross-t">Báo cáo khác:</span><a href="Day%20Receive%20Detail%20Report.html?v=20261030" cur>SC · Day Receive Detail</a><a href="RPT18%20Fillrate%20Report.html?v=20261030">RPT18 Fillrate</a><a href="Bao-Cao-Tu-Thiet-Bi.html?v=20261030">Tủ Thiết Bị</a><a href="Bao-Cao-Thiet-Bi-IT-10050.html?v=20261030">Thiết Bị IT · 10050</a><a href="RPT18-dashboard.html?v=20261030">RPT18-dashboard</a></div></footer>
+  </footer>
 </div>
 
 <div class="toast" id="toast" role="status"></div>
