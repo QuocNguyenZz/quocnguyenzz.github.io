@@ -1274,6 +1274,15 @@ html[data-theme="dark"] .tree-bg{opacity:.22; mix-blend-mode:screen; filter:blur
   .result-count{white-space:normal; overflow-wrap:anywhere; border-radius:12px; margin-left:0; display:inline-block;}
 }
 
+
+/* v20261030-hidescroll: an thanh cuon trong cua so chi tiet (PC khac bi thanh cuon de len bang) - van cuon bang chuot/cam ung */
+.overlay *, .detail, .detail *, #scDeptModal *, #minusModal *, .scm-tablewrap, .hist-list {
+  scrollbar-width: none !important; -ms-overflow-style: none !important;
+}
+.overlay ::-webkit-scrollbar, .detail ::-webkit-scrollbar, #scDeptModal ::-webkit-scrollbar,
+#minusModal ::-webkit-scrollbar, .scm-tablewrap::-webkit-scrollbar, .hist-list::-webkit-scrollbar {
+  display: none !important; width: 0 !important; height: 0 !important;
+}
 </style>
 <script>
 /* particles.js v2.0.0 embedded inline (offline) - VincentGarreau */

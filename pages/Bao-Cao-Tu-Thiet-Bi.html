@@ -467,6 +467,15 @@ td.num.is-neg{color:var(--red);font-weight:700;}
 td.num.is-zero{color:var(--zero);opacity:.85;}
 td.num.is-pos{color:var(--good);}
 .kpi-value.is-neg{color:var(--red);} .kpi-value.is-pos{color:var(--good);} .kpi-value.is-zero{color:var(--zero);}
+
+/* v20261030-hidescroll: an thanh cuon trong cua so chi tiet (PC khac bi thanh cuon de len bang) - van cuon bang chuot/cam ung */
+.overlay *, .detail, .detail *, #scDeptModal *, #minusModal *, .scm-tablewrap, .hist-list {
+  scrollbar-width: none !important; -ms-overflow-style: none !important;
+}
+.overlay ::-webkit-scrollbar, .detail ::-webkit-scrollbar, #scDeptModal ::-webkit-scrollbar,
+#minusModal ::-webkit-scrollbar, .scm-tablewrap::-webkit-scrollbar, .hist-list::-webkit-scrollbar {
+  display: none !important; width: 0 !important; height: 0 !important;
+}
 </style>
 <meta name="theme-color" content="#FFFFFF">
 </head>
