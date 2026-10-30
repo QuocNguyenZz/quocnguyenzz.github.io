@@ -135,7 +135,7 @@
   .cat-sel.edited,.unit-sel.edited{border-color:var(--gold-1);box-shadow:0 0 0 1px rgba(20,81,29,.4)}
   /* Màu tên + select theo nhóm */
   .ano-btn.cat-tb{color:#14511D;border-bottom-color:rgba(123,216,156,.5)}
-  .ano-btn.cat-kho{color:#14511D;border-bottom-color:rgba(143,193,233,.5)}
+  .ano-btn.cat-kho{color:#14511D;border-bottom-color:rgba(20,81,29,.5)}
   .ano-btn.cat-vpp{color:var(--gold-1)}
   .cat-sel.cat-tb{color:#14511D}
   .cat-sel.cat-kho{color:#14511D}
@@ -446,6 +446,9 @@ header,.wrap,footer{margin-left:252px !important;max-width:calc(100% - 252px) !i
 .kpi-value{background-image:linear-gradient(180deg,var(--g-06),var(--g-08)) !important;
   -webkit-background-clip:text !important;background-clip:text !important;-webkit-text-fill-color:transparent !important;
   color:var(--gold-1) !important;}
+.brand-name{background-image:linear-gradient(180deg,var(--g-07),var(--g-09)) !important;
+  -webkit-background-clip:text !important;background-clip:text !important;-webkit-text-fill-color:transparent !important;}
+.seal{background-image:radial-gradient(circle at 32% 28%,var(--g-06),var(--g-09)) !important;}
 /* ---------------- Bang vua khung ---------------- */
 table{font-size:12.5px;min-width:0 !important;table-layout:auto !important;}
 thead th{background:var(--surface-2)!important;color:var(--text)!important;font-weight:800;letter-spacing:.04em;}
@@ -1887,7 +1890,7 @@ document.getElementById('histList').addEventListener('click', function(e){
     var ctx=c.getContext('2d'); var w,h,flakes=[],N=80,mx=0,my=0;
     function resize(){w=c.width=window.innerWidth;h=c.height=window.innerHeight;}
     function init(){flakes=[];for(var i=0;i<N;i++)flakes.push({x:Math.random()*w,y:Math.random()*h,r:Math.random()*2+.5,v:Math.random()*.6+.2,d:Math.random()*Math.PI*2});}
-    function draw(){ctx.clearRect(0,0,w,h);ctx.fillStyle='rgba(132,201,146,.9)';for(var i=0;i<flakes.length;i++){var f=flakes[i];f.y+=f.v+(my*.0004);f.x+=Math.sin(f.d)*.3+(mx*.0002);if(f.y>h){f.y=-4;f.x=Math.random()*w;}if(f.x>w)f.x=0;if(f.x<0)f.x=w;ctx.beginPath();ctx.arc(f.x,f.y,f.r,0,Math.PI*2);ctx.fill();}requestAnimationFrame(draw);}
+    function draw(){ctx.clearRect(0,0,w,h);ctx.fillStyle='rgba(20,81,29,.9)';for(var i=0;i<flakes.length;i++){var f=flakes[i];f.y+=f.v+(my*.0004);f.x+=Math.sin(f.d)*.3+(mx*.0002);if(f.y>h){f.y=-4;f.x=Math.random()*w;}if(f.x>w)f.x=0;if(f.x<0)f.x=w;ctx.beginPath();ctx.arc(f.x,f.y,f.r,0,Math.PI*2);ctx.fill();}requestAnimationFrame(draw);}
     resize();init();draw();
     window.addEventListener('resize',function(){resize();init();});
     window.addEventListener('mousemove',function(e){mx=e.clientX-w/2;my=e.clientY-h/2;});
