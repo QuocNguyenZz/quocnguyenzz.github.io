@@ -800,8 +800,12 @@
         play().then((ok) => {
           if (ok) return;
           const events = ['pointerdown', 'keydown', 'touchstart', 'wheel'];
-          const once = () => {
-            events.forEach((ev) => document.removeEventListener(ev, once, true));
+          const once = (ev) => {
+            if (btn.contains(ev && ev.target)) {
+              events.forEach((e) => document.removeEventListener(e, once, true));
+              return;
+            }
+            events.forEach((e) => document.removeEventListener(e, once, true));
             if (localStorage.getItem(key) !== 'off') play();
           };
           events.forEach((ev) => document.addEventListener(ev, once, true));

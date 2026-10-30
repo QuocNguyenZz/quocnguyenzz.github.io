@@ -380,11 +380,34 @@ td.num.is-pos{color:var(--good);}
 #minusModal ::-webkit-scrollbar, .scm-tablewrap::-webkit-scrollbar, .hist-list::-webkit-scrollbar {
   display: none !important; width: 0 !important; height: 0 !important;
 }
+
+    /* Nhac Noel (nut bat/tat) - phong cach NOEL report */
+    .music-toggle { position: fixed; top: 14px; right: 14px; z-index: 330; height: 40px; padding: 0 14px;
+      border-radius: 20px; border: 1px solid var(--border); background: var(--surface-2); color: var(--text-2);
+      font-size: 13px; font-weight: 600; cursor: pointer; display: flex; align-items: center; gap: 8px;
+      box-shadow: var(--shadow); transition: background var(--t), color var(--t); }
+    .music-toggle:hover { background: var(--surface-3); color: var(--text); border-color: var(--g-04); }
+    .music-toggle:focus-visible { outline: 3px solid var(--focus); outline-offset: 2px; }
+    .music-toggle.playing { background: var(--accent); color: var(--on-accent); border-color: var(--accent); }
+    .music-bars { display: inline-flex; gap: 2px; align-items: flex-end; height: 13px; }
+    .music-bars span { width: 3px; height: 4px; background: currentColor; border-radius: 2px; }
+    .music-toggle.playing .music-bars span { animation: musicBar 0.9s ease-in-out infinite; }
+    .music-bars span:nth-child(2) { animation-delay: .2s !important; }
+    .music-bars span:nth-child(3) { animation-delay: .4s !important; }
+    @keyframes musicBar { 0%, 100% { height: 4px; } 50% { height: 13px; } }
 </style>
 
 <meta name="theme-color" content="#FFFFFF">
 </head>
 <body>
+  <!-- Nhac Noel -->
+  <button class="music-toggle" id="musicToggle" aria-pressed="false" title="Bật/tắt nhạc Noel">
+    <span class="music-bars" aria-hidden="true"><span></span><span></span><span></span></span>
+    <span class="music-label">🎵 Nhạc Noel</span>
+  </button>
+  <audio id="xmasMusic" loop preload="auto" src="audio/merry-christmas.mp3"></audio>
+
+
 <div class="tree-layer" aria-hidden="true">
   <div class="tree-bg"><svg class="tree-svg" viewBox="0 0 300 470" xmlns="http://www.w3.org/2000/svg" aria-hidden="true" focusable="false">
 <defs>
@@ -1036,6 +1059,41 @@ function r18BackGo(){
   if(bd)  bd.addEventListener('click', closeSb);
   document.addEventListener('keydown', function(e){ if(e.key==='Escape') closeSb(); });
 })();
+</script>
+<script>    // Nhac Noel: tu phat khi vao trang; neu trinh duyet chan -> phat o thao tac dau tien.
+    (function () {
+      const btn = document.getElementById('musicToggle');
+      const audio = document.getElementById('xmasMusic');
+      const label = btn.querySelector('.music-label');
+      const key = 'fsd50_music';
+      audio.volume = 0.5;
+      function render(on) {
+        btn.classList.toggle('playing', on);
+        btn.setAttribute('aria-pressed', String(on));
+        label.textContent = on ? '⏸ Tắt nhạc' : '🎵 Phát nhạc';
+      }
+      function play() {
+        return audio.play().then(() => { render(true); localStorage.setItem(key, 'on'); return true; })
+          .catch(() => { render(false); return false; });
+      }
+      function stop() { audio.pause(); render(false); localStorage.setItem(key, 'off'); }
+      btn.addEventListener('click', () => (audio.paused ? play() : stop()));
+      if (localStorage.getItem(key) !== 'off') {
+        play().then((ok) => {
+          if (ok) return;
+          const events = ['pointerdown', 'keydown', 'touchstart', 'wheel'];
+          const once = (ev) => {
+            if (btn.contains(ev && ev.target)) {
+              events.forEach((e) => document.removeEventListener(e, once, true));
+              return;
+            }
+            events.forEach((e) => document.removeEventListener(e, once, true));
+            if (localStorage.getItem(key) !== 'off') play();
+          };
+          events.forEach((ev) => document.addEventListener(ev, once, true));
+        });
+      }
+    })();
 </script>
 </body>
 </html>
