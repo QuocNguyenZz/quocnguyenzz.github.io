@@ -626,7 +626,7 @@
     <span class="music-bars" aria-hidden="true"><span></span><span></span><span></span></span>
     <span class="music-label">🎵 Nhạc Noel</span>
   </button>
-  <audio id="xmasMusic" loop preload="none" src="pages/audio/merry-christmas.mp3"></audio>
+  <audio id="xmasMusic" loop preload="auto" src="pages/audio/merry-christmas.mp3"></audio>
 
   <!-- 2. String lights bar -->
   <div class="lights-bar">
@@ -776,7 +776,7 @@
     })();
 
 
-    // Nhac Noel: bat/tat, nho lua chon
+    // Nhac Noel: tu phat khi vao trang; neu trinh duyet chan (chua co thao tac nao) thi phat o thao tac dau tien
     (function () {
       const btn = document.getElementById('musicToggle');
       const audio = document.getElementById('xmasMusic');
@@ -786,18 +786,26 @@
       function render(on) {
         btn.classList.toggle('playing', on);
         btn.setAttribute('aria-pressed', String(on));
-        label.textContent = on ? '⏸ Tắt nhạc' : '🎵 Nhạc Noel';
+        label.textContent = on ? '⏸ Tắt nhạc' : '🎵 Phát nhạc';
       }
       function play() {
-        return audio.play().then(() => { render(true); localStorage.setItem(key, 'on'); })
-          .catch(() => render(false));
+        return audio.play().then(() => { render(true); localStorage.setItem(key, 'on'); return true; })
+          .catch(() => { render(false); return false; });
       }
       function stop() { audio.pause(); render(false); localStorage.setItem(key, 'off'); }
       btn.addEventListener('click', () => (audio.paused ? play() : stop()));
-      // trinh duyet chan autoplay: chi thu phat lai sau cu chi dau tien cua nguoi dung
-      if (localStorage.getItem(key) === 'on') {
-        const once = () => { play(); document.removeEventListener('pointerdown', once); };
-        document.addEventListener('pointerdown', once);
+
+      // mac dinh bat; chi tat khi nguoi dung da tat lan truoc
+      if (localStorage.getItem(key) !== 'off') {
+        play().then((ok) => {
+          if (ok) return;
+          const events = ['pointerdown', 'keydown', 'touchstart', 'wheel'];
+          const once = () => {
+            events.forEach((ev) => document.removeEventListener(ev, once, true));
+            if (localStorage.getItem(key) !== 'off') play();
+          };
+          events.forEach((ev) => document.addEventListener(ev, once, true));
+        });
       }
     })();
 
