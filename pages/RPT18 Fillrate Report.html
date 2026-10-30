@@ -371,20 +371,12 @@ td.num.is-neg{color:var(--red);font-weight:700;}
 td.num.is-zero{color:var(--zero);opacity:.85;}
 td.num.is-pos{color:var(--good);}
 .kpi-value.is-neg{color:var(--red);} .kpi-value.is-pos{color:var(--good);} .kpi-value.is-zero{color:var(--zero);}
-
-/* v20261030-embed: khi nhung vao trang chinh (?embed=1) -> an sidebar cua trang */
-html.embed-page .sidebar{display:none !important;}
-html.embed-page .sb-backdrop{display:none !important;}
-html.embed-page header,html.embed-page .wrap,html.embed-page footer{
-  margin-left:0 !important;max-width:none !important;width:auto !important;}
-html.embed-page .back-btn{display:none !important;}
 </style>
 
 <meta name="theme-color" content="#FFFFFF">
 </head>
 <body
 <div class="tree-layer" aria-hidden="true">
-<script>/* v20261030-embed: nhung trong dashboard -> an sidebar rieng */if(/[?&]embed=1/.test(location.search))document.documentElement.classList.add('embed-page');</script>
 
   <div class="tree-bg"><svg class="tree-svg" viewBox="0 0 300 470" xmlns="http://www.w3.org/2000/svg" aria-hidden="true" focusable="false">
 <defs>
