@@ -276,6 +276,7 @@ canvas{display:block; max-width:100%;}
 .menu-item{
   display:flex; align-items:center; gap:11px; padding:9px 10px;
   border-radius:11px; cursor:pointer; transition:background var(--t) ease;
+  text-decoration:none; color:inherit;
 }
 .menu-item:hover,.menu-item:focus-visible{background:var(--surface-2);}
 .menu-item .mi-ico{
@@ -1405,30 +1406,30 @@ var pJS=function(e,a){var t=document.querySelector("#"+e+" > .particles-js-canva
       <div class="sb-title">Menu · Công cụ</div>
       <div class="menu-panel" id="menuPanel">
   <div class="menu-title">Menu · Báo cáo</div>
-  <div class="menu-item" id="menuRpt18" title="RPT18 Fillrate Report" role="button" tabindex="0">
+  <a class="menu-item" id="menuRpt18" title="RPT18 Fillrate Report" href="RPT18%20Fillrate%20Report.html">
     <div class="mi-ico">📊</div>
     <div style="flex:1; min-width:0;">
       <div class="mi-t">RPT18 Fillrate Report</div>
       <div class="mi-s">Báo cáo tỷ lệ giao hàng · chi tiết</div>
     </div>
     <span class="mi-chev">›</span>
-  </div>
-  <div class="menu-item" id="menuThietBi" title="Tủ Thiết Bị" role="button" tabindex="0">
+  </a>
+  <a class="menu-item" id="menuThietBi" title="Tủ Thiết Bị" href="Bao-Cao-Tu-Thiet-Bi.html">
     <div class="mi-ico gold">🧰</div>
     <div style="flex:1; min-width:0;">
       <div class="mi-t">Tủ Thiết Bị</div>
       <div class="mi-s">Báo cáo tủ thiết bị · GOR</div>
     </div>
     <span class="mi-chev">›</span>
-  </div>
-  <div class="menu-item" id="menuThietBiIT" title="Thiết Bị IT · Kho 10050" role="button" tabindex="0">
+  </a>
+  <a class="menu-item" id="menuThietBiIT" title="Thiết Bị IT · Kho 10050" href="Bao-Cao-Thiet-Bi-IT-10050.html">
     <div class="mi-ico">💻</div>
     <div style="flex:1; min-width:0;">
       <div class="mi-t">Thiết Bị IT · 10050</div>
       <div class="mi-s">Bảng kê tài sản IT · Store 10050</div>
     </div>
     <span class="mi-chev">›</span>
-  </div>
+  </a>
 </div>
     </div>
     <div class="sb-foot">
@@ -6304,13 +6305,7 @@ window.TOP50_DATA = {"dates": [20261001, 20261002, 20261003, 20261004, 20261005,
     if (window.__closeSidebar) window.__closeSidebar();
     var mb = document.getElementById('menuBtn');
     if (mb) mb.classList.remove('active');
-    var a = document.createElement('a');
-    a.href = encodeURI('RPT18 Fillrate Report.html');
-    a.target = '_blank';
-    a.rel = 'noopener';
-    document.body.appendChild(a);
-    a.click();
-    a.remove();
+    /* chuyen trang cung tab: the <a href> native */
   });
 })();
 
@@ -6323,13 +6318,7 @@ window.TOP50_DATA = {"dates": [20261001, 20261002, 20261003, 20261004, 20261005,
     if (window.__closeSidebar) window.__closeSidebar();
     var mb = document.getElementById('menuBtn');
     if (mb) mb.classList.remove('active');
-    var a = document.createElement('a');
-    a.href = encodeURI('Bao-Cao-Tu-Thiet-Bi.html');
-    a.target = '_blank';
-    a.rel = 'noopener';
-    document.body.appendChild(a);
-    a.click();
-    a.remove();
+    /* chuyen trang cung tab: the <a href> native */
   });
 })();
 
@@ -6342,13 +6331,7 @@ window.TOP50_DATA = {"dates": [20261001, 20261002, 20261003, 20261004, 20261005,
     if (window.__closeSidebar) window.__closeSidebar();
     var mb = document.getElementById('menuBtn');
     if (mb) mb.classList.remove('active');
-    var a = document.createElement('a');
-    a.href = encodeURI('Bao-Cao-Thiet-Bi-IT-10050.html');
-    a.target = '_blank';
-    a.rel = 'noopener';
-    document.body.appendChild(a);
-    a.click();
-    a.remove();
+    /* chuyen trang cung tab: the <a href> native */
   });
 })();
 </script>
