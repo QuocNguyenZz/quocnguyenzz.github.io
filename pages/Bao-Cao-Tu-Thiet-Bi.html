@@ -114,12 +114,12 @@
   tbody td{padding:10px 16px;border-top:1px solid var(--line-soft);vertical-align:middle}
   tbody tr:nth-child(even){background:var(--bg-2)}
   tbody tr{transition:background .12s}
-  tbody tr:hover{background:#18150D}
+  tbody tr:hover{background:var(--row-hover)}
   td.stt{white-space:nowrap;color:var(--muted);font-variant-numeric:tabular-nums}
   .ano-btn{background:none;border:none;padding:0;margin:0;cursor:pointer;font:inherit;color:var(--gold-1);
     font-weight:700;letter-spacing:.3px;border-bottom:1px dashed rgba(20,81,29,.5);
     transition:color .12s;text-align:left}
-  .ano-btn:hover{color:#fff;border-bottom-color:#fff}
+  .ano-btn:hover{color:var(--text);border-bottom-color:var(--text)}
   .ano-btn:focus-visible{outline:2px solid var(--gold-1);outline-offset:3px;border-radius:3px}
   .tag{display:inline-block;padding:3px 10px;border-radius:999px;font-size:11px;font-weight:600;letter-spacing:.3px;white-space:nowrap}
   .tag.vpp{background:rgba(50,166,74,.12);color:var(--gold-1);border:1px solid rgba(50,166,74,.4)}
@@ -174,8 +174,8 @@
   .step-val{width:74px;text-align:center;font-weight:800;font-variant-numeric:tabular-nums;white-space:nowrap;
     color:var(--text);font-size:14px;padding:0 6px;overflow:hidden}
   .step-val.adj{color:var(--gold-1);text-decoration:underline dotted rgba(20,81,29,.6);text-underline-offset:3px}
-  tfoot td{padding:13px 16px;border-top:2px solid var(--gold-3);background:linear-gradient(180deg,#0C0C11,#F1F8F3);
-    color:var(--gold-1);font-weight:700;white-space:nowrap;font-size:13px;letter-spacing:.2px}
+  tfoot td{padding:13px 16px;border-top:1px solid var(--g-04);background:var(--surface-3);
+    color:var(--gold);font-weight:800;white-space:nowrap;font-size:13px;letter-spacing:.2px}
   tfoot td.num{font-size:14px}
   .empty{text-align:center;padding:56px 20px;color:var(--muted)}
   .empty .ic{font-size:42px;display:block;margin-bottom:12px}
@@ -980,8 +980,8 @@ function thumbSVG(stt, size){
   const fs = Math.round(size * 0.52);
   return '<svg class="thumb" width="'+size+'" height="'+size+'" viewBox="0 0 52 52" role="img" aria-label="Ảnh minh họa">' +
     '<defs><linearGradient id="thg'+stt+'x'+size+'" x1="0" y1="0" x2="0" y2="1">' +
-    '<stop offset="0" stop-color="#1B1B22"/><stop offset="1" stop-color="#0C0C10"/></linearGradient></defs>' +
-    '<rect x="1" y="1" width="50" height="50" rx="11" fill="url(#thg'+stt+'x'+size+')" stroke="#C9A227" stroke-opacity=".55"/>' +
+    '<stop offset="0" stop-color="#EAF5EE"/><stop offset="1" stop-color="#F6FBF8"/></linearGradient></defs>' +
+    '<rect x="1" y="1" width="50" height="50" rx="11" fill="url(#thg'+stt+'x'+size+')" stroke="#5BAF70" stroke-opacity=".55"/>' +
     '<text x="26" y="30" text-anchor="middle" font-size="'+fs+'">'+g+'</text></svg>';
 }
 function prodImg(stt, size){
