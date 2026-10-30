@@ -598,6 +598,20 @@
         display: none;
       }
     }
+  
+    /* Nhac Noel (nut phat/tat) */
+    .music-toggle { position: fixed; top: 14px; right: 70px; z-index: 60; height: 46px; padding: 0 16px;
+      border-radius: 23px; border: 2px solid rgba(245, 197, 66, .9); background: rgba(255, 255, 255, .18);
+      color: var(--xmas-white); font-size: 14px; font-weight: 600; cursor: pointer; backdrop-filter: blur(4px);
+      display: flex; align-items: center; gap: 8px; }
+    .music-toggle:hover { transform: scale(1.04); background: rgba(245, 197, 66, .3); }
+    .music-toggle:focus-visible { outline: 3px solid rgba(246, 251, 255, .9); outline-offset: 4px; }
+    .music-toggle.playing .music-bars span { animation: musicBar 0.9s ease-in-out infinite; }
+    .music-bars { display: inline-flex; gap: 2px; align-items: flex-end; height: 14px; }
+    .music-bars span { width: 3px; height: 4px; background: currentColor; border-radius: 2px; }
+    .music-bars span:nth-child(2) { animation-delay: .2s !important; }
+    .music-bars span:nth-child(3) { animation-delay: .4s !important; }
+    @keyframes musicBar { 0%, 100% { height: 4px; } 50% { height: 14px; } }
   </style>
 </head>
 
@@ -606,6 +620,13 @@
 
   <!-- 10. Dark mode toggle -->
   <button class="theme-toggle" id="themeToggle" aria-label="Chuyển chế độ sáng/tối" title="Chế độ sáng/tối">🌙</button>
+
+  <!-- Nhac Noel -->
+  <button class="music-toggle" id="musicToggle" aria-pressed="false" title="Bật/tắt nhạc Noel">
+    <span class="music-bars" aria-hidden="true"><span></span><span></span><span></span></span>
+    <span class="music-label">🎵 Nhạc Noel</span>
+  </button>
+  <audio id="xmasMusic" loop preload="none" src="audio/merry-christmas.mp3"></audio>
 
   <!-- 2. String lights bar -->
   <div class="lights-bar">
@@ -752,6 +773,32 @@
         localStorage.setItem(key, next);
         apply(next);
       });
+    })();
+
+
+    // Nhac Noel: bat/tat, nho lua chon
+    (function () {
+      const btn = document.getElementById('musicToggle');
+      const audio = document.getElementById('xmasMusic');
+      const label = btn.querySelector('.music-label');
+      const key = 'fsd50_music';
+      audio.volume = 0.5;
+      function render(on) {
+        btn.classList.toggle('playing', on);
+        btn.setAttribute('aria-pressed', String(on));
+        label.textContent = on ? '⏸ Tắt nhạc' : '🎵 Nhạc Noel';
+      }
+      function play() {
+        return audio.play().then(() => { render(true); localStorage.setItem(key, 'on'); })
+          .catch(() => render(false));
+      }
+      function stop() { audio.pause(); render(false); localStorage.setItem(key, 'off'); }
+      btn.addEventListener('click', () => (audio.paused ? play() : stop()));
+      // trinh duyet chan autoplay: chi thu phat lai sau cu chi dau tien cua nguoi dung
+      if (localStorage.getItem(key) === 'on') {
+        const once = () => { play(); document.removeEventListener('pointerdown', once); };
+        document.addEventListener('pointerdown', once);
+      }
     })();
 
     // 8. Toast bubble demo
