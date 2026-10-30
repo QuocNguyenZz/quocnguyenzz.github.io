@@ -1267,6 +1267,11 @@ html[data-theme="dark"] .tree-bg{opacity:.22; mix-blend-mode:screen; filter:blur
 }
 
 @media print{ .tree-layer{display:none !important;} }
+
+/* v20261030-noel-fix: .result-count (meta TOP50 MTD) xuong dong o mobile -> khong tran trang */
+@media (max-width:760px){
+  .result-count{white-space:normal; overflow-wrap:anywhere; border-radius:12px; margin-left:0; display:inline-block;}
+}
 </style>
 <script>
 /* particles.js v2.0.0 embedded inline (offline) - VincentGarreau */
