@@ -7371,7 +7371,7 @@ document.getElementById('histList').addEventListener('click', function(e){
     const unit = unitLabel || '';
     const html = '<svg viewBox="0 0 ' + size + ' ' + size + '" width="100%" role="img" aria-label="Biểu đồ phân bổ">' + out +
       '<text x="' + cx + '" y="' + (cy - 4) + '" text-anchor="middle" font-size="26" font-weight="700" fill="#14511D" font-family="Georgia,serif">' + fmtNum(Math.round(total * 100) / 100) + '</text>' +
-      '<text x="' + cx + '" y="' + (cy + 16) + '" text-anchor="middle" font-size="11" fill="#1E792C">' + esc(unit) + '</text></svg>';
+      '<text x="' + cx + '" y="' + (cy + 16) + '" text-anchor="middle" font-size="11" fill="#14511D">' + esc(unit) + '</text></svg>';
     const legend = groups.map(function(g, idx){
       const frac = g.val / total;
       return '<div class="legend-row"><span class="legend-swatch" style="background:' + PALETTE[idx % PALETTE.length] + '"></span>' +
@@ -7396,23 +7396,23 @@ document.getElementById('histList').addEventListener('click', function(e){
       out += '<rect x="' + x.toFixed(1) + '" y="' + y.toFixed(1) + '" width="' + wbar.toFixed(1) + '" height="' + bh.toFixed(1) +
         '" rx="3" fill="url(#barGrad)"><title>' + esc(r.name) + ': ' + fmtNum(r.val) + '</title></rect>';
       if (r.val > 0) out += '<text x="' + (x + wbar / 2).toFixed(1) + '" y="' + (y - 5).toFixed(1) +
-        '" text-anchor="middle" font-size="10" fill="#ADEAB6">' + fmtNum(Math.round(r.val * 100) / 100) + '</text>';
+        '" text-anchor="middle" font-size="10" fill="#14511D">' + fmtNum(Math.round(r.val * 100) / 100) + '</text>';
     });
     for (let t = 0; t <= 4; t++){
       const val = max * (1 - t / 4), yy = padT + (t / 4) * plotH;
       rowDivs += '<line x1="' + padL + '" x2="' + (sizeW - padR) + '" y1="' + yy.toFixed(1) + '" y2="' + yy.toFixed(1) +
         '" stroke="rgba(20,81,29,.16)" stroke-width="1"/>' +
-        '<text x="' + (padL - 6) + '" y="' + (yy + 3).toFixed(1) + '" text-anchor="end" font-size="9" fill="#1E792C">' +
+        '<text x="' + (padL - 6) + '" y="' + (yy + 3).toFixed(1) + '" text-anchor="end" font-size="9" fill="#14511D">' +
         fmtNum(Math.round(val * 100) / 100) + '</text>';
     }
     const xLab = rows.map(function(r, i){
       let l = esc(r.name);
       if (l.length > 8) l = l.slice(0, 8) + '…';
       const lx = (padL + bw * i + bw / 2).toFixed(1), ly = padT + plotH + 16;
-      return '<text x="' + lx + '" y="' + ly + '" transform="rotate(-35 ' + lx + ' ' + ly + ')" text-anchor="end" font-size="9.5" fill="#1E792C">' + l + '</text>';
+      return '<text x="' + lx + '" y="' + ly + '" transform="rotate(-35 ' + lx + ' ' + ly + ')" text-anchor="end" font-size="9.5" fill="#14511D">' + l + '</text>';
     }).join('');
     return '<svg viewBox="0 0 ' + sizeW + ' ' + h + '" width="100%" role="img" aria-label="Biểu đồ cột" style="min-width:' + Math.min(sizeW, rows.length * 60 + 70) + 'px">' +
-      '<defs><linearGradient id="barGrad" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#E8F3EA"/><stop offset="1" stop-color="#32A64A"/></linearGradient></defs>' +
+      '<defs><linearGradient id="barGrad" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#84C992"/><stop offset="1" stop-color="#32A64A"/></linearGradient></defs>' +
       rowDivs + '<g font-family="Segoe UI,sans-serif">' + xLab + '</g>' + out + '</svg>';
   }
 
