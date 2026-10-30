@@ -467,11 +467,26 @@ td.num.is-neg{color:var(--red);font-weight:700;}
 td.num.is-zero{color:var(--zero);opacity:.85;}
 td.num.is-pos{color:var(--good);}
 .kpi-value.is-neg{color:var(--red);} .kpi-value.is-pos{color:var(--good);} .kpi-value.is-zero{color:var(--zero);}
+
+/* v20261030-embed: khi nhung vao trang chinh (?embed=1) -> an sidebar cua trang */
+html.embed-page .sidebar{display:none !important;}
+html.embed-page .sb-backdrop{display:none !important;}
+html.embed-page header,html.embed-page .wrap,html.embed-page footer{
+  margin-left:0 !important;max-width:none !important;width:auto !important;}
+html.embed-page .back-btn{display:none !important;}
+
+/* v20261030-embed: nut quay ve trang chinh FSD50 */
+.back-btn{display:inline-flex;align-items:center;gap:6px;padding:7px 13px;border-radius:9px;
+  border:1px solid var(--border);background:var(--surface-2);color:var(--text-2);font-size:12.5px;
+  font-weight:700;text-decoration:none;cursor:pointer;white-space:nowrap;}
+.back-btn:hover{background:var(--accent);color:var(--on-accent);border-color:var(--accent);}
 </style>
 <meta name="theme-color" content="#FFFFFF">
 </head>
 <body
 <div class="tree-layer" aria-hidden="true">
+<script>/* v20261030-embed: nhung trong dashboard -> an sidebar rieng */if(/[?&]embed=1/.test(location.search))document.documentElement.classList.add('embed-page');</script>
+
   <div class="tree-bg"><svg class="tree-svg" viewBox="0 0 300 470" xmlns="http://www.w3.org/2000/svg" aria-hidden="true" focusable="false">
 <defs>
 <linearGradient id="lfA" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#1E792C"/><stop offset="1" stop-color="#0A3818"/></linearGradient>
@@ -604,6 +619,7 @@ td.num.is-pos{color:var(--good);}
       <div class="brand-tag"><b>◈</b> &nbsp;Kho dụng cụ</div>
     </div>
     <div class="header-right">
+      <a class="back-btn" href="Day%20Receive%20Detail%20Report.html" title="Về trang chính FSD50">&#8592; Dashboard FSD50</a>
       <span class="chip">📅 Cập nhật&nbsp;<b id="tbToday">--</b></span>
       <span class="chip">🗄️ <b>Tủ thiết bị GOR</b></span>
     </div>

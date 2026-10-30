@@ -1272,6 +1272,11 @@ html[data-theme="dark"] .tree-bg{opacity:.22; mix-blend-mode:screen; filter:blur
 @media (max-width:760px){
   .result-count{white-space:normal; overflow-wrap:anywhere; border-radius:12px; margin-left:0; display:inline-block;}
 }
+
+/* v20261030-embed: bao cao nhung trong trang chinh */
+.embed-frame{width:100%;height:calc(100vh - 150px);min-height:620px;border:1px solid var(--border);
+  border-radius:12px;background:#FFFFFF;box-shadow:var(--shadow);}
+@media (max-width:1100px){ .embed-frame{height:calc(100vh - 120px);min-height:520px;} }
 </style>
 <script>
 /* particles.js v2.0.0 embedded inline (offline) - VincentGarreau */
@@ -1400,6 +1405,9 @@ var pJS=function(e,a){var t=document.querySelector("#"+e+" > .particles-js-canva
     <div class="tab" data-tab="minus" role="tab" aria-selected="false" tabindex="-1">Minus Stock</div>
     <div class="tab" data-tab="day" role="tab" aria-selected="false" tabindex="-1">Day Receive Detail</div>
     <div class="tab" data-tab="top50" role="tab" aria-selected="false" tabindex="-1">TOP 50 Sales</div>
+    <div class="tab" data-tab="rpt18" role="tab" aria-selected="false" tabindex="-1">RPT18 Fillrate</div>
+    <div class="tab" data-tab="tubietbi" role="tab" aria-selected="false" tabindex="-1">Tủ Thiết Bị</div>
+    <div class="tab" data-tab="it" role="tab" aria-selected="false" tabindex="-1">Thiết Bị IT</div>
       </div>
       <div class="sb-title">Menu · Công cụ</div>
       <div class="menu-panel" id="menuPanel">
@@ -1709,6 +1717,34 @@ var pJS=function(e,a){var t=document.querySelector("#"+e+" > .particles-js-canva
         <div class="ch-wrap" style="height:250px"><canvas id="hbarTopDeptToday"></canvas></div>
       </div>
     </div>
+  </div>
+  <!-- PAGE v20261030-embed: cac bao cao nhung trong trang chinh -->
+  <div id="pageRpt18" class="page" style="display:none">
+    <div class="page-title-row" style="display:none">
+      <div>
+        <div class="title-en">RPT18 Fillrate Report</div>
+        <div class="title-vi">Tỷ lệ giao hàng theo item line</div>
+      </div>
+    </div>
+    <iframe class="embed-frame" src="RPT18%20Fillrate%20Report.html?embed=1" title="RPT18 Fillrate Report" loading="lazy"></iframe>
+  </div>
+  <div id="pageTuThietBi" class="page" style="display:none">
+    <div class="page-title-row" style="display:none">
+      <div>
+        <div class="title-en">Tủ Thiết Bị</div>
+        <div class="title-vi">Báo cáo tủ thiết bị · GOR</div>
+      </div>
+    </div>
+    <iframe class="embed-frame" src="Bao-Cao-Tu-Thiet-Bi.html?embed=1" title="Tủ Thiết Bị" loading="lazy"></iframe>
+  </div>
+  <div id="pageThietBiIT" class="page" style="display:none">
+    <div class="page-title-row" style="display:none">
+      <div>
+        <div class="title-en">Thiết Bị IT · 10050</div>
+        <div class="title-vi">Bảng kê tài sản IT · Store 10050</div>
+      </div>
+    </div>
+    <iframe class="embed-frame" src="Bao-Cao-Thiet-Bi-IT-10050.html?embed=1" title="Thiết Bị IT · 10050" loading="lazy"></iframe>
   </div>
   <!-- PAGE v20260912-thietbi (additive; existing structure untouched) -->
   <div id="pageThietBi" class="page" style="display:none">
@@ -2854,7 +2890,7 @@ if (typeof module !== 'undefined' && module.exports){
 /* ============================================================
    TABS
 ============================================================ */
-var pageMap = {sc:'pageSc', minus:'pageMinus', day:'pageDay', top50:'pageTop50', thietbi:'pageThietBi'};
+var pageMap = {sc:'pageSc', minus:'pageMinus', day:'pageDay', top50:'pageTop50', thietbi:'pageThietBi', rpt18:'pageRpt18', tubietbi:'pageTuThietBi', it:'pageThietBiIT'};
 function syncTopTitle(tab){
   var page = document.getElementById(pageMap[tab]);
   var t = page ? page.querySelector('.title-en') : null;
@@ -2886,6 +2922,7 @@ function renderCurrentTab(){
   else if (currentTab === 'minus') renderMinus();
   else if (currentTab === 'day') renderDay();
   else if (currentTab === 'thietbi') { if (window.renderThietBi) window.renderThietBi(); }
+  else if (currentTab === 'rpt18' || currentTab === 'tubietbi' || currentTab === 'it') { /* trang nhung iframe: khong render lai */ }
   else renderTop50();
 }
 
@@ -6298,13 +6335,7 @@ window.TOP50_DATA = {"dates": [20261001, 20261002, 20261003, 20261004, 20261005,
     if (window.__closeSidebar) window.__closeSidebar();
     var mb = document.getElementById('menuBtn');
     if (mb) mb.classList.remove('active');
-    var a = document.createElement('a');
-    a.href = encodeURI('RPT18 Fillrate Report.html');
-    a.target = '_blank';
-    a.rel = 'noopener';
-    document.body.appendChild(a);
-    a.click();
-    a.remove();
+    try { activateTab('rpt18'); } catch(e) { window.location.href = encodeURI('RPT18 Fillrate Report.html'); }
   });
 })();
 
@@ -6317,13 +6348,7 @@ window.TOP50_DATA = {"dates": [20261001, 20261002, 20261003, 20261004, 20261005,
     if (window.__closeSidebar) window.__closeSidebar();
     var mb = document.getElementById('menuBtn');
     if (mb) mb.classList.remove('active');
-    var a = document.createElement('a');
-    a.href = encodeURI('Bao-Cao-Tu-Thiet-Bi.html');
-    a.target = '_blank';
-    a.rel = 'noopener';
-    document.body.appendChild(a);
-    a.click();
-    a.remove();
+    try { activateTab('tubietbi'); } catch(e) { window.location.href = encodeURI('Bao-Cao-Tu-Thiet-Bi.html'); }
   });
 })();
 
@@ -6336,13 +6361,7 @@ window.TOP50_DATA = {"dates": [20261001, 20261002, 20261003, 20261004, 20261005,
     if (window.__closeSidebar) window.__closeSidebar();
     var mb = document.getElementById('menuBtn');
     if (mb) mb.classList.remove('active');
-    var a = document.createElement('a');
-    a.href = encodeURI('Bao-Cao-Thiet-Bi-IT-10050.html');
-    a.target = '_blank';
-    a.rel = 'noopener';
-    document.body.appendChild(a);
-    a.click();
-    a.remove();
+    try { activateTab('it'); } catch(e) { window.location.href = encodeURI('Bao-Cao-Thiet-Bi-IT-10050.html'); }
   });
 })();
 </script>
