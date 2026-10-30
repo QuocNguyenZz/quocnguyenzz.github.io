@@ -6295,7 +6295,13 @@ window.TOP50_DATA = {"dates": [20261001, 20261002, 20261003, 20261004, 20261005,
     if(e.key==='Enter' || e.key==='Escape') hideLanding();
   });
   var homeBtn = document.getElementById('homeBtn');
-  if(homeBtn){ homeBtn.addEventListener('click', function(e){ e.preventDefault(); window.scrollTo(0, 0); }); }
+  if(homeBtn){
+    var goLanding = function(e){ e.preventDefault(); window.location.href = 'https://quocnguyenzz.github.io/'; };
+    homeBtn.addEventListener('click', goLanding);
+    homeBtn.setAttribute('role', 'link');
+    homeBtn.setAttribute('tabindex', '0');
+    homeBtn.addEventListener('keydown', function(e){ if(e.key === 'Enter') goLanding(e); });
+  }
   document.body.classList.remove('landing-active');
   document.body.style.overflow = '';
   landing.style.display = 'none';
