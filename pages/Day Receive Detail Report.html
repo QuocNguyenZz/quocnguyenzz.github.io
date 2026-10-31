@@ -137,6 +137,30 @@ html[data-theme="dark"]{
 html[data-theme="dark"] .tree-bg{opacity:.18; mix-blend-mode:screen; filter:blur(1.5px) saturate(.95);}
 html[data-theme="dark"] #snow{opacity:.30;}
 
+html[data-theme="dark"] input,
+html[data-theme="dark"] select,
+html[data-theme="dark"] textarea,
+html[data-theme="dark"] .search,
+html[data-theme="dark"] .cat-sel,
+html[data-theme="dark"] .unit-sel,
+html[data-theme="dark"] #fCat,
+html[data-theme="dark"] .form input,
+html[data-theme="dark"] .note-inp,
+html[data-theme="dark"] select.ps option,
+html[data-theme="dark"] .tbl,
+html[data-theme="dark"] .table-wrap,
+html[data-theme="dark"] table.data,
+html[data-theme="dark"] .hist-list,
+html[data-theme="dark"] .thumb,
+html[data-theme="dark"] .d-t,
+html[data-theme="dark"] .chart-card { background: var(--surface) !important; color: var(--text) !important; }
+html[data-theme="dark"] .tbl, html[data-theme="dark"] .table-wrap, html[data-theme="dark"] table.data { background: var(--surface) !important; }
+/* zebra rows: all dark */
+html[data-theme="dark"] table.data tbody tr:nth-child(even),
+html[data-theme="dark"] table.data tbody tr:nth-child(odd) { background: transparent; }
+html[data-theme="dark"] table.data tbody tr:hover { background: var(--row-hover); }
+
+
 /* -------------------------------------------------------------- 2. BASE */
 *,*::before,*::after{box-sizing:border-box;}
 html{-webkit-text-size-adjust:100%; scroll-behavior:smooth;}
