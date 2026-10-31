@@ -92,46 +92,50 @@
 }
 
 /* Bản tối (dark mode) — bật bằng <html data-theme="dark"> */
+/* Phong cách giống landing page: nền đen ấm + vàng gold (không xanh lè) */
 html[data-theme="dark"]{
-  --page:#062510;
-  --surface:#0A3818;
-  --surface-2:#14511D;
-  --surface-3:#1E792C;
-  --overlay:rgba(1,10,4,.72);
-  --border:#14511D;
-  --border-soft:#1E792C;
-  --line:rgba(173,234,182,.12);
-  --line-soft:rgba(173,234,182,.07);
-  --row-line:rgba(173,234,182,.10);
-  --row-hover:rgba(91,175,112,.12);
-  --accent-line:rgba(91,175,112,.40);
-  --text:#E8F3EA;
-  --text-2:#D6F4DA;
-  --muted:#84C992;
-  --faint:var(--g-04);
-  --legend:#5BAF70;
-  --good:#ADEAB6;
-  --zero:#5BAF70;
+  --page:#070709;              /* nền trang đen ấm */
+  --surface:#0F0F12;           /* header, section lớn, modal */
+  --surface-2:#141418;         /* card KPI, header bảng */
+  --surface-3:#1B1B22;         /* hàng tổng, chip nhấn */
+  --overlay:rgba(0,0,0,.72);   /* nền phủ modal */
+  --border:#2A2A32;
+  --border-soft:#1F1F26;
+  --line:rgba(237,230,216,.10);
+  --line-soft:rgba(237,230,216,.06);
+  --row-line:rgba(237,230,216,.08);
+  --row-hover:rgba(201,162,39,.10);
+  --accent-line:rgba(201,162,39,.35);
+  --text:#EDE6D8;              /* chữ chính ấm */
+  --text-2:#D4CFC4;
+  --muted:#8A8478;
+  --faint:#5A564E;
+  --legend:#C9A227;            /* vàng gold */
+  --good:#6FCF7F;
+  --zero:#8A8478;
   --red:#FF6B6B;
   --red-bg:rgba(255,107,107,.12);
   --red-soft:rgba(255,107,107,.35);
-  --gold:#F5C451;
-  --gold-bg:rgba(245,196,81,.14);
-  --accent:#5BAF70;
-  --accent-hover:#84C992;
-  --accent-bar:#32A64A;
-  --on-accent:#062510;
-  --focus:#32A64A;
-  --shadow:0 4px 16px rgba(0,0,0,.35);
-  --ring:0 0 0 3px rgba(91,175,112,.30);
-  --gold-1:var(--g-02); --gold-2:var(--g-04); --gold-3:var(--g-06); --gold-deep:var(--g-05);
-  --green:var(--g-05); --hl:var(--g-01);
+  --gold:#F0D68A;              /* vàng sáng */
+  --gold-bg:rgba(201,162,39,.14);
+  --accent:#C9A227;            /* tab active, nút Refresh (vàng) */
+  --accent-hover:#F0D68A;
+  --accent-bar:#C9A227;
+  --on-accent:#070709;
+  --focus:#C9A227;
+  --shadow:0 4px 16px rgba(0,0,0,.45);
+  --ring:0 0 0 3px rgba(201,162,39,.25);
+  --gold-1:var(--muted); --gold-2:var(--legend); --gold-3:var(--accent-bar); --gold-deep:var(--g-05);
+  --green:#6FCF7F; --hl:var(--text);
   --panel:var(--surface); --panel-2:var(--page); --panel-3:var(--surface-2);
   --card:var(--surface); --card-2:var(--surface-2);
   --border:var(--line); --grid:var(--line);
-  --accent-soft:rgba(91,175,112,.14);
+  --accent-soft:rgba(201,162,39,.12);
   color-scheme:dark;
+  /* trees */
 }
+html[data-theme="dark"] .tree-bg{opacity:.18; mix-blend-mode:screen; filter:blur(1.5px) saturate(.95);}
+html[data-theme="dark"] #snow{opacity:.30;}
 
 /* -------------------------------------------------------------- 2. BASE */
 *,*::before,*::after{box-sizing:border-box;}
