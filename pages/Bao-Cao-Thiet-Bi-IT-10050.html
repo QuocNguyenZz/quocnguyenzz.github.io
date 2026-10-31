@@ -511,7 +511,12 @@ td.num.is-pos{color:var(--good);}
 }
 
     /* Nhac Noel (nut bat/tat) - phong cach NOEL report */
-    .music-toggle { position: fixed; top: 14px; right: 14px; z-index: 330; height: 40px; padding: 0 14px;
+    .top-fixed-controls { position: fixed; top: 14px; right: 14px; z-index: 330; display: flex; gap: 8px; align-items: center; }
+    .theme-toggle { height: 40px; width: 40px; padding: 0; border-radius: 20px; border: 1px solid var(--border); background: var(--surface-2); color: var(--text-2);
+      font-size: 17px; cursor: pointer; display: flex; align-items: center; justify-content: center;
+      box-shadow: var(--shadow); transition: background var(--t), color var(--t); }
+    .theme-toggle:hover { background: var(--surface-3); color: var(--text); border-color: var(--g-04); }
+    .music-toggle { height: 40px; padding: 0 14px;
       border-radius: 20px; border: 1px solid var(--border); background: var(--surface-2); color: var(--text-2);
       font-size: 13px; font-weight: 600; cursor: pointer; display: flex; align-items: center; gap: 8px;
       box-shadow: var(--shadow); transition: background var(--t), color var(--t); }
@@ -526,13 +531,17 @@ td.num.is-pos{color:var(--good);}
     @keyframes musicBar { 0%, 100% { height: 4px; } 50% { height: 13px; } }
 </style>
 <meta name="theme-color" content="#FFFFFF">
+<script>(function(){try{var t=localStorage.getItem('fsd50_theme');if(t==='dark'||t==='light')document.documentElement.setAttribute('data-theme',t);}catch(e){}})();</script>
 </head>
 <body>
   <!-- Nhac Noel -->
+  <div class="top-fixed-controls">
+  <button class="theme-toggle" id="themeToggle" aria-pressed="false" title="Đổi sáng/tối · Toggle dark mode">🌙</button>
   <button class="music-toggle" id="musicToggle" aria-pressed="false" title="Bật/tắt nhạc Noel">
     <span class="music-bars" aria-hidden="true"><span></span><span></span><span></span></span>
     <span class="music-label">🎵 Nhạc Noel</span>
   </button>
+</div>
   <audio id="xmasMusic" loop preload="auto" src="audio/merry-christmas.mp3"></audio>
 
 
@@ -2495,11 +2504,26 @@ document.getElementById('histList').addEventListener('click', function(e){
         btn.setAttribute('aria-pressed', String(on));
         label.textContent = on ? '⏸ Tắt nhạc' : '🎵 Phát nhạc';
       }
+      const posKey = 'fsd50_music_pos';
+      function restorePos() {
+        try {
+          var sp = parseFloat(localStorage.getItem(posKey));
+          if (!isNaN(sp) && sp > 0) {
+            if (audio.readyState >= 1) audio.currentTime = sp;
+            else audio.addEventListener('loadedmetadata', function(){ try { audio.currentTime = sp; } catch(e){} }, {once:true});
+          }
+        } catch(e){}
+      }
+      restorePos();
+      function savePos() { try { if (!audio.paused) localStorage.setItem(posKey, String(audio.currentTime)); } catch(e){} }
+      setInterval(savePos, 1000);
+      window.addEventListener('pagehide', savePos);
+      window.addEventListener('beforeunload', savePos);
       function play() {
         return audio.play().then(() => { render(true); localStorage.setItem(key, 'on'); return true; })
           .catch(() => { render(false); return false; });
       }
-      function stop() { audio.pause(); render(false); localStorage.setItem(key, 'off'); }
+      function stop() { audio.pause(); render(false); localStorage.setItem(key, 'off'); savePos(); }
       btn.addEventListener('click', () => (audio.paused ? play() : stop()));
       if (localStorage.getItem(key) !== 'off') {
         play().then((ok) => {
@@ -2517,6 +2541,27 @@ document.getElementById('histList').addEventListener('click', function(e){
         });
       }
     })();
+</script>
+
+<script>
+/* Theme toggle (synced across pages via localStorage) */
+(function(){
+  var btn = document.getElementById('themeToggle');
+  if (!btn) return;
+  function syncBtn(){
+    var dark = document.documentElement.getAttribute('data-theme') === 'dark';
+    btn.textContent = dark ? '☀️' : '🌙';
+    btn.title = dark ? 'Chuyen sang sang' : 'Chuyen sang toi';
+  }
+  syncBtn();
+  btn.addEventListener('click', function(){
+    var dark = document.documentElement.getAttribute('data-theme') === 'dark';
+    var next = dark ? 'light' : 'dark';
+    document.documentElement.setAttribute('data-theme', next);
+    try { localStorage.setItem('fsd50_theme', next); } catch(e){}
+    syncBtn();
+  });
+})();
 </script>
 </body>
 </html>
