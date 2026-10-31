@@ -6225,7 +6225,7 @@ window.TOP50_DATA = {"dates": [20261001, 20261002, 20261003, 20261004, 20261005,
     activateTab('sc');
   }
   bl_loadState();
-  var _dataUrls = ['sc-data.json'];
+  var _dataUrls = ['sc-data.json?t=' + Date.now()];
   var _autoUrl = null, _autoSig = null;
 
   function _applyServerData(txt){
