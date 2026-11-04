@@ -342,6 +342,11 @@ canvas{display:block; max-width:100%;}
 .menu-item.sub .mi-dot{width:18px; text-align:center; font-size:12px; flex-shrink:0;}
 .menu-item.sub .mi-t2{font-size:12px; font-weight:600; color:var(--muted);}
 .menu-item.sub:hover .mi-t2{color:var(--text-2);}
+/* Thư mục SOP Handbook (04/11/2026) */
+.menu-folder{width:100%; font:inherit; background:transparent; border:0; text-align:left; color:inherit;}
+.menu-folder .mf-chev{transition:transform var(--t) ease;}
+.menu-folder[aria-expanded="false"] .mf-chev{transform:rotate(-90deg);}
+.menu-folder .mi-ico{background:var(--gold-bg); border:1px solid var(--gold);}
 
 /* ---------------------------------------------------------- 5. CONTENT */
 #dashboard{position:relative; z-index:1; padding:clamp(14px,1.6vw,22px) clamp(12px,1.8vw,26px) 32px;}
@@ -1514,6 +1519,30 @@ var pJS=function(e,a){var t=document.querySelector("#"+e+" > .particles-js-canva
     </div>
     <span class="mi-chev">›</span>
   </a>
+
+  <!-- Thư mục SOP Handbook: 2 trang tra cứu tài liệu vận hành -->
+  <button class="menu-item menu-folder" id="menuSopFolder" type="button"
+          aria-expanded="true" aria-controls="menuSopSub"
+          title="SOP Handbook · tài liệu vận hành hàng hóa">
+    <div class="mi-ico">📁</div>
+    <div style="flex:1; min-width:0;">
+      <div class="mi-t">SOP Handbook</div>
+      <div class="mi-s">Tài liệu vận hành hàng hóa</div>
+    </div>
+    <span class="mi-chev mf-chev">▾</span>
+  </button>
+  <div class="menu-sub open" id="menuSopSub">
+    <a class="menu-item sub" id="menuSopHandbook" href="SOP_Handbook.html"
+       title="SOP Handbook — tra cứu 9 tài liệu SOP/WI">
+      <span class="mi-dot" aria-hidden="true">📘</span>
+      <span class="mi-t2">Tra cứu SOP · Handbook</span>
+    </a>
+    <a class="menu-item sub" id="menuSopTree" href="SOP_Tree_Summary.html"
+       title="Sơ đồ cây tổng hợp 9 tài liệu">
+      <span class="mi-dot" aria-hidden="true">🗂</span>
+      <span class="mi-t2">Sơ đồ cây SOP</span>
+    </a>
+  </div>
 </div>
     </div>
     <div class="sb-foot">
@@ -6653,6 +6682,29 @@ window.TOP50_DATA = {"dates": [20261101, 20261102, 20261103], "latestDate": 2026
     var mb = document.getElementById('menuBtn');
     if (mb) mb.classList.remove('active');
     /* chuyen trang cung tab: the <a href> native */
+  });
+})();
+
+/* Thu muc SOP Handbook: mo/dong + dong sidebar khi bam 1 muc con (04/11/2026) */
+(function(){
+  var f = document.getElementById('menuSopFolder');
+  var sub = document.getElementById('menuSopSub');
+  if (f && sub) {
+    f.addEventListener('click', function(){
+      var open = sub.classList.toggle('open');
+      f.setAttribute('aria-expanded', open ? 'true' : 'false');
+    });
+  }
+  ['menuSopHandbook', 'menuSopTree'].forEach(function(id){
+    var a = document.getElementById(id);
+    if (!a) return;
+    a.addEventListener('click', function(){
+      var panel = document.getElementById('menuPanel');
+      if (panel) panel.classList.remove('open');
+      if (window.__closeSidebar) window.__closeSidebar();
+      var mb = document.getElementById('menuBtn');
+      if (mb) mb.classList.remove('active');
+    });
   });
 })();
 </script>

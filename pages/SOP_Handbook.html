@@ -1,0 +1,1309 @@
+<!DOCTYPE html>
+<html lang="vi" data-theme="light">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="color-scheme" content="light dark">
+<meta name="description" content="Tra cứu 9 tài liệu SOP &amp; WI vận hành hàng hóa của MM Mega Market Việt Nam: nhận hàng, tồn kho, trả hàng NCC, chuyển giao nội bộ, hàng khuyến mãi, đặt hàng CAR.">
+<title>SOP Handbook · Vận hành hàng hóa — MM Mega Market</title>
+<style>
+/* ============================================================
+   SOP Handbook — MM Mega Market Vietnam · vận hành hàng hóa
+   Design direction: "dock label dossier" — industrial, high legibility,
+   stencil numerals, perforated tags, mono control codes.
+   ============================================================ */
+
+:root {
+  --rail: 296px;
+  --topbar-h: 62px;
+
+  --paper: #f3f5f1;
+  --surface: #ffffff;
+  --surface-2: #eaf0e9;
+  --surface-3: #dfe8e0;
+  --ink: #0e1f18;
+  --ink-2: #3a4c44;
+  --ink-3: #6b7a72;
+  --line: #d2dad3;
+  --line-2: #e4eae3;
+
+  --brand: #0b6b3a;
+  --brand-ink: #08522c;
+  --brand-soft: #dcebe0;
+  --amber: #b06f06;
+  --amber-soft: #f6e9d4;
+  --red: #a32a22;
+  --red-soft: #f7e2df;
+  --blue: #24506b;
+  --blue-soft: #dee9f0;
+  --violet: #5c4392;
+  --violet-soft: #e8e2f5;
+
+  --shadow-sm: 0 1px 0 rgba(14, 31, 24, .04), 0 1px 3px rgba(14, 31, 24, .06);
+  --shadow-md: 0 10px 30px -18px rgba(14, 31, 24, .45);
+  --radius: 4px;
+
+  --font-display: Bahnschrift, "DIN Alternate", "Arial Narrow", "Segoe UI Semibold", system-ui, sans-serif;
+  --font-body: "Segoe UI Variable Text", "Segoe UI", system-ui, -apple-system, "Helvetica Neue", Arial, sans-serif;
+  --font-mono: "Cascadia Mono", "Cascadia Code", Consolas, "SF Mono", ui-monospace, monospace;
+
+  --ease: cubic-bezier(.2, .7, .3, 1);
+  color-scheme: light;
+}
+
+html[data-theme="dark"] {
+  --paper: #08110e;
+  --surface: #0f1a15;
+  --surface-2: #14211b;
+  --surface-3: #1a2a22;
+  --ink: #e7efe9;
+  --ink-2: #b5c5bc;
+  --ink-3: #8b9b91;
+  --line: #24352c;
+  --line-2: #1a2721;
+
+  --brand: #58c98c;
+  --brand-ink: #7ddba6;
+  --brand-soft: #11291d;
+  --amber: #e0a44a;
+  --amber-soft: #2a2113;
+  --red: #e8897f;
+  --red-soft: #2b1714;
+  --blue: #85b8d4;
+  --blue-soft: #10222c;
+  --violet: #b09ce0;
+  --violet-soft: #1c1730;
+
+  --shadow-md: 0 12px 34px -18px rgba(0, 0, 0, .8);
+  color-scheme: dark;
+}
+
+* { box-sizing: border-box; }
+
+html {
+  scroll-behavior: smooth;
+  scroll-padding-top: calc(var(--topbar-h) + 18px);
+  -webkit-text-size-adjust: 100%;
+}
+
+body {
+  margin: 0;
+  background: var(--paper);
+  color: var(--ink);
+  font-family: var(--font-body);
+  font-size: 15.5px;
+  line-height: 1.62;
+  font-feature-settings: "ss01" on;
+  text-rendering: optimizeLegibility;
+  -webkit-font-smoothing: antialiased;
+}
+
+/* subtle grid tooth: warehouse floor markings */
+body::before {
+  content: "";
+  position: fixed;
+  inset: 0;
+  pointer-events: none;
+  z-index: 0;
+  background-image:
+    linear-gradient(to right, color-mix(in srgb, var(--line) 40%, transparent) 1px, transparent 1px),
+    linear-gradient(to bottom, color-mix(in srgb, var(--line) 30%, transparent) 1px, transparent 1px);
+  background-size: 96px 96px, 96px 96px;
+  mask-image: radial-gradient(120% 90% at 60% 0%, #000 12%, transparent 72%);
+  opacity: .5;
+}
+
+a { color: var(--brand); text-underline-offset: 3px; }
+a:hover { color: var(--brand-ink); }
+
+:focus-visible {
+  outline: 2px solid var(--brand);
+  outline-offset: 3px;
+  border-radius: 2px;
+}
+
+.skip {
+  position: fixed;
+  left: 12px;
+  top: -60px;
+  z-index: 200;
+  background: var(--brand);
+  color: #fff;
+  padding: 10px 16px;
+  border-radius: var(--radius);
+  font-weight: 600;
+  transition: top .18s var(--ease);
+}
+.skip:focus { top: 12px; color: #fff; }
+
+/* ------------------------------------------------ top bar */
+.topbar {
+  position: sticky;
+  top: 0;
+  z-index: 60;
+  height: var(--topbar-h);
+  display: flex;
+  align-items: center;
+  gap: 18px;
+  padding: 0 18px 0 20px;
+  background: color-mix(in srgb, var(--paper) 88%, transparent);
+  backdrop-filter: blur(14px) saturate(1.2);
+  border-bottom: 1px solid var(--line);
+}
+
+.brand { display: flex; align-items: center; gap: 10px; min-width: 0; }
+.brand-mark {
+  width: 30px; height: 30px;
+  display: grid; place-items: center;
+  background: var(--brand);
+  color: #fff;
+  font-family: var(--font-display);
+  font-weight: 700;
+  font-size: 13px;
+  letter-spacing: .02em;
+  border-radius: 3px;
+  flex: none;
+}
+.brand-txt {
+  display: flex; flex-direction: column; line-height: 1.15; min-width: 0;
+}
+.brand-txt b {
+  font-family: var(--font-display);
+  font-size: 14px; font-weight: 650; letter-spacing: .01em;
+  white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
+}
+.brand-txt span {
+  font-size: 10.5px; letter-spacing: .13em; text-transform: uppercase;
+  color: var(--ink-3); white-space: nowrap;
+}
+
+.tools { margin-left: auto; display: flex; align-items: center; gap: 8px; }
+
+.search {
+  display: flex; align-items: center; gap: 8px;
+  height: 36px; padding: 0 12px;
+  background: var(--surface);
+  border: 1px solid var(--line);
+  border-radius: 999px;
+  box-shadow: var(--shadow-sm);
+  min-width: 220px;
+  transition: border-color .18s var(--ease), box-shadow .18s var(--ease), width .2s var(--ease);
+}
+.search:focus-within { border-color: var(--brand); box-shadow: 0 0 0 3px color-mix(in srgb, var(--brand) 16%, transparent); }
+.search svg { flex: none; opacity: .65; }
+.search input {
+  border: 0; background: transparent; color: var(--ink);
+  font: inherit; font-size: 13.5px; width: 100%; min-width: 0;
+  outline: none;
+}
+.search input::placeholder { color: var(--ink-3); }
+.search kbd {
+  font-family: var(--font-mono); font-size: 10.5px;
+  border: 1px solid var(--line); border-bottom-width: 2px;
+  border-radius: 4px; padding: 1px 5px; color: var(--ink-3);
+  background: var(--surface-2);
+}
+
+.btn {
+  height: 36px;
+  display: inline-flex; align-items: center; gap: 7px;
+  padding: 0 12px;
+  background: var(--surface);
+  color: var(--ink-2);
+  border: 1px solid var(--line);
+  border-radius: 999px;
+  font: inherit; font-size: 13px; font-weight: 550;
+  cursor: pointer;
+  white-space: nowrap;
+  box-shadow: var(--shadow-sm);
+  transition: background .16s var(--ease), color .16s var(--ease), border-color .16s var(--ease), transform .12s var(--ease);
+}
+.btn:hover { color: var(--ink); border-color: color-mix(in srgb, var(--brand) 45%, var(--line)); background: var(--surface-2); }
+.btn:active { transform: translateY(1px); }
+.btn svg { flex: none; }
+.btn[aria-pressed="true"] { background: var(--brand); border-color: var(--brand); color: #fff; }
+html[data-theme="dark"] .btn[aria-pressed="true"] { color: #06130c; }
+
+.progress {
+  position: absolute; left: 0; right: 0; bottom: -1px; height: 2px;
+  background: transparent;
+}
+.progress i {
+  display: block; height: 100%; width: 0%;
+  background: linear-gradient(90deg, var(--brand), color-mix(in srgb, var(--brand) 45%, var(--amber)));
+  transition: width .1s linear;
+}
+
+/* ------------------------------------------------ shell */
+.shell {
+  position: relative;
+  z-index: 1;
+  display: grid;
+  grid-template-columns: var(--rail) minmax(0, 1fr);
+  align-items: start;
+}
+
+.rail {
+  position: sticky;
+  top: var(--topbar-h);
+  height: calc(100vh - var(--topbar-h));
+  overflow-y: auto;
+  overscroll-behavior: contain;
+  padding: 22px 14px 30px 20px;
+  border-right: 1px solid var(--line);
+  scrollbar-width: thin;
+}
+.rail::-webkit-scrollbar { width: 8px; }
+.rail::-webkit-scrollbar-thumb { background: var(--line); border-radius: 8px; }
+
+.rail-scrim { display: none; }
+
+.rail-label {
+  font-family: var(--font-mono);
+  font-size: 10.5px; letter-spacing: .16em; text-transform: uppercase;
+  color: var(--ink-3);
+  display: flex; justify-content: space-between; align-items: center;
+  padding: 0 6px 10px;
+  border-bottom: 1px solid var(--line);
+  margin-bottom: 10px;
+}
+
+.toc { list-style: none; margin: 0; padding: 0; }
+.toc li { margin: 1px 0; }
+.toc a {
+  display: grid;
+  grid-template-columns: 26px 1fr;
+  gap: 9px;
+  align-items: start;
+  padding: 8px 8px 8px 6px;
+  border-radius: var(--radius);
+  color: var(--ink-2);
+  text-decoration: none;
+  font-size: 13.4px;
+  line-height: 1.35;
+  border-left: 2px solid transparent;
+  transition: background .14s var(--ease), color .14s var(--ease), border-color .14s var(--ease);
+}
+.toc a:hover { background: var(--surface-2); color: var(--ink); }
+.toc a b {
+  font-family: var(--font-mono);
+  font-size: 11px; font-weight: 600; letter-spacing: .04em;
+  color: var(--ink-3);
+  display: flex; align-items: center;
+  min-height: 18px;
+  line-height: 1;
+}
+.toc a b svg { width: 14px; height: 14px; display: block; }
+.toc a small {
+  display: block; font-size: 11px; color: var(--ink-3);
+  margin-top: 2px; font-family: var(--font-mono); letter-spacing: .02em;
+}
+.toc a.is-active {
+  background: var(--brand-soft);
+  border-left-color: var(--brand);
+  color: var(--ink);
+}
+.toc a.is-active b { color: var(--brand); }
+html[data-theme="dark"] .toc a.is-active { background: var(--brand-soft); }
+.toc li.is-hidden { display: none; }
+
+.rail-foot {
+  margin-top: 18px; padding: 14px 8px 0;
+  border-top: 1px solid var(--line);
+  font-size: 11.5px; color: var(--ink-3);
+  line-height: 1.7;
+}
+.rail-foot code { font-family: var(--font-mono); font-size: 11px; }
+
+/* ------------------------------------------------ main */
+main {
+  min-width: 0;
+  padding: 0 clamp(16px, 2.4vw, 46px) 90px;
+}
+
+.wrap { width: 100%; max-width: 1780px; }
+
+/* ------------------------------------------------ hero */
+.hero {
+  position: relative;
+  padding: clamp(26px, 4vw, 54px) 0 26px;
+  display: grid;
+  grid-template-columns: minmax(0, 1.35fr) minmax(300px, .65fr);
+  gap: clamp(22px, 3vw, 54px);
+  align-items: end;
+  border-bottom: 1px solid var(--line);
+}
+.eyebrow {
+  font-family: var(--font-mono);
+  font-size: 11px; letter-spacing: .2em; text-transform: uppercase;
+  color: var(--brand);
+  display: flex; align-items: center; gap: 10px;
+  margin-bottom: 16px;
+}
+.eyebrow::before {
+  content: ""; width: 26px; height: 2px; background: currentColor; flex: none;
+}
+.hero h1 {
+  margin: 0;
+  font-family: var(--font-display);
+  font-size: clamp(30px, 4.1vw, 56px);
+  line-height: 1.03;
+  letter-spacing: -.015em;
+  font-weight: 650;
+  text-wrap: balance;
+}
+.hero h1 em {
+  font-style: normal;
+  color: var(--brand);
+}
+.hero-lead {
+  margin: 18px 0 0;
+  max-width: 72ch;
+  font-size: clamp(15px, 1.05vw, 17px);
+  color: var(--ink-2);
+  line-height: 1.62;
+}
+
+.board {
+  border: 1px solid var(--line);
+  background: var(--surface);
+  box-shadow: var(--shadow-md);
+  border-radius: var(--radius);
+  overflow: hidden;
+}
+.board-head {
+  display: flex; justify-content: space-between; align-items: center;
+  padding: 9px 14px;
+  border-bottom: 1px solid var(--line);
+  background: var(--surface-2);
+  font-family: var(--font-mono);
+  font-size: 10px; letter-spacing: .15em; text-transform: uppercase;
+  color: var(--ink-3);
+}
+.board-head i { width: 7px; height: 7px; border-radius: 50%; background: var(--brand); box-shadow: 0 0 0 3px color-mix(in srgb, var(--brand) 20%, transparent); }
+.board-grid { display: grid; grid-template-columns: 1fr 1fr; }
+.board-cell {
+  padding: 16px 16px 14px;
+  border-right: 1px solid var(--line-2);
+  border-bottom: 1px solid var(--line-2);
+}
+.board-cell:nth-child(2n) { border-right: 0; }
+.board-cell:nth-last-child(-n+2) { border-bottom: 0; }
+.board-cell b {
+  display: block;
+  font-family: var(--font-display);
+  font-size: clamp(26px, 2.2vw, 34px);
+  line-height: 1;
+  font-weight: 650;
+  letter-spacing: -.02em;
+}
+.board-cell span {
+  display: block;
+  margin-top: 6px;
+  font-size: 11.5px; line-height: 1.35;
+  color: var(--ink-3);
+  letter-spacing: .01em;
+}
+
+/* goods flow */
+.flow {
+  margin-top: 26px;
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  gap: 0;
+  border: 1px solid var(--line);
+  border-radius: var(--radius);
+  background: var(--surface);
+}
+.flow-step {
+  position: relative;
+  padding: 15px 18px 16px;
+  border-right: 1px solid var(--line-2);
+  min-width: 0;
+}
+.flow-step:last-child { border-right: 0; }
+.flow-step::before {
+  content: attr(data-step);
+  font-family: var(--font-mono);
+  font-size: 10px; letter-spacing: .16em;
+  color: var(--brand);
+  display: block; margin-bottom: 7px;
+}
+.flow-step h3 {
+  margin: 0 0 5px;
+  font-size: 13.6px; font-weight: 650; line-height: 1.3;
+  font-family: var(--font-body);
+}
+.flow-step p { margin: 0; font-size: 11.8px; color: var(--ink-3); line-height: 1.45; }
+.flow-step .arrow {
+  position: absolute; right: 0; top: 50%; z-index: 2;
+  width: 22px; height: 22px; margin-top: -11px;
+  transform: translateX(50%);
+  display: grid; place-items: center;
+  background: var(--surface);
+  border: 1px solid var(--line);
+  border-radius: 50%;
+  color: var(--brand);
+}
+.flow-step .arrow svg { width: 12px; height: 12px; display: block; }
+.flow-step:last-child .arrow { display: none; }
+
+/* ------------------------------------------------ sections */
+.sec {
+  padding: clamp(30px, 3.2vw, 50px) 0 0;
+  scroll-margin-top: calc(var(--topbar-h) + 16px);
+}
+.sec.is-hidden { display: none; }
+
+.sec-head {
+  display: grid;
+  grid-template-columns: 74px minmax(0, 1fr) auto;
+  gap: clamp(12px, 1.6vw, 22px);
+  align-items: start;
+  padding-bottom: 16px;
+  border-bottom: 1.5px solid var(--ink);
+  position: relative;
+}
+.sec-head::after {
+  content: "";
+  position: absolute; left: 0; right: 100%; bottom: -1.5px; height: 1.5px;
+  background: var(--brand);
+  transition: right .5s var(--ease);
+}
+.sec.is-inview .sec-head::after { right: 0; }
+
+.sec-num {
+  font-family: var(--font-display);
+  font-size: 40px; line-height: .9; font-weight: 650;
+  letter-spacing: -.03em;
+  color: var(--brand);
+  padding-top: 3px;
+}
+.sec-num.is-glyph {
+  -webkit-text-stroke: 0;
+  color: var(--brand);
+  font-size: 26px;
+  line-height: 1;
+  display: flex;
+  align-items: center;
+  padding-top: 0;
+  height: 38px;
+}
+.sec-num.is-glyph svg { width: 33px; height: 33px; display: block; }
+
+.sec-title h2 {
+  margin: 0;
+  font-family: var(--font-display);
+  font-size: clamp(21px, 1.9vw, 29px);
+  line-height: 1.12;
+  letter-spacing: -.01em;
+  font-weight: 650;
+  text-wrap: balance;
+}
+.sec-title p {
+  margin: 7px 0 0;
+  font-size: 13.6px;
+  color: var(--ink-2);
+  max-width: 90ch;
+}
+.sec-meta { display: flex; flex-wrap: wrap; gap: 5px; justify-content: flex-end; max-width: 460px; }
+
+.chip {
+  display: inline-flex; align-items: center; gap: 5px;
+  font-family: var(--font-mono);
+  font-size: 10.5px; letter-spacing: .06em;
+  padding: 3px 8px;
+  border: 1px solid var(--line);
+  border-radius: 999px;
+  color: var(--ink-2);
+  background: var(--surface);
+  white-space: nowrap;
+}
+.chip.is-code { border-color: color-mix(in srgb, var(--brand) 40%, var(--line)); color: var(--brand); background: var(--brand-soft); }
+.chip.is-wi { border-color: color-mix(in srgb, var(--brand) 45%, var(--line)); color: var(--brand); }
+.chip.is-sop { border-color: color-mix(in srgb, var(--blue) 45%, var(--line)); color: var(--blue); }
+.chip.is-memo { border-color: color-mix(in srgb, var(--amber) 50%, var(--line)); color: var(--amber); }
+.chip.is-xlsx { border-color: color-mix(in srgb, var(--violet) 45%, var(--line)); color: var(--violet); }
+.chip.is-pptx { border-color: color-mix(in srgb, var(--red) 45%, var(--line)); color: var(--red); }
+
+/* callout: điều cốt lõi */
+.callout {
+  margin-top: 20px;
+  border: 1px solid var(--line);
+  border-left: 3px solid var(--brand);
+  background: var(--surface);
+  border-radius: 0 var(--radius) var(--radius) 0;
+  padding: 16px 18px 14px;
+}
+.callout-title {
+  font-family: var(--font-mono);
+  font-size: 10.5px; letter-spacing: .16em; text-transform: uppercase;
+  color: var(--brand);
+  margin-bottom: 9px;
+}
+.callout ul { margin: 0; padding: 0; list-style: none; display: grid; gap: 7px; }
+.callout li {
+  position: relative;
+  padding-left: 18px;
+  font-size: 13.9px;
+  line-height: 1.55;
+  color: var(--ink-2);
+}
+.callout li::before {
+  content: "";
+  position: absolute; left: 2px; top: .62em;
+  width: 6px; height: 6px;
+  border: 1.5px solid var(--brand);
+  transform: rotate(45deg);
+}
+.callout li b, .callout li strong { color: var(--ink); font-weight: 650; }
+
+/* body layout */
+.sec-body { padding-top: 20px; display: grid; gap: 22px; }
+
+.grid-2 { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 16px; }
+.grid-3 { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 16px; }
+.grid-4 { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 14px; }
+
+.panel {
+  border: 1px solid var(--line);
+  background: var(--surface);
+  border-radius: var(--radius);
+  padding: 16px 17px;
+  min-width: 0;
+}
+.panel h3 {
+  margin: 0 0 9px;
+  font-size: 14.2px;
+  font-weight: 650;
+  letter-spacing: -.005em;
+  display: flex; align-items: center; gap: 8px;
+}
+.panel h3 .dot { width: 8px; height: 8px; border-radius: 2px; background: var(--brand); flex: none; }
+.panel p { margin: 0 0 8px; font-size: 13.5px; color: var(--ink-2); }
+.panel p:last-child { margin-bottom: 0; }
+.panel ul { margin: 0; padding-left: 17px; font-size: 13.4px; color: var(--ink-2); display: grid; gap: 5px; }
+.panel ul li::marker { color: var(--brand); }
+.panel.is-amber { border-top: 2px solid var(--amber); }
+.panel.is-amber h3 .dot { background: var(--amber); }
+.panel.is-blue { border-top: 2px solid var(--blue); }
+.panel.is-blue h3 .dot { background: var(--blue); }
+.panel.is-red { border-top: 2px solid var(--red); }
+.panel.is-red h3 .dot { background: var(--red); }
+.panel.is-violet { border-top: 2px solid var(--violet); }
+.panel.is-violet h3 .dot { background: var(--violet); }
+
+/* tables */
+.tblock {
+  border: 1px solid var(--line);
+  border-radius: var(--radius);
+  background: var(--surface);
+  overflow: hidden;
+  position: relative;
+}
+.tblock.is-scroll::after {
+  content: "\2194";
+  position: absolute; right: 10px; bottom: 10px;
+  width: 26px; height: 26px;
+  display: grid; place-items: center;
+  border-radius: 50%;
+  background: var(--ink); color: var(--paper);
+  font-size: 12px; line-height: 1;
+  box-shadow: var(--shadow-md);
+  pointer-events: none;
+  opacity: .9;
+}
+.tcap {
+  padding: 11px 14px 10px;
+  border-bottom: 1px solid var(--line);
+  background: var(--surface-2);
+  font-family: var(--font-mono);
+  font-size: 10.5px; letter-spacing: .14em; text-transform: uppercase;
+  color: var(--ink-3);
+  line-height: 1.5;
+}
+.twrap {
+  overflow: auto;
+  max-width: 100%;
+  overscroll-behavior-x: contain;
+}
+table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 13.3px;
+  line-height: 1.5;
+}
+table.t-wide { min-width: 1040px; }
+table.t-mid { min-width: 880px; }
+table.t-small { min-width: 640px; }
+th, td {
+  text-align: left;
+  padding: 9px 13px;
+  border-bottom: 1px solid var(--line-2);
+  vertical-align: top;
+}
+thead th {
+  position: sticky; top: 0; z-index: 2;
+  background: var(--surface-2);
+  font-size: 11px;
+  letter-spacing: .09em;
+  text-transform: uppercase;
+  color: var(--ink-3);
+  font-weight: 650;
+  border-bottom: 1px solid var(--line);
+  white-space: nowrap;
+}
+tbody tr:nth-child(even) { background: color-mix(in srgb, var(--surface-2) 45%, transparent); }
+tbody tr:hover { background: color-mix(in srgb, var(--brand) 8%, transparent); }
+tbody tr:last-child td { border-bottom: 0; }
+td code, th code, p code, li code {
+  font-family: var(--font-mono);
+  font-size: .92em;
+  background: var(--surface-2);
+  border: 1px solid var(--line-2);
+  border-radius: 3px;
+  padding: .5px 4px;
+  white-space: nowrap;
+}
+td .code {
+  font-family: var(--font-mono);
+  font-weight: 600;
+  color: var(--ink);
+  white-space: nowrap;
+}
+tr.group-row td {
+  background: var(--brand-soft);
+  color: var(--brand-ink);
+  font-family: var(--font-mono);
+  font-size: 10.8px;
+  letter-spacing: .12em;
+  text-transform: uppercase;
+  padding: 7px 13px;
+  border-bottom: 1px solid color-mix(in srgb, var(--brand) 22%, var(--line));
+}
+html[data-theme="dark"] tr.group-row td { color: var(--brand); }
+tr.group-row:hover td { background: var(--brand-soft); }
+td .approve { font-weight: 600; color: var(--ink); }
+td .note { color: var(--ink-3); font-size: 12.5px; }
+.lvl { display: inline-block; font-family: var(--font-mono); font-size: 11px; padding: 1px 6px; border-radius: 3px; background: var(--surface-3); color: var(--ink-2); white-space: nowrap; }
+.lvl-ok { background: var(--brand-soft); color: var(--brand-ink); }
+html[data-theme="dark"] .lvl-ok { color: var(--brand); }
+.lvl-warn { background: var(--amber-soft); color: var(--amber); }
+.lvl-stop { background: var(--red-soft); color: var(--red); }
+
+/* step list */
+.steps { list-style: none; margin: 0; padding: 0; display: grid; gap: 0; border: 1px solid var(--line); border-radius: var(--radius); overflow: hidden; background: var(--surface); }
+.steps > li {
+  display: grid;
+  grid-template-columns: 52px minmax(0, 1fr);
+  gap: 14px;
+  padding: 13px 16px 13px 0;
+  border-bottom: 1px solid var(--line-2);
+  position: relative;
+}
+.steps > li:last-child { border-bottom: 0; }
+.steps > li::before {
+  content: attr(data-n);
+  font-family: var(--font-mono);
+  font-size: 11.5px;
+  color: var(--brand);
+  text-align: right;
+  padding-top: 2px;
+  border-right: 1px solid var(--line-2);
+  align-self: stretch;
+}
+.steps h4 {
+  margin: 0 0 4px;
+  font-size: 14px; font-weight: 650; letter-spacing: -.005em;
+}
+.steps p { margin: 0; font-size: 13.3px; color: var(--ink-2); }
+.steps p + p { margin-top: 4px; }
+
+/* chain (status flow) */
+.chain {
+  display: flex; flex-wrap: wrap; align-items: stretch; gap: 8px;
+}
+.chain-node {
+  flex: 1 1 148px;
+  border: 1px solid var(--line);
+  background: var(--surface);
+  border-radius: var(--radius);
+  padding: 10px 12px;
+  min-width: 0;
+}
+.chain-node b {
+  display: block;
+  font-family: var(--font-mono);
+  font-size: 11.5px; letter-spacing: .04em;
+  color: var(--brand);
+}
+.chain-node span { display: block; font-size: 12.3px; color: var(--ink-2); margin-top: 3px; line-height: 1.4; }
+.chain-node.is-stop b { color: var(--red); }
+.chain-node.is-warn b { color: var(--amber); }
+.chain-node.is-done b { color: var(--ink); }
+
+/* research row for forms */
+.forms { display: grid; gap: 10px; }
+.form-item {
+  display: grid;
+  grid-template-columns: 26px minmax(0, 1fr) auto;
+  gap: 11px; align-items: baseline;
+  padding: 9px 12px;
+  border: 1px solid var(--line-2);
+  border-left: 2px solid var(--brand);
+  background: var(--surface);
+  border-radius: 0 var(--radius) var(--radius) 0;
+  font-size: 13.2px;
+}
+.form-item i {
+  font-family: var(--font-mono); font-style: normal; font-size: 11px; color: var(--ink-3);
+}
+.form-item em {
+  font-style: normal; font-family: var(--font-mono); font-size: 10.5px;
+  color: var(--ink-3); white-space: nowrap;
+}
+
+/* glossary */
+.gloss { display: grid; grid-template-columns: repeat(auto-fill, minmax(258px, 1fr)); border: 1px solid var(--line); border-radius: var(--radius); overflow: hidden; background: var(--surface); }
+.gloss div { background: var(--surface); padding: 11px 13px; border-right: 1px solid var(--line-2); border-bottom: 1px solid var(--line-2); }
+.gloss dt {
+  font-family: var(--font-mono); font-size: 12px; font-weight: 600; color: var(--brand);
+  letter-spacing: .02em;
+}
+.gloss dd { margin: 3px 0 0; font-size: 12.8px; color: var(--ink-2); line-height: 1.45; }
+
+/* note bar */
+.note-bar {
+  display: flex; gap: 12px; align-items: flex-start;
+  padding: 12px 14px;
+  border: 1px dashed color-mix(in srgb, var(--amber) 55%, var(--line));
+  background: color-mix(in srgb, var(--amber-soft) 55%, var(--surface));
+  border-radius: var(--radius);
+  font-size: 13px;
+  color: var(--ink-2);
+}
+.note-bar b { color: var(--ink); }
+.note-bar .tag {
+  font-family: var(--font-mono); font-size: 10px; letter-spacing: .12em; text-transform: uppercase;
+  color: var(--amber); white-space: nowrap; padding-top: 2px;
+}
+
+/* footer */
+.foot {
+  margin-top: 60px;
+  padding: 22px 0 0;
+  border-top: 1px solid var(--line);
+  display: flex; flex-wrap: wrap; gap: 18px; justify-content: space-between;
+  font-size: 12.3px; color: var(--ink-3);
+}
+.foot code { font-family: var(--font-mono); font-size: 11.5px; }
+
+/* search feedback */
+.hits {
+  position: fixed; left: 50%; bottom: 22px; transform: translateX(-50%);
+  z-index: 80;
+  max-width: calc(100vw - 28px);
+  text-align: center;
+  background: var(--ink); color: var(--paper);
+  font-family: var(--font-mono); font-size: 11.5px; letter-spacing: .06em;
+  padding: 8px 14px; border-radius: 999px;
+  opacity: 0; pointer-events: none;
+  transition: opacity .2s var(--ease);
+  box-shadow: var(--shadow-md);
+}
+.hits.is-on { opacity: 1; }
+
+/* the opening block is dropped while a search filter is active */
+#intro.is-hidden { display: none; }
+mark.hit { background: color-mix(in srgb, var(--amber) 35%, transparent); color: inherit; border-radius: 2px; padding: 0 1px; }
+html[data-theme="dark"] mark.hit { background: color-mix(in srgb, var(--amber) 45%, transparent); }
+
+/* empty state */
+.empty {
+  display: none;
+  padding: 60px 0;
+  text-align: center;
+  color: var(--ink-3);
+}
+.empty.is-on { display: block; }
+.empty b { display: block; font-family: var(--font-display); font-size: 22px; color: var(--ink); margin-bottom: 6px; }
+
+/* to-top */
+.to-top {
+  position: fixed; right: 20px; bottom: 20px; z-index: 70;
+  width: 40px; height: 40px;
+  display: grid; place-items: center;
+  border-radius: 50%;
+  border: 1px solid var(--line);
+  background: var(--surface);
+  color: var(--ink-2);
+  box-shadow: var(--shadow-md);
+  cursor: pointer;
+  opacity: 0; visibility: hidden;
+  transition: opacity .2s var(--ease), visibility .2s, transform .2s var(--ease);
+}
+.to-top.is-on { opacity: 1; visibility: visible; }
+.to-top:hover { color: var(--ink); transform: translateY(-2px); }
+
+/* reveal motion */
+.sec { opacity: 0; transform: translateY(14px); transition: opacity .5s var(--ease), transform .5s var(--ease); }
+.sec.is-inview { opacity: 1; transform: none; }
+html[data-motion="off"] .sec { opacity: 1; transform: none; transition: none; }
+
+/* rail hidden (focus mode) */
+html.rail-off .shell { grid-template-columns: 0 minmax(0, 1fr); }
+html.rail-off .rail { display: none; }
+html.rail-off main { padding-left: clamp(18px, 3vw, 60px); }
+
+/* ------------------------------------------------ responsive */
+@media (max-width: 1240px) {
+  :root { --rail: 250px; }
+  .hero { grid-template-columns: 1fr; align-items: start; }
+  .board-grid { grid-template-columns: repeat(4, 1fr); }
+  .board-cell:nth-child(2n) { border-right: 1px solid var(--line-2); }
+  .board-cell:nth-last-child(-n+2) { border-bottom: 1px solid var(--line-2); }
+  .board-cell:nth-child(4n) { border-right: 0; }
+  .board-cell:nth-last-child(-n+4) { border-bottom: 0; }
+}
+
+@media (max-width: 1024px) {
+  .shell { grid-template-columns: minmax(0, 1fr); }
+  .rail {
+    position: fixed; left: 0; top: var(--topbar-h); z-index: 55;
+    width: 300px; height: calc(100dvh - var(--topbar-h));
+    background: var(--paper);
+    transform: translateX(-102%);
+    transition: transform .25s var(--ease);
+    box-shadow: var(--shadow-md);
+  }
+  html.rail-open .rail { transform: none; }
+  html.rail-open .rail-scrim { opacity: 1; visibility: visible; }
+  .rail-scrim {
+    display: block;
+    position: fixed; inset: var(--topbar-h) 0 0; z-index: 54;
+    background: rgba(8, 17, 14, .45);
+    opacity: 0; visibility: hidden;
+    transition: opacity .2s var(--ease), visibility .2s;
+    backdrop-filter: blur(2px);
+  }
+  main { padding-top: 0; }
+  .grid-4 { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+  .grid-3 { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+  .flow { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+  .flow-step:nth-child(2) { border-right: 0; }
+  .flow-step:nth-child(-n+2) { border-bottom: 1px solid var(--line-2); }
+  .flow-step .arrow { display: none; }
+  .sec-head { grid-template-columns: 56px minmax(0, 1fr); }
+  .sec-num { font-size: 32px; }
+  .sec-meta { grid-column: 2; justify-content: flex-start; max-width: none; }
+  .brand-txt span { display: none; }
+  .search { min-width: 0; width: 42px; padding: 0 8px; }
+  .search svg { margin: 0 auto; }
+  .search input, .search kbd { display: none; }
+  .search.is-open { width: min(280px, 52vw); }
+  .search.is-open input { display: block; }
+  .search.is-open kbd { display: none; }
+  .btn span { display: none; }
+  .btn { padding: 0 10px; }
+}
+
+@media (max-width: 720px) {
+  body { font-size: 15px; }
+  .hero { padding-top: 22px; }
+  .board-grid { grid-template-columns: 1fr 1fr; }
+  .grid-2, .grid-3, .grid-4 { grid-template-columns: minmax(0, 1fr); }
+  .flow { grid-template-columns: minmax(0, 1fr); }
+  .flow-step { border-right: 0; border-bottom: 1px solid var(--line-2); }
+  .flow-step:last-child { border-bottom: 0; }
+  .sec-head { grid-template-columns: minmax(0, 1fr); gap: 8px; }
+  .sec-num { font-size: 26px; -webkit-text-stroke-width: 1.1px; }
+  .sec-meta { grid-column: 1; }
+  table { font-size: 12.6px; }
+  th, td { padding: 8px 10px; }
+  .tcap { font-size: 9.6px; letter-spacing: .1em; padding: 9px 11px; }
+  .steps > li { grid-template-columns: 40px minmax(0, 1fr); gap: 10px; }
+  .form-item { grid-template-columns: 22px minmax(0, 1fr); }
+  .form-item em { grid-column: 2; }
+}
+
+@media (max-width: 560px) {
+  .brand-txt { display: none; }
+  .eyebrow {
+    font-size: 10px; letter-spacing: .12em;
+    align-items: flex-start;
+  }
+  .eyebrow::before { margin-top: .55em; }
+  .hero-lead { font-size: 15px; }
+  .rail { width: min(320px, 86vw); }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  html { scroll-behavior: auto; }
+  *, *::before, *::after { animation-duration: .001ms !important; transition-duration: .001ms !important; }
+  .sec { opacity: 1; transform: none; }
+}
+
+/* ------------------------------------------------ print */
+@media print {
+  :root { --topbar-h: 0px; }
+  html[data-theme="dark"] {
+    --paper: #ffffff; --surface: #ffffff; --surface-2: #f1f4f1; --surface-3: #e6ebe7;
+    --ink: #111814; --ink-2: #33423a; --ink-3: #5f6d65;
+    --line: #c3ccc5; --line-2: #dde4de;
+    --brand: #0b6b3a; --brand-ink: #08522c; --brand-soft: #e8f2ea;
+    --amber: #8a5605; --red: #8f231c; --blue: #1e4258; --violet: #4a3576;
+  }
+  body { background: #fff; color: #000; font-size: 10.5pt; }
+  body::before, .topbar, .rail, .to-top, .hits, .rail-scrim, .sec-head::after, .tblock.is-scroll::after { display: none !important; }
+  .shell { display: block; }
+  main { padding: 0; }
+  .sec { opacity: 1 !important; transform: none !important; break-inside: auto; padding-top: 18px; }
+  .hero { grid-template-columns: 1fr; }
+  .flow { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+  .twrap { overflow: visible !important; }
+  table { min-width: 0 !important; font-size: 9.2pt; }
+  th, td { padding: 5px 7px; }
+  .panel, .callout, .steps, .tblock, .board { break-inside: avoid; }
+  thead th { position: static; }
+  .foot { break-before: avoid; }
+  a { color: #000; text-decoration: none; }
+}
+
+</style>
+</head>
+<body>
+<a class="skip" href="#content">Bỏ qua điều hướng</a>
+
+<header class="topbar">
+  <div class="brand">
+    <span class="brand-mark" aria-hidden="true">MM</span>
+    <span class="brand-txt"><b>SOP Handbook</b><span>Vận hành hàng hóa · FSD50</span></span>
+  </div>
+  <div class="tools">
+    <label class="search" for="q">
+      <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" aria-hidden="true"><circle cx="11" cy="11" r="7"></circle><path d="m20 20-3.6-3.6"></path></svg>
+      <input id="q" type="search" placeholder="Tìm mã, biểu mẫu, mốc thời gian…" autocomplete="off" spellcheck="false" aria-label="Tìm trong trang">
+      <kbd>/</kbd>
+    </label>
+    <button class="btn" id="btnRail" type="button" title="Ẩn hoặc hiện mục lục (\)" aria-pressed="false">
+      <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><path d="M4 6h16M4 12h10M4 18h16"></path></svg>
+      <span>Mục lục</span>
+    </button>
+    <button class="btn" id="btnTheme" type="button" title="Chuyển giao diện sáng/tối (T)" aria-pressed="false">
+      <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><circle cx="12" cy="12" r="4.2"></circle><path d="M12 2.5v2.2M12 19.3v2.2M2.5 12h2.2M19.3 12h2.2M5.1 5.1l1.6 1.6M17.3 17.3l1.6 1.6M18.9 5.1l-1.6 1.6M6.7 17.3l-1.6 1.6"></path></svg>
+      <span>Sáng</span>
+    </button>
+    <button class="btn" id="btnFs" type="button" title="Toàn màn hình (F)" aria-pressed="false">
+      <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><path d="M4 9V4h5M20 9V4h-5M4 15v5h5M20 15v5h-5"></path></svg>
+      <span>Toàn màn hình</span>
+    </button>
+    <button class="btn" id="btnPrint" type="button" title="In hoặc lưu PDF">
+      <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><path d="M7 9V3h10v6M7 18H5a2 2 0 0 1-2-2v-4a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2v4a2 2 0 0 1-2 2h-2M7 14h10v7H7z"></path></svg>
+      <span>In / PDF</span>
+    </button>
+  </div>
+  <div class="progress" aria-hidden="true"><i id="bar"></i></div>
+</header>
+
+<div class="shell">
+<div class="rail-scrim" aria-hidden="true"></div>
+<aside class="rail" id="rail" aria-label="Mục lục"><div class="rail-label"><span>Nội dung</span><span id="tocCount">11 mục</span></div><nav><ul class="toc"><li><a href="#s0"><b><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="3" y="3" width="7.4" height="7.4" rx="1.5"/><rect x="13.6" y="3" width="7.4" height="7.4" rx="1.5"/><rect x="3" y="13.6" width="7.4" height="7.4" rx="1.5"/><rect x="13.6" y="13.6" width="7.4" height="7.4" rx="1.5"/></svg></b><span>Bản đồ 9 tài liệu<small>9 tệp · 2 sheet</small></span></a></li><li><a href="#s1"><b>1</b><span>Nhận hàng tại Kho Trung Tâm<small>GRDC 00.001.02</small></span></a></li><li><a href="#s2"><b>2</b><span>Nhận hàng tại Trung tâm<small>OPT.MM.00.004</small></span></a></li><li><a href="#s3"><b>3</b><span>Điều chỉnh hàng tồn kho<small>17 mã · 4 nhóm</small></span></a></li><li><a href="#s4"><b>4</b><span>Trả hàng cho nhà cung cấp<small>OP.SOP.G01-EN.VN.013</small></span></a></li><li><a href="#s5"><b>5</b><span>Chuyển giao hàng giữa các Trung tâm<small>OPS.Memo.2022-003</small></span></a></li><li><a href="#s6"><b>6</b><span>Quản lý hàng khuyến mãi<small>OPT.SOP.2023-001</small></span></a></li><li><a href="#s7"><b>7</b><span>Đặt hàng CAR trên MMAPP<small>CAR.V02 · MMAPP</small></span></a></li><li><a href="#s8"><b><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="8.6"/><path d="M12 7.1V12l3.5 2.2"/></svg></b><span>Mốc thời gian &amp; SLA<small>14 mốc bắt buộc</small></span></a></li><li><a href="#s9"><b><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M7 3.4h7.4L19 8v12.6H7z"/><path d="M14.2 3.6V8H19"/><path d="M9.7 12.4h5.6M9.7 15.9h4"/></svg></b><span>Biểu mẫu &amp; phụ lục<small>6 nhóm · 10 năm</small></span></a></li><li><a href="#s10"><b>A–Z</b><span>Viết tắt thường gặp<small>27 thuật ngữ</small></span></a></li></ul></nav><div class="rail-foot">Nguồn: <code>H:\SOP GOR</code><br>Tổng hợp 31/10/2026<br>Bảng mã lấy từ <code>OPS_MM_00_004</code>.xlsx</div></aside>
+<main id="main">
+<div class="wrap">
+
+<div id="intro">
+<section class="hero" id="top">
+  <div>
+    <div class="eyebrow">MM Mega Market Việt Nam · Tài liệu vận hành</div>
+    <h1>9 tài liệu SOP &amp; WI<br>vận hành <em>hàng hóa</em></h1>
+    <p class="hero-lead">Từ đặt hàng CAR, nhận hàng tại Kho Trung Tâm và Trung tâm, điều chỉnh tồn kho,
+    chuyển giao nội bộ, quản lý hàng khuyến mãi đến trả hàng nhà cung cấp — gom trong một trang tra cứu,
+    kèm ngưỡng phê duyệt và mốc thời gian bắt buộc.</p>
+  </div>
+  <div class="board">
+    <div class="board-head"><span>Control board</span><i></i></div>
+    <div class="board-grid">
+      <div class="board-cell"><b>9</b><span>tài liệu gốc<br>7 PDF · 1 PPTX · 1 XLSX</span></div>
+      <div class="board-cell"><b>17</b><span>mã điều chỉnh<br>tồn kho, 4 nhóm</span></div>
+      <div class="board-cell"><b>5</b><span>mức phê duyệt<br>DOA cao nhất 35 triệu</span></div>
+      <div class="board-cell"><b>23</b><span>biểu mẫu &amp; phụ lục<br>lưu tới 10 năm</span></div>
+    </div>
+  </div>
+</section>
+<div class="flow">
+  <div class="flow-step" data-step="BƯỚC 01">
+    <h3>Đặt hàng CAR</h3>
+    <p>DS soạn đơn trên MMAPP, FM/SGM duyệt theo ngưỡng 100 và 500 triệu.</p>
+    <span class="arrow" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"><path d="m9 5 7 7-7 7"/></svg></span>
+  </div>
+  <div class="flow-step" data-step="BƯỚC 02">
+    <h3>Nhận hàng KTT &amp; TT</h3>
+    <p>Kiểm chứng từ, nhiệt độ, chất lượng; dán tem GNHH 11 số; nhập GOLD trong ngày.</p>
+    <span class="arrow" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"><path d="m9 5 7 7-7 7"/></svg></span>
+  </div>
+  <div class="flow-step" data-step="BƯỚC 03">
+    <h3>Hàng KM · Tồn kho · Chuyển TT</h3>
+    <p>Ba hình thức nhập hàng khuyến mãi, 17 mã điều chỉnh và lệnh chuyển hàng có đủ chữ ký.</p>
+    <span class="arrow" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"><path d="m9 5 7 7-7 7"/></svg></span>
+  </div>
+  <div class="flow-step" data-step="BƯỚC 04">
+    <h3>Trả hàng NCC &amp; báo cáo sáng</h3>
+    <p>Goods Return Form, GIT 400–499; ALC xuất 4 báo cáo Symphony mỗi sáng.</p>
+  </div>
+</div>
+</div>
+<div id="content"><section class="sec" id="s0" aria-labelledby="s0-t"><div class="sec-head"><div class="sec-num is-glyph" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="3" y="3" width="7.4" height="7.4" rx="1.5"/><rect x="13.6" y="3" width="7.4" height="7.4" rx="1.5"/><rect x="3" y="13.6" width="7.4" height="7.4" rx="1.5"/><rect x="13.6" y="13.6" width="7.4" height="7.4" rx="1.5"/></svg></div><div class="sec-title"><h2 id="s0-t">Bản đồ 9 tài liệu</h2><p>Toàn bộ tài liệu vận hành hàng hóa đang lưu tại H:\SOP GOR, kèm mã tài liệu để đối chiếu khi trích dẫn.</p></div><div class="sec-meta"><span class="chip is-code">9 tệp</span><span class="chip">7 PDF</span><span class="chip">1 PPTX</span><span class="chip">1 XLSX</span></div></div><div class="sec-body"><div class="tblock"><div class="tcap">9 tệp trong thư mục H:\SOP GOR · tổng hợp 31/10/2026</div><div class="twrap"><table class="t-wide"><thead><tr><th>#</th><th>Mã tài liệu</th><th>Tài liệu</th><th>Loại</th><th>Bản</th><th>Ngày</th><th>Khối lượng</th></tr></thead><tbody><tr><td>1</td><td><span class="code">GRDC 00.001.02</span></td><td>WI Nhận hàng Kho Trung Tâm</td><td><span class="chip is-wi">WI</span></td><td>V2</td><td>27/09/2019</td><td>24 trang · 10 biểu mẫu</td></tr><tr><td>2</td><td><span class='note'>—</span></td><td>Hướng dẫn đặt hàng CAR (Picking App)</td><td><span class="chip is-pptx">PPTX</span></td><td>V02</td><td>06/2026</td><td>14 slide</td></tr><tr><td>3</td><td><span class="code">OP.SOP.G01-EN.VN.013</span></td><td>SOP Trả hàng cho Nhà cung cấp</td><td><span class="chip is-sop">SOP</span></td><td>V2</td><td>21/01/2019</td><td>26 trang · Annex 1–5</td></tr><tr><td>4</td><td><span class="code">OPS.Memo.2022-003</span></td><td>Memo phê duyệt chuyển giao hàng hóa</td><td><span class="chip is-memo">Memo</span></td><td>—</td><td>10/06/2022</td><td>3 trang</td></tr><tr><td>5</td><td><span class="code">OPS.MM.00.004</span></td><td>SOP Điều chỉnh hàng tồn kho</td><td><span class="chip is-sop">SOP</span></td><td>V4</td><td>10/07/2026</td><td>23 trang</td></tr><tr><td>6</td><td><span class="code">OPS.MM.00.005</span></td><td>SOP Điều chỉnh hàng tồn kho (bản trùng 00.004)</td><td><span class="chip is-sop">SOP</span></td><td>V4</td><td>10/07/2026</td><td>23 trang</td></tr><tr><td>7</td><td><span class='note'>—</span></td><td>OPS_MM_00_004_Ma_dieu_chinh_ton_kho</td><td><span class="chip is-xlsx">XLSX</span></td><td>—</td><td>—</td><td>2 sheet · 32 dòng</td></tr><tr><td>8</td><td><span class="code">OPT.MM.00.004</span></td><td>WI Nhận hàng tại Trung tâm</td><td><span class="chip is-wi">WI</span></td><td>V4</td><td>12/11/2025</td><td>38 trang · 8 biểu mẫu</td></tr><tr><td>9</td><td><span class="code">OPT.SOP.2023-001</span></td><td>SOP Quản lý hàng khuyến mãi</td><td><span class="chip is-sop">SOP</span></td><td>V1</td><td>09/05/2023</td><td>34 trang · 8 phụ lục</td></tr></tbody></table></div></div><div class="grid-2" style="margin-top:16px"><div class="panel is-blue"><h3><span class="dot"></span>Đọc theo nhu cầu</h3><ul><li><b>Nhận hàng</b> — mục 1 (Kho Trung Tâm) và mục 2 (Trung tâm): chứng từ, nhiệt độ, tem GNHH, nhập GOLD.</li><li><b>Chênh lệch tồn kho</b> — mục 3: chọn đúng mã điều chỉnh và đúng cấp ký duyệt.</li><li><b>Trả hàng / chuyển hàng</b> — mục 4 (trả NCC) và mục 5 (chuyển giao giữa các TT).</li><li><b>Hàng khuyến mãi / đơn CAR</b> — mục 6 (ba hình thức nhập KM) và mục 7 (duyệt đơn trên MMAPP).</li></ul></div><div class="panel is-amber"><h3><span class="dot"></span>Hai điểm dễ nhầm</h3><ul><li><b>00.004 và 00.005</b> là hai bản của cùng một SOP Stock Maintenance V4 — nội dung giống nhau, dùng bản nào cũng được.</li><li>Bảng mã Excel <code>OPS_MM_00_004_Ma_dieu_chinh_ton_kho.xlsx</code> là <b>bản tra cứu nhanh</b> của mục 5.2 trong SOP; số liệu trong trang này lấy từ cả hai nguồn.</li></ul></div></div></div></section><section class="sec" id="s1" aria-labelledby="s1-t"><div class="sec-head"><div class="sec-num" aria-hidden="true">1</div><div class="sec-title"><h2 id="s1-t">Nhận hàng tại Kho Trung Tâm</h2><p>Quy trình tiếp nhận hàng từ NCC về Kho Trung Tâm: lịch giao, chứng từ, kiểm tra chất lượng, dỡ hàng và nhập hệ thống.</p></div><div class="sec-meta"><span class="chip is-code">GRDC 00.001.02</span><span class="chip">V2</span><span class="chip">27/09/2019</span><span class="chip">24 trang</span><span class="chip is-wi">WI</span></div></div><div class="sec-body"><div class="callout"><div class="callout-title">Điều cốt lõi</div><ul><li>NCC đặt lịch giao <b>trước 15:00 ngày hôm trước</b>; ba loại đơn: BBXD (gộp theo TTTM), PAXD (chia sẵn, niêm phong), CS (lưu tại KTT).</li><li>Nhiệt độ nhận: đông lạnh <b>≤ -15°C</b>, ướp lạnh <b>-2 ÷ 7°C</b>, rau quả <b>3 ÷ 12°C</b>; hàng cần nhiệt độ dỡ trong <b>≤ 30 phút</b>.</li><li>Hạn sử dụng tối thiểu <b>&gt; 2/3</b> (hàng nội địa) và <b>&gt; 1/2</b> (hàng nhập khẩu); QA kiểm 10% BBXD tươi sống &amp; CS đông lạnh, hàng giá trị cao kiểm 100%.</li><li>Giao dư <b>không nhận</b> (trừ PO khẩn); giao thiếu lập biên bản sai biệt (Biểu mẫu 8); sai lệch tồn sau nhận xử lý bằng <b>Code 95 số lượng âm</b>.</li></ul></div><ol class="steps"><li data-n="5.1"><div><h4>Đơn đặt hàng</h4><p>BBXD gộp theo TTTM; PAXD chia sẵn theo TTTM và niêm phong; CS lưu trữ tại KTT.</p></div></li><li data-n="5.2"><div><h4>Đăng ký lịch giao hàng</h4><p>NCC điền Phiếu yêu cầu giao hàng, gửi email trước 1 ngày; nhân viên KTT kiểm tra và xác nhận giờ giao; chốt lịch trước 15:00 ngày T-1. Danh sách KTT: Cần Thơ, Bình Dương, Đà Lạt, Hà Nội, Bắc Ninh.</p></div></li><li data-n="5.3"><div><h4>Lên kế hoạch nhận hàng</h4><p>Chuẩn bị vị trí kho, cửa nhập, thiết bị, nhân sự, phương tiện, nguyên vật liệu và bảo hộ.</p></div></li><li data-n="5.4"><div><h4>Kiểm tra đơn hàng &amp; chứng từ</h4><p>NCC cung cấp tên/mã NCC, tài xế, CMND, số xe, thông báo giao hàng. Chứng từ: PO (1 bản), Phiếu giao hàng NCC (3 bản), hóa đơn, giấy kiểm dịch, tờ khai hải quan. Nhân viên KTT đối chiếu hệ thống với chứng từ NCC.</p></div></li><li data-n="5.5"><div><h4>In chứng từ nhập hàng</h4><p>Biểu mẫu 3 (phiếu nhập CS), Biểu mẫu 4 (nhận hàng BBXD khô), Biểu mẫu 5 (kiểm tra CL rau quả); tem xanh PAXD 8 chữ số, in vào thứ 2 và thứ 5.</p></div></li><li data-n="5.6"><div><h4>Kiểm tra phương tiện vận chuyển</h4><p>Hàng tươi sống/đông lạnh: niêm phong, nhiệt độ, vệ sinh, cách sắp xếp. Hàng khô và phi thực phẩm: niêm phong, vệ sinh, chụp hình.</p></div></li><li data-n="5.7"><div><h4>Dỡ &amp; sắp xếp hàng hóa</h4><p>PAXD chia theo TTTM; BBXD tươi sống xếp khay/thùng; CS nhập khẩu dỡ theo mặt hàng; hàng cần kiểm soát nhiệt độ xử lý trong 30 phút.</p></div></li><li data-n="5.8"><div><h4>Kiểm tra hàng hóa</h4><p>Bao bì, cảm quan, nhãn chính/phụ, hạn sử dụng, mã vạch; QA kiểm 10% BBXD tươi sống &amp; CS đông lạnh; độ tươi, dư lượng thuốc BVTV, tỉ lệ mạ băng. Biểu mẫu 6 (biên bản không đạt CL) và Biểu mẫu 7 (tỉ lệ hư hỏng).</p></div></li><li data-n="5.9"><div><h4>Nhận hàng</h4><p>PAXD nhận theo thùng, dán tem xanh, phát hành cho NCC thanh toán. BBXD &amp; CS cân chia theo TTTM, theo thùng và MU; hàng khô/phi thực phẩm không nhận dư. Hàng giá trị cao: chứng kiến NCC, camera, kiểm 100%, lưu trữ đặc biệt.</p></div></li><li data-n="5.10"><div><h4>Giải quyết sai biệt &amp; hư hỏng</h4><p>Hư bao bì → trả NCC ngay. Giao từng phần chỉ khi vượt khả năng vận chuyển. Giao dư → không nhận (trừ PO khẩn). Giao thiếu → Biểu mẫu 8. Từ chối khi: giao nhiều lần, hư &gt; 10%, sai chủng loại, CL không đạt, hết hạn, không nhãn, thiếu hồ sơ. Hàng nhập khẩu: chụp hình + biên bản gửi Thu mua, XNK, QA.</p></div></li><li data-n="5.11"><div><h4>Trao đổi khay, pallet</h4><p>Ghi nhận theo Biểu mẫu 9 khi trao đổi khay/pallet với NCC.</p></div></li><li data-n="5.12"><div><h4>Cập nhật dữ liệu &amp; nhập hệ thống KTT</h4><p>KTT do LSP vận hành: nhập chứng từ thực nhận, đồng bộ EDI/Flatfile với WMS của LSP. KTT tự vận hành: nhập trực tiếp vào hệ thống quản lý hàng hóa KTT.</p></div></li><li data-n="5.13"><div><h4>Điều chỉnh sai biệt số lượng nhận</h4><p>Lý do: sai mã vạch, sai số lượng đơn vị, nhầm lẫn nhân viên, sai thông tin hệ thống. Điều chỉnh bằng Code 95 số lượng âm, PO bổ sung hoặc đổi hàng/bồi thường.</p></div></li></ol></div></section><section class="sec" id="s2" aria-labelledby="s2-t"><div class="sec-head"><div class="sec-num" aria-hidden="true">2</div><div class="sec-title"><h2 id="s2-t">Nhận hàng tại Trung tâm</h2><p>Quy trình nhận hàng tại TT: cổng GNHH, tem 11 số, kiểm đếm hai lớp, nhập GOLD và xử lý chênh lệch sau nhận.</p></div><div class="sec-meta"><span class="chip is-code">OPT.MM.00.004</span><span class="chip">V4</span><span class="chip">12/11/2025</span><span class="chip">38 trang</span><span class="chip is-wi">WI</span></div></div><div class="sec-body"><div class="callout"><div class="callout-title">Điều cốt lõi</div><ul><li>Fresh Food chỉ nhận <b>đến 17:00</b>; sau 17:00 phải có phê duyệt SGM. Hàng nhận trước 17:00 nhập GOLD <b>cùng ngày</b>, sau 17:00 chậm nhất ngày hôm sau.</li><li>Mỗi đơn hàng dùng <b>3 tem GNHH cùng số</b> (dãy 11 chữ số, chia theo nhóm ngành hàng); một đơn chỉ có <b>một số GNHH</b> duy nhất.</li><li>Kiểm đếm <b>hai lớp độc lập</b>: nhân viên kiểm đếm (rough → quét PDA → fine) và LP/bảo vệ kiểm lại, ký xác nhận.</li><li>Chỉnh sửa dữ liệu: <b>&lt; 72 giờ</b> trình DS/LP/FM/SGM mở lại đơn; <b>&gt; 72 giờ</b> do IC team xử lý; hóa đơn đã match kế toán thì điều chỉnh tồn kho bằng <b>Code 6</b>.</li></ul></div><ol class="steps"><li data-n="5.1"><div><h4>Tổng quan vận hành</h4><p>Dry Food &amp; Non Food nhận tại cổng GOR; Fresh Food tại cổng Fresh. Chỉ nhân viên nhận hàng, bảo vệ ca trực và nhân sự giao hàng được vào khu vực. Văn phòng GNHH in/phát/lưu chứng từ, nhập GOLD và lập báo cáo. Lối thoát hiểm luôn thông thoáng; chữ ký mẫu của nhân viên nhận hàng niêm yết tại văn phòng và bục thềm GNHH.</p></div></li><li data-n="5.2"><div><h4>Chuẩn bị nhận hàng</h4><p>GRM/GRS kiểm tra lịch trên màn hình Receiving Note printing; Fresh Food in copy order trước 20:30 nếu giao tối/sáng sớm. Chuẩn bị 3 tem cùng số cho mỗi đơn. Đăng ký giờ giao theo thứ tự hoặc theo email DC. Kiểm tra đơn: DSD giao trễ ≤ 7 ngày hoặc sớm ≤ 3 ngày thì nhận; quá hạn thì từ chối. Không có PO → DS/ADS lập Đề nghị đặt hàng thủ công, FM duyệt, IT/ALC tạo PO.</p></div></li><li data-n="5.3"><div><h4>Kiểm đếm hàng thực tế</h4><p>Dỡ hàng: niêm phong còn nguyên, nhiệt độ đạt chuẩn, NCC/LSP dỡ xuống bục, nhân viên chuyển vào khu lưu trữ, xếp pallet ngay sau khi dỡ. Kiểm tra tổng quát (rough check) → quét mã vạch bằng PDA (không quét được thì báo DS/ADS và CM kích hoạt) → kiểm tra chi tiết (fine check) theo MU, CL, hạn sử dụng. Trường hợp đặc biệt: hàng cân ký, đông lạnh/chill, giá trị cao, ký gửi. LP/bảo vệ kiểm đếm độc lập theo ½ bản copy order thứ 2 hoặc biên bản giao hàng chi tiết.</p></div></li><li data-n="5.4"><div><h4>Chứng từ nhận hàng</h4><p>DSD/PAXD so sánh ½ bản copy order thứ 1 với phiếu giao hàng (đếm lại lần 2 nếu không khớp). BBXD &amp; CS kiểm tra biên bản giao nhận hàng xuất chi tiết; sai lệch thì thông báo GRM/GRS &amp; LP, lập phiếu yêu cầu bồi thường và biên bản sự việc trong 24h. Tem xanh dán lên phiếu giao hàng trả NCC và bản copy order thứ 3; tem trắng dán lên Sổ nhật ký GNHH; đóng dấu “Nhận hàng có điều kiện bảo lưu về CL và SL”, ghi ngày giờ nhận.</p></div></li><li data-n="5.5"><div><h4>Nhập liệu &amp; quản lý chứng từ</h4><p>GOR data nhập đúng hạn: trước 17:00 nhập cùng ngày, sau 17:00 chậm nhất hôm sau, Ultra-fresh giao Chủ nhật chậm nhất ngày làm việc kế tiếp. DSD/PAXD dùng menu Reception → Checked in qty. input; BBXD &amp; CS chỉ xác nhận đơn, không sửa số lượng. GRM/GRS kiểm tra lần cuối, đối chiếu Valued Receiving Statement (Invoice). Cuối ngày đóng sổ, gạch bỏ khoảng trống, hủy tem chưa dùng; Fresh Food trả tem dư trước 17:00.</p></div></li><li data-n="5.6"><div><h4>Chuyển hàng sang khu vực ngành hàng</h4><p>Nhân viên nhận hàng phối hợp DS/ADS chuyển hàng vào khu lưu trữ ngành hàng. Hàng nhạy cảm/giá trị cao do DS/ADS trực tiếp nhận và đối chiếu. Hàng đặc thù (thời trang, bán theo lốc) dán mã vạch nội bộ màu hồng sau khi có Phiếu yêu cầu cung cấp nhãn hàng hóa được DS/ADS và FM duyệt.</p></div></li><li data-n="5.7"><div><h4>Quy trình bổ sung</h4><p>Nhận hàng khuyến mãi theo SOP Free gift management; hàng phi mậu dịch theo SOP Payment process; bồi thường hàng DC theo 4 loại (thiếu, nhầm, hư hỏng, dư) — DC phản hồi trong 8 giờ làm việc, xử lý tối đa 7 ngày làm việc; băng keo an ninh do LP quản lý, niêm phong 2 lớp băng dán chéo.</p></div></li></ol><h3 style="margin:4px 0 0;font-family:var(--font-display);font-size:17px">Dải số tem GNHH (11 chữ số)</h3><div class="tblock"><div class="tcap">Cấu trúc XXXXX YYY ZZZ — 5 số đầu là số thứ tự đơn, phần sau là nhóm ngành hàng</div><div class="twrap"><table class=""><thead><tr><th>Dải số</th><th>Nhóm ngành hàng</th></tr></thead><tbody><tr><td>001 – 049</td><td>Produce (rau quả)</td></tr><tr><td>050 – 099</td><td>Seafood (hải sản)</td></tr><tr><td>100 – 149</td><td>Butchery (thịt)</td></tr><tr><td>150 – 179</td><td>Bakery (bánh)</td></tr><tr><td>180 – 379</td><td>Perishable · Delicatessen · Frozen</td></tr><tr><td>380 – 579</td><td>PAXD Fresh từ Platform</td></tr><tr><td>580 – 599</td><td>Free gift (hàng khuyến mãi)</td></tr><tr><td>600 – 749</td><td>Dry Food</td></tr><tr><td>750 – 799</td><td>HBA (hóa mỹ phẩm)</td></tr><tr><td>800 – 899</td><td>Non Food</td></tr><tr><td>900 – 929</td><td>Goods return (hàng trả)</td></tr><tr><td>930 – 949</td><td>Internal (nội bộ)</td></tr><tr><td>950 – 999</td><td>Special Project · Hamper</td></tr></tbody></table></div></div><h3 style="margin:4px 0 0;font-family:var(--font-display);font-size:17px">Ngưỡng xử lý khi giao thừa</h3><div class="tblock"><div class="tcap">Nguồn: OPT.MM.00.004 mục 5.2.4</div><div class="twrap"><table class="t-small"><thead><tr><th>Nhóm hàng</th><th>Thừa trong khoảng</th><th>Xử lý</th></tr></thead><tbody><tr><td>Dry Food &amp; Non Food</td><td>&gt; 1% đến 20%</td><td>FM quyết định nhận hay không</td></tr><tr><td>Dry Food &amp; Non Food</td><td>&gt; 20%</td><td>Từ chối phần thừa</td></tr><tr><td>Fresh Food</td><td>&gt; 1% đến 10%</td><td>FM quyết định nhận hay không</td></tr><tr><td>Fresh Food</td><td>&gt; 10%</td><td>Từ chối phần thừa</td></tr></tbody></table></div></div></div></section><section class="sec" id="s3" aria-labelledby="s3-t"><div class="sec-head"><div class="sec-num" aria-hidden="true">3</div><div class="sec-title"><h2 id="s3-t">Điều chỉnh hàng tồn kho</h2><p>Chọn đúng mã điều chỉnh và đúng cấp ký duyệt — bảng tra 17 mã thuộc 4 nhóm theo SOP Stock Maintenance V4.</p></div><div class="sec-meta"><span class="chip is-code">OPS.MM.00.004</span><span class="chip">V4</span><span class="chip">10/07/2026</span><span class="chip">23 trang</span><span class="chip is-sop">SOP</span><span class="chip is-xlsx">+ XLSX</span></div></div><div class="sec-body"><div class="callout"><div class="callout-title">Điều cốt lõi</div><ul><li>Mỗi yêu cầu điều chỉnh chỉ dùng <b>một phương thức duy nhất</b>: chứng từ giấy hoặc PDA — không trộn lẫn. PDA lỗi thì làm giấy.</li><li>IT/ALC <b>chỉ nhập hệ thống</b> khi đã đủ chữ ký phê duyệt và chứng từ hợp lệ theo đúng cấp bậc.</li><li>Khác cấp phê duyệt giữa các tiêu chí (theo cặp sản phẩm và theo mã) thì <b>áp cấp cao hơn</b>. Chứng từ lưu <b>10 năm</b>.</li><li>Hàng ký gửi chỉ điều chỉnh khi có yêu cầu/hướng dẫn từ Vận hành VPC; vắng người có thẩm quyền phải có <b>ủy quyền bằng văn bản hoặc PDA</b>.</li></ul></div><div class="tblock"><div class="tcap">17 mã điều chỉnh · tổng hợp từ OPS.MM.00.004 mục 5.2 và file OPS_MM_00_004_Ma_dieu_chinh_ton_kho.xlsx</div><div class="twrap"><table class="t-mid"><thead><tr><th>Mã</th><th>Diễn giải</th><th>Ngưỡng giá trị → cấp phê duyệt cuối cùng</th><th>Ghi chú</th></tr></thead><tbody><tr class="group-row"><td colspan="4">Nhóm 1 · Điều chỉnh hằng ngày</td></tr><tr><td><span class="code">Code 2</span></td><td>Hư hỏng, hủy hàng</td><td><span class="lvl">≤ 10tr/ngành hàng</span> FM ký · <span class="lvl">> 10tr</span> SGM duyệt trước khi hủy</td><td>Không dùng cho hàng hết hạn sử dụng</td></tr><tr><td><span class="code">Code 4</span></td><td>Mất cắp</td><td><span class="lvl">Mọi giá trị</span> LP xác nhận trong 24 giờ</td><td>Bắt buộc Biên bản An ninh; thu hồi lại hàng thì DS điều chỉnh tăng (+) Code 4</td></tr><tr><td><span class="code">Code 5</span></td><td>Giao hàng bù hao hụt (+)</td><td><span class="lvl">Mọi giá trị</span> GOR lưu chứng từ</td><td>Bắt buộc có Phiếu giao hàng của NCC</td></tr><tr><td><span class="code">Code 7</span></td><td>Hết hạn sử dụng</td><td><span class="lvl">≤ 10tr/ngành hàng</span> FM ký · <span class="lvl">> 10tr</span> SGM</td><td>Quy trình hủy giống Code 2</td></tr><tr><td><span class="code">Code 9</span></td><td>Hàng nhập khẩu trực tiếp không đạt chuẩn</td><td><span class="lvl">Không giới hạn</span> SGM quyết định</td><td>Bắt buộc Biên bản QA xác nhận tình trạng hàng trước khi hủy</td></tr><tr class="group-row"><td colspan="4">Nhóm 2 · Trường hợp đặc biệt, duyệt bởi Văn phòng chính</td></tr><tr><td><span class="code">Code 10</span></td><td>Hao hụt của kho trung chuyển (DC)</td><td><span class="lvl">—</span> DC đồng ý + Trưởng bộ phận Cung ứng xác nhận</td><td>DC chịu toàn bộ chi phí; Controlling điều chuyển trên hệ thống</td></tr><tr><td><span class="code">Code 11</span></td><td>Điều chỉnh tồn kho hàng khuyến mãi</td><td><span class="lvl">Dùng thử</span> CM · <span class="lvl">Chuyển hàng bán</span> Trưởng bộ phận Thu mua</td><td>Cấm dùng nếu chưa có phê duyệt của Thu mua</td></tr><tr><td><span class="code">Code 12</span></td><td>Sự cố bất khả kháng (thiên tai, dịch bệnh, chiến tranh)</td><td><span class="lvl">—</span> Trưởng bộ phận An ninh + Phó GĐ/GĐ Vận hành</td><td>Cấm dùng cho trường hợp thông thường</td></tr><tr><td><span class="code">Code 15</span></td><td>Lỗi kỹ thuật hệ thống, không có giải pháp xử lý</td><td><span class="lvl">—</span> MIS xác nhận + Phó GĐ/GĐ Vận hành + Phó GĐ LP-QA</td><td>—</td></tr><tr class="group-row"><td colspan="4">Nhóm 3 · Kiểm đếm ngày, kiểm kê định kỳ và kiểm kê năm</td></tr><tr><td><span class="code">Code 925</span></td><td>Lệch phát hiện khi kiểm kê hàng ngày</td><td><span class="lvl">≤ 5tr</span> SGM + LP TT · <span class="lvl">&gt; 5tr</span> SGM + RLPM · <span class="lvl">&gt; 5tr/món</span> SGM + HoLP/LPAD</td><td>—</td></tr><tr><td><span class="code">Code 922</span></td><td>Lệch phát hiện sau kiểm kê định kỳ/năm được duyệt</td><td><span class="lvl">≤ 5tr</span> SGM + LPM/LPS · <span class="lvl">&gt; 5tr</span> SGM + RLPM · <span class="lvl">&gt; 5tr/món</span> SGM + HoLP/LPAD</td><td>Người duyệt LP bắt buộc là LPM/LPS của Trung tâm</td></tr><tr><td><span class="code">Code 6</span></td><td>Trường hợp còn lại (không thuộc mã nào khác)</td><td><span class="lvl">≤ 5tr</span> SGM + LP TT · <span class="lvl">&gt; 5tr</span> SGM + RLPM · <span class="lvl">&gt; 5tr/món</span> SGM + HoLP/LPAD</td><td>Phải ghi rõ lý do trong form điều chỉnh</td></tr><tr><td><span class="code">Code 923 (+) / 924 (-)</span></td><td>Kết quả cuối cùng của Cycle Count / Year-end Count</td><td><span class="lvl">Theo Summary report</span> phê duyệt theo DOA</td><td>SGM trình báo cáo cuối cùng lên cấp có thẩm quyền</td></tr><tr class="group-row"><td colspan="4">Nhóm 4 · Điều chỉnh có đối ứng</td></tr><tr><td><span class="code">Code 3</span></td><td>Sai nhãn (cặp mã +/− cùng số lượng)</td><td><span class="lvl">≤ 500k</span> DS + LP · <span class="lvl">≤ 5tr</span> FM + LP · <span class="lvl">≤ 15tr</span> SGM + LP · <span class="lvl">≤ 35tr</span> HoR/Ops AD + RLPM · <span class="lvl">&gt; 35tr</span> GĐ Vận hành + HoLP/LPAD</td><td>Số lượng giảm phải bằng số lượng tăng; khác cấp thì áp cấp cao hơn</td></tr><tr><td><span class="code">Code 16</span></td><td>Hàng mẫu / hàng có thể thu hồi (−) trước khi mang ra khỏi TT</td><td><span class="lvl">Mọi giá trị</span> luôn cần SGM</td><td>Cân bằng (+) trong 2 tuần; 4 tuần nếu là hàng bảo hành</td></tr><tr><td><span class="code">Code 120 (+) / 230 (−)</span></td><td>Hoán chuyển hàng hóa thủ công (mã chính ↔ mã phụ)</td><td><span class="lvl">&lt; 35tr</span> FM + LP TT · <span class="lvl">≥ 35tr</span> SGM + LP (kèm kiểm đếm 2 mã)</td><td>Auto mutation khi nhận/bán hàng không cần form; Hải sản: cá sống → cá tươi làm cuối ngày</td></tr><tr><td><span class="code">Code 250 (−) / 251 (+)</span></td><td>Đóng gói lại thủ công (mã đóng gói ↔ mã thành phần)</td><td><span class="lvl">Theo công thức</span> CM, QA, DS Meat phê duyệt</td><td>Không thực hiện sẽ khiến giá vốn sai, ảnh hưởng báo cáo lợi nhuận</td></tr></tbody></table></div></div><div class="grid-2"><div class="panel is-blue"><h3><span class="dot"></span>Quy tắc chung khi lập chứng từ</h3><ul><li>Chứng từ giấy dùng form <b>Stock Quantity Adjustment</b>; hủy hàng thực tế dùng <b>Minutes of Destruction</b>, cả hai lưu 10 năm tại IT/ALC.</li><li>LP/Bảo vệ ký xác nhận và giám sát mọi lần hủy hàng; Liên 1 chuyển IT/ALC, Liên 2 LP giữ để đối chiếu ngày hôm sau.</li><li>Đại diện ngành hàng lập Biên bản hủy hàng + phiếu điều chỉnh; trên 10.000.000 đ/ngành hàng phải trình SGM <b>trước khi</b> IT/ALC nhập.</li><li>Code 4: LP có 24 giờ điều tra trước khi ghi nhận; hàng thu hồi lại được điều chỉnh tăng (+) cùng mã.</li></ul></div><div class="panel is-amber"><h3><span class="dot"></span>Bốn báo cáo Symphony mỗi sáng</h3><ul><li><b>Negative Stock List</b> — tồn kho âm: DS/ADS điều tra nguyên nhân (sai mã, chưa nhập hàng) và điều chỉnh.</li><li><b>Zero stock without on order Qty</b> — tồn 0/1/2 và không có đặt hàng: kiểm quầy kệ, lệch thì điều chỉnh, khớp thì đặt bổ sung.</li><li><b>Art Delete with Stock</b> — hàng ngừng kinh doanh còn tồn: tập trung trưng bày, đẩy bán nhanh.</li><li><b>Stock Adjustment Report</b> — báo cáo điều chỉnh tồn kho để DS/ADS đối soát với ALC.</li></ul></div></div><div class="note-bar"><span class="tag">Lưu ý</span><div><b>Hàng DC giao có hạn sử dụng ngắn hơn tiêu chuẩn</b> (dưới 2/3 với hàng nội địa, dưới 1/2 với hàng nhập khẩu): vẫn nhận bình thường, QA xác nhận trên phiếu giao hàng, ưu tiên bán hết. Nếu còn tồn thì hủy thực tế (không điều chỉnh hệ thống), trả hàng trên hệ thống về DC và DC ghi nhận Code 2.</div></div></div></section><section class="sec" id="s4" aria-labelledby="s4-t"><div class="sec-head"><div class="sec-num" aria-hidden="true">4</div><div class="sec-title"><h2 id="s4-t">Trả hàng cho nhà cung cấp</h2><p>Hai trường hợp trả hàng, 5 phương thức vận chuyển và cách xử lý khi NCC không lấy hàng đúng hẹn.</p></div><div class="sec-meta"><span class="chip is-code">OP.SOP.G01-EN.VN.013</span><span class="chip">V2</span><span class="chip">21/01/2019</span><span class="chip">26 trang</span><span class="chip is-sop">SOP</span></div></div><div class="sec-body"><div class="callout"><div class="callout-title">Điều cốt lõi</div><ul><li>Hàng <b>Own brand của MM bị hư không trả NCC</b>, trừ khi có thỏa thuận đặc biệt.</li><li>Hai trường hợp trả: theo <b>danh sách của SCM</b> (5 phương thức) hoặc theo <b>Trade Term / xác nhận bằng văn bản của CM</b>.</li><li>Bắt buộc <b>Goods Return Form (Annex 1)</b>: FM chấp thuận, SGM ký duyệt, gửi mail NCC (cc CM, SCM nếu qua CW).</li><li>Số Goods Return: <b>400–449</b> cho thực phẩm, <b>450–499</b> cho phi thực phẩm; không trả vượt số lượng trên hệ thống.</li></ul></div><div class="grid-2"><div class="panel is-blue"><h3><span class="dot"></span>Trường hợp 1 — Trả theo danh sách của SCM</h3><ul><li>CM xác định danh sách trả, lấy xác nhận NCC và thông báo giữ thanh toán.</li><li>SCM kiểm tra AP, yêu cầu Kế toán HO giữ/khóa thanh toán của NCC.</li><li>TT chuẩn bị hàng trả và chứng từ: Goods Return Form + Giấy ủy quyền NCC.</li><li>Thời gian: 1 tuần/lần với thực phẩm, 2 tháng/lần với phi thực phẩm (trường hợp 2).</li></ul></div><div class="panel is-amber"><h3><span class="dot"></span>Trường hợp 2 — Trả theo Trade Term / CM xác nhận</h3><ul><li>TT chủ động danh sách hàng lỗi kỹ thuật, cận hạn — không nằm trong danh sách SCM.</li><li><b>Bắt buộc</b> xác nhận bằng văn bản/email từ CM phụ trách sản phẩm.</li><li>CM kiểm tra AP đủ cho giá trị trả hàng; nếu không đủ thì trả bằng giá trị AP.</li><li>TT không được trả trước khi nhận đủ xác nhận từ Ops HO.</li></ul></div></div><div class="tblock"><div class="tcap">Table 1 của OP.SOP.G01-EN.VN.013 — 5 phương thức trả hàng</div><div class="twrap"><table class="t-mid"><thead><tr><th>#</th><th>Phương thức</th><th>Luồng hàng</th><th>Ghi chú</th></tr></thead><tbody><tr><td>1</td><td>DSD</td><td>Store → Store</td><td>NCC nhận trực tiếp tại TT</td></tr><tr><td>2</td><td>PAXD</td><td>Store → Store</td><td>Giao hàng phân chia sẵn</td></tr><tr><td>3</td><td>PAXD</td><td>WH → Store</td><td>CW nhận tại kho</td></tr><tr><td>4</td><td>BBXD</td><td>WH → WH</td><td>CW thực hiện</td></tr><tr><td>5</td><td>BBXD</td><td>Store → WH</td><td>CW nhận và xác nhận</td></tr></tbody></table></div></div><ol class="steps"><li data-n="1"><div><h4>Chuẩn bị hàng hoàn trả</h4><p>DS/ADS đóng gói theo đơn vị đã thống nhất (ví dụ: thùng); thực phẩm không để nhiễm chéo với phi thực phẩm; điền và ký Goods Return Form; FM chấp thuận, SGM ký duyệt; gửi form qua mail NCC (cc CM, SCM nếu qua CW).</p></div></li><li data-n="2"><div><h4>Chuyển trả thực tế</h4><p>GRD thực hiện chuyển trả và ghi Sổ nhật ký GNHH; kiểm tra hàng trước CCTV bởi LP &amp; GRD theo danh sách; chụp 4 mặt với hàng nhạy cảm; đính Goods Return Form vào thùng niêm phong nếu qua CW.</p></div></li><li data-n="3"><div><h4>Ba tình huống sau khi chuyển trả</h4><p>NCC lấy hàng đúng hẹn → trừ hàng trên hệ thống. NCC phản hồi nhưng không lấy đúng hẹn → gửi thư thông báo qua bưu điện; sau 7 ngày không phản hồi thì trừ stock và báo CM; sau 2 tuần thì hủy hàng thực tế. NCC không phản hồi → xử lý như tình huống 2.</p></div></li><li data-n="4"><div><h4>Nhập dữ liệu hàng trả</h4><p>Nhập qua SUPPLIER RETURN (trả trực tiếp NCC) hoặc TRANSFER WITHOUT REQUEST (trả qua CW). Gạch chéo mực đỏ trên tem xác nhận GNHH và Sổ nhật ký. Return Note: Copy 1 cho NCC/tài xế CW, Copy 2 lưu GRD.</p></div></li><li data-n="5"><div><h4>Reversal — nhận lại hàng trả</h4><p>Chỉ dùng khi chuyển trả sai (quá hạn trả qua CW hoặc hàng không đạt điều kiện trả). Goods Return Reversal (Annex 3) do SGM/FM ký; ALC điều chỉnh tồn kho bằng Code 5 — Giao hàng thay thế.</p></div></li></ol></div></section><section class="sec" id="s5" aria-labelledby="s5-t"><div class="sec-head"><div class="sec-num" aria-hidden="true">5</div><div class="sec-title"><h2 id="s5-t">Chuyển giao hàng giữa các Trung tâm</h2><p>Ai ký, ký ở đâu và mốc thời gian validate khi điều chuyển hàng giữa hai Trung tâm MMVN.</p></div><div class="sec-meta"><span class="chip is-code">OPS.Memo.2022-003</span><span class="chip">10/06/2022</span><span class="chip">3 trang</span><span class="chip is-memo">Memo</span></div></div><div class="sec-body"><div class="callout"><div class="callout-title">Điều cốt lõi</div><ul><li>Yêu cầu chuyển hàng <b>phải được phê duyệt mọi lúc trước khi chuyển thực tế</b> — không có ngoại lệ theo giờ.</li><li>Cùng khu vực: <b>SGM cả 2 TT</b>. Khác khu vực: <b>HOR cả 2 TT</b>. Cùng khuôn viên và trực thuộc 1 SGM (Hiệp Phú – TT50, Hoàng Mai – TT41): <b>miễn SGM</b>.</li><li>Lệnh chuyển hàng phải ở trạng thái <b>Shipped</b> trước khi chuyển; TT nhận validate <b>trong 24 giờ</b>, ngày kiểm kê hoàn tất trước 19:00.</li><li>Tồn kho âm: kiểm tra nguyên nhân từ các lần chuyển giao trước khi xử lý điều chỉnh.</li></ul></div><div class="tblock"><div class="tcap">Ma trận chữ ký — OPS.Memo.2022-003</div><div class="twrap"><table class="t-small"><thead><tr><th>Trường hợp</th><th>Cấp phê duyệt</th><th>Chữ ký trên lệnh chuyển</th></tr></thead><tbody><tr><td>Chuyển cùng khu vực</td><td>SGM của cả 2 TT (nhận và chuyển)</td><td>FM · DS · GOR · LP · SGM</td></tr><tr><td>Chuyển khác khu vực</td><td>HOR của cả 2 TT tương ứng</td><td>FM · DS · GOR · LP · SGM · HOR</td></tr><tr><td>Cùng khuôn viên, 1 SGM</td><td>Không cần phê duyệt SGM</td><td>FM · DS · GOR · LP (chỉ 1 LP nếu 2 TT dùng chung đội)</td></tr></tbody></table></div></div><div class="grid-2"><div class="panel is-blue"><h3><span class="dot"></span>Trách nhiệm sau khi nhận</h3><ul><li>GOR TT nhận hoàn tất/validate trên hệ thống ngay khi nhận hàng, chậm nhất 24 giờ.</li><li>GOR và LP kiểm tra thao tác hệ thống liên quan chuyển giao hằng ngày.</li><li>Ngày kiểm kê: mọi lệnh chuyển phải hoàn tất trước 19:00.</li></ul></div><div class="panel is-amber"><h3><span class="dot"></span>Kiểm soát tồn âm</h3><ul><li>Trước khi điều chỉnh tồn âm, đối chiếu các lệnh chuyển giao chưa validate.</li><li>Lệnh chưa Shipped hoặc chưa validate là nguyên nhân phổ biến của lệch tồn giữa 2 TT.</li><li>Sau khi xác định nguyên nhân mới dùng mã điều chỉnh tương ứng ở mục 3.</li></ul></div></div></div></section><section class="sec" id="s6" aria-labelledby="s6-t"><div class="sec-head"><div class="sec-num" aria-hidden="true">6</div><div class="sec-title"><h2 id="s6-t">Quản lý hàng khuyến mãi</h2><p>Ba hình thức nhập hàng KM, cách nhận — lưu trữ — phát hàng và thẩm quyền cho instore promotion.</p></div><div class="sec-meta"><span class="chip is-code">OPT.SOP.2023-001</span><span class="chip">V1</span><span class="chip">09/05/2023</span><span class="chip">34 trang</span><span class="chip is-sop">SOP</span></div></div><div class="sec-body"><div class="callout"><div class="callout-title">Điều cốt lõi</div><ul><li>Ba hình thức nhập: <b>banded</b> (quấn kèm, không quản tồn), <b>average cost</b> (nhập vào mã hàng bán, giá MAV giảm), <b>gift article</b> (mã KM riêng, giá 1 VND).</li><li><b>Cấm tách</b> và dùng riêng hàng quấn kèm; mọi hàng KM phải nhập qua <b>cổng GNHH</b> và phải có đơn hàng KM trước khi nhận.</li><li>Giao thiếu hàng KM: DSD không giao KM → <b>từ chối hàng chính</b>; thiếu &gt; 20% → từ chối; thiếu &lt; 20% → nhận và báo DS/ADS + CM.</li><li>Hàng KM của ngành hàng nào chỉ dùng thúc đẩy doanh số hoặc bù thất thoát cho ngành hàng đó; di chuyển giữa các ngành phải được <b>BOM phê duyệt</b>.</li></ul></div><div class="grid-3"><div class="panel is-blue"><h3><span class="dot"></span>Banded — quấn kèm</h3><p>TT chỉ nhận hàng đã được NCC quấn kèm. Không quản lý tồn kho trên hệ thống.</p><ul><li>PG quấn kèm tại TT (đông lạnh/chill): LP dán tem “Promotion” từng sản phẩm.</li><li>Nếu không quấn kèm → nhập vào hệ thống dưới mã hàng khuyến mãi.</li><li>Nghiêm cấm tách hàng quấn kèm để bán riêng.</li></ul></div><div class="panel is-amber"><h3><span class="dot"></span>Free gift — average cost</h3><p>Nhập vào hệ thống dưới <b>mã hàng bán</b> với giá trị bình quân; giá MAV giảm sau khi nhập.</p><ul><li>DSD/PAXD: số lượng trên PO không gồm hàng KM NCC tài trợ.</li><li>CS/BBXD: PO gồm cả hàng KM, hóa đơn VAT chỉ tính hàng mua.</li><li>CM cập nhật giá mua mới trước khi đặt hàng.</li></ul></div><div class="panel is-violet"><h3><span class="dot"></span>Free gift — gift article</h3><p>Nhập dưới <b>mã hàng KM riêng</b>, giá trị 1 VND; đơn KM tự sinh từ đơn hàng bán.</p><ul><li>Tạo đơn tay phải ghi số đơn hàng chính trong phần ghi chú.</li><li>Hàng KM giao kèm phiếu giao hàng riêng, ghi rõ “hàng khuyến mãi/quà tặng”.</li><li>Lưu trữ tại khu riêng của từng ngành hàng, phải có Stock Note.</li></ul></div></div><div class="grid-2"><div class="panel is-blue"><h3><span class="dot"></span>Instore promotion — B2C</h3><ul><li>DS chuẩn bị Memo B2C Instore Promotion (Phụ lục 3), xin phê duyệt FM, SGM và CM.</li><li>Sau khi duyệt, gửi After-sales (kèm email chấp thuận của CM).</li><li>SGM duyệt xong, DS gửi SPRS/CSM/CSS để đăng ký chương trình với Sở Công Thương.</li><li>Chương trình dài hạn đã thống nhất giữa CM và NCC thì TT được chạy mà không cần duyệt CM từng lần.</li></ul></div><div class="panel is-amber"><h3><span class="dot"></span>Instore promotion — HVS</h3><ul><li>Memo HVS Instore Promotion (Phụ lục 4), xin phê duyệt FM và SGM, sau đó gửi After-sales.</li><li>Tỷ lệ % hàng KM theo giá trị hóa đơn của từng ngành hàng (ví dụ Frozen 2%, Home Appliance 1%).</li><li>CM được duyệt thêm tối đa <b>+2%</b> so với bảng, trừ Beverage &amp; Liquor.</li><li>Beverage: 2% cho 8 NCC đầu, 3% cho NCC còn lại; Liquor 1% (tối đa 3% và 2% ở cấp OM HoD/AD).</li></ul></div></div><ol class="steps"><li data-n="1"><div><h4>Ngành hàng bàn giao cho Hậu Mãi</h4><p>DS/ADS chuẩn bị 2 bản Phiếu giao hàng KM (Phụ lục 5), bản in tồn kho mã KM trên GOLD, bản in email triển khai hoặc Memo Instore đã duyệt. Xin FM phê duyệt, bàn giao dưới giám sát LP/Bảo vệ; After-sales ký xác nhận, mỗi bên giữ 1 bản.</p></div></li><li data-n="2"><div><h4>Hậu Mãi phát hàng cho khách</h4><p>Yêu cầu biên lai gốc (quầy POS đóng dấu “Kiểm soát sau cùng”; SCO không có dấu). Kiểm tra mã hàng thuộc chương trình nào, kiểm tra tồn kho thực tế trước khi phát, đóng dấu “KM” lên biên lai, ghi Sổ theo dõi (Phụ lục 6) và lấy chữ ký khách.</p></div></li><li data-n="3"><div><h4>Chốt sổ cuối ngày</h4><p>Xuất hóa đơn hàng KM cho tổng số lượng đã phát trong ngày, đóng dấu “Hàng khuyến mãi không thu tiền”. Với khách HVS: xuất hóa đơn từng giao dịch, dùng Phiếu giao hàng KM cho khách hàng (Phụ lục 7) và lưu bản photo CCCD.</p></div></li><li data-n="4"><div><h4>Kết thúc chương trình</h4><p>After-sales lập Phiếu trả hàng KM (Phụ lục 5) và hoàn trả hàng KM tồn cho DS/ADS ngành hàng dưới giám sát LP. Báo cáo tổng hợp hàng ngày theo Phụ lục 8, tóm tắt cuối chương trình gửi CSM/CSS và LP.</p></div></li></ol><div class="note-bar"><span class="tag">Cấm</span><div>Không giao hàng khuyến mãi cho khách tại <b>khu vực kho tạm</b> — mọi phát hàng thực hiện tại bộ phận Hậu Mãi. Hàng KM có tem “Promotion” chỉ được ra khỏi TT dưới hình thức quấn kèm sản phẩm bán.</div></div></div></section><section class="sec" id="s7" aria-labelledby="s7-t"><div class="sec-head"><div class="sec-num" aria-hidden="true">7</div><div class="sec-title"><h2 id="s7-t">Đặt hàng CAR trên MMAPP</h2><p>Luồng trạng thái đơn, ngưỡng phê duyệt và các màn hình theo dõi của ứng dụng soạn hàng (Picking App).</p></div><div class="sec-meta"><span class="chip is-code">CAR.V02.pptx</span><span class="chip">06/2026</span><span class="chip">14 slide</span><span class="chip is-pptx">PPTX</span></div></div><div class="sec-body"><div class="callout"><div class="callout-title">Điều cốt lõi</div><ul><li>Truy cập <b>http://mmapp.mmvietnam.com/login</b> (môi trường PROD) bằng tài khoản máy tính cá nhân; dành cho DS, FM, SGM.</li><li>DS soạn đơn ở trạng thái <b>10-Pending</b>; SUBMIT chuyển <b>20-Approving</b>; WithDraw đưa về 10-Pending khi chưa ai duyệt.</li><li>FM duyệt đơn <b>&lt; 100 triệu</b> → <b>30-Approved</b>; đơn <b>100–500 triệu</b> FM duyệt nhưng giữ 20-Approving chờ <b>SGM duyệt cuối</b>.</li><li>Tỷ lệ duyệt dưới <b>80%</b> hiển thị cảnh báo đỏ trên CAR Approval Dashboard và trong Auto Mail theo Store.</li></ul></div><div class="chain"><div class="chain-node is-done"><b>10-PENDING</b><span>DS tạo và soạn đơn, có thể Save hoặc Delete</span></div><div class="chain-node is-warn"><b>20-APPROVING</b><span>Đã SUBMIT, chờ FM/SGM phê duyệt</span></div><div class="chain-node is-done"><b>30-APPROVED</b><span>Đã duyệt, chờ Gold xử lý</span></div></div><div style="height:8px"></div><div class="chain"><div class="chain-node is-stop"><b>70-REJECT</b><span>FM từ chối đơn</span></div><div class="chain-node is-stop"><b>90-DELETE</b><span>DS đánh dấu xóa, dừng toàn bộ luồng duyệt</span></div><div class="chain-node is-warn"><b>RETURN</b><span>FM trả đơn về DS kèm mặt hàng cần chỉnh</span></div></div><div class="tblock"><div class="tcap">Bản đồ màn hình MM CAR Order (Picking App)</div><div class="twrap"><table class="t-small"><thead><tr><th>Menu</th><th>Màn hình</th><th>Dùng để làm gì</th></tr></thead><tbody><tr><td>Picking</td><td>Dashboard</td><td>Tổng quan hoạt động soạn hàng trong ngày</td></tr><tr><td>Picking</td><td>Picking List · Pre Picking List</td><td>Danh sách đơn cần soạn và đơn chờ soạn</td></tr><tr><td>Picking</td><td>Picker Management · Control Board</td><td>Quản lý nhân viên soạn hàng, theo dõi số đơn từng picker</td></tr><tr><td>CAR</td><td>CAR Order Approval</td><td>Xem và thao tác chi tiết từng đơn CAR theo Article</td></tr><tr><td>CAR</td><td>CAR Approval By Dept</td><td>Duyệt/từ chối hàng loạt theo ngành hàng (tab ORDERS và DETAIL)</td></tr><tr><td>CAR</td><td>CAR Approval Dashboard</td><td>Tỷ lệ đơn được duyệt so với đơn Gold tự sinh, theo Store và theo Dept</td></tr></tbody></table></div></div><div class="grid-2"><div class="panel is-blue"><h3><span class="dot"></span>Thao tác của DS</h3><ul><li><b>Master Filter</b> tìm đơn theo nhu cầu; Header Data và Detail Data hiển thị thông tin đơn và từng Article.</li><li><b>UnRead/Read</b> đánh dấu đơn đã đọc; <b>Save</b> lưu Order Qty theo Article.</li><li><b>Delete</b> chuyển đơn sang 90-Delete và dừng mọi bước phê duyệt.</li><li>Đơn bị trả về (RETURN) chỉnh sửa xong phải SUBMIT lại để vào luồng duyệt.</li></ul></div><div class="panel is-amber"><h3><span class="dot"></span>Theo dõi của FM/SGM</h3><ul><li>Summary Cards: số đơn và giá trị theo kỳ đang chọn.</li><li>Detail by Store: số đơn duyệt trên tổng đơn và tổng giá trị tiền từng kho.</li><li>Detail by Dept: cùng chỉ số nhưng theo ngành hàng.</li><li>Auto Mail by Store: tình trạng đơn 10-Pending và 20-Approving của từng Store.</li></ul></div></div></div></section><section class="sec" id="s8" aria-labelledby="s8-t"><div class="sec-head"><div class="sec-num is-glyph" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="8.6"/><path d="M12 7.1V12l3.5 2.2"/></svg></div><div class="sec-title"><h2 id="s8-t">Mốc thời gian &amp; SLA</h2><p>Những mốc thời gian bắt buộc rải trong cả 9 tài liệu, gom về một bảng để kiểm tra nhanh.</p></div><div class="sec-meta"><span class="chip">14 mốc</span><span class="chip">5 tài liệu</span></div></div><div class="sec-body"><div class="tblock"><div class="tcap">Các mốc bắt buộc — dùng để kiểm tra nhanh khi lập kế hoạch trong ngày</div><div class="twrap"><table class="t-small"><thead><tr><th>Mốc / SLA</th><th>Giá trị</th><th>Nguồn</th></tr></thead><tbody><tr><td>NCC đặt lịch giao hàng tại KTT</td><td>Trước <b>15:00</b> ngày hôm trước (T-1)</td><td>GRDC 00.001.02</td></tr><tr><td>Nhận hàng Fresh Food tại TT</td><td>Đến <b>17:00</b>; sau 17:00 cần phê duyệt SGM</td><td>OPT.MM.00.004</td></tr><tr><td>Nhập GOLD</td><td>Nhận trước 17:00 → cùng ngày; sau 17:00 → chậm nhất hôm sau</td><td>OPT.MM.00.004</td></tr><tr><td>Hàng Ultra-fresh giao Chủ nhật</td><td>Nhập chậm nhất ngày làm việc kế tiếp</td><td>OPT.MM.00.004</td></tr><tr><td>Chỉnh sửa dữ liệu nhận hàng</td><td>&lt; 72 giờ: DS/LP/FM/SGM duyệt; &gt; 72 giờ: IC team; đã match: Code 6</td><td>OPT.MM.00.004</td></tr><tr><td>Hàng cần kiểm soát nhiệt độ</td><td>Dỡ và đưa vào kho trong <b>≤ 30 phút</b></td><td>GRDC 00.001.02</td></tr><tr><td>Kiểm tra hàng trả trước CCTV</td><td>LP và GRD kiểm theo danh sách trước khi chuyển trả</td><td>OP.SOP.G01-EN.VN.013</td></tr><tr><td>NCC không lấy hàng trả đúng hẹn</td><td>Gửi thư bảo đảm → 7 ngày không phản hồi: trừ stock &amp; báo CM → 2 tuần: hủy thực tế</td><td>OP.SOP.G01-EN.VN.013</td></tr><tr><td>Validate lệnh chuyển hàng giữa TT</td><td>Trong <b>24 giờ</b> sau khi nhận; ngày kiểm kê xong trước 19:00</td><td>OPS.Memo.2022-003</td></tr><tr><td>Điều tra mất cắp (Code 4)</td><td>LP điều tra trong <b>24 giờ</b> trước khi ghi nhận</td><td>OPS.MM.00.004</td></tr><tr><td>Cân bằng hàng mẫu (Code 16)</td><td>Trong <b>2 tuần</b>; 4 tuần nếu là hàng bảo hành</td><td>OPS.MM.00.004</td></tr><tr><td>Claim hàng DC (BBXD &amp; CS)</td><td>Lập hồ sơ 24h · DC phản hồi 8 giờ làm việc · xử lý tối đa 7 ngày làm việc</td><td>OPT.MM.00.004</td></tr><tr><td>Lưu chứng từ điều chỉnh tồn kho</td><td><b>10 năm</b> tại IT/ALC (Stock Quantity Adjustment, Minutes of Destruction)</td><td>OPS.MM.00.004</td></tr><tr><td>Lưu phụ lục hàng khuyến mãi</td><td><b>10 năm</b> (CMMIT, Template_Mix_Match, các Memo và phiếu giao nhận)</td><td>OPT.SOP.2023-001</td></tr></tbody></table></div></div></div></section><section class="sec" id="s9" aria-labelledby="s9-t"><div class="sec-head"><div class="sec-num is-glyph" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M7 3.4h7.4L19 8v12.6H7z"/><path d="M14.2 3.6V8H19"/><path d="M9.7 12.4h5.6M9.7 15.9h4"/></svg></div><div class="sec-title"><h2 id="s9-t">Biểu mẫu &amp; phụ lục</h2><p>Danh mục biểu mẫu đi kèm từng tài liệu và nơi lưu trữ tương ứng.</p></div><div class="sec-meta"><span class="chip">6 nhóm biểu mẫu</span><span class="chip">lưu tới 10 năm</span></div></div><div class="sec-body"><div class="forms"><div class="form-item"><i>01</i><div><b>GRDC 00.001.02 — 10 biểu mẫu GR.DC_001…0010</b><br>Phiếu nhập hàng CS (3) · Phiếu nhận hàng BBXD khô (4) · Phiếu kiểm tra CL rau quả (5) · Biên bản hàng không đạt CL (6) · Bảng tỉ lệ hư hỏng (7) · Biên bản sai biệt số lượng (8) · Trao đổi khay/pallet (9)</div><em>KTT lưu</em></div><div class="form-item"><i>02</i><div><b>OP.SOP.G01-EN.VN.013 — Annex 1–5</b><br>Goods Return Form (1, 1.1, 1.2) · Thư thông báo (2) · Goods Return Reversal (3) · Goods Return Minute (4) · Stock Quantity Adjustment Code 5 (5)</div><em>GRD / ALC</em></div><div class="form-item"><i>03</i><div><b>OPT.MM.00.004 — 8 biểu mẫu</b><br>Sổ bàn giao tem GNHH · Phiếu yêu cầu cung cấp nhãn hàng hóa · Phiếu đề nghị chỉnh sửa số liệu nhận hàng · Phiếu yêu cầu bồi thường · Biên bản sự việc · Biên bản kiểm đếm · Phiếu chuyển hàng qua DC · Chi tiết hàng chuyển qua DC</div><em>Văn phòng GNHH</em></div><div class="form-item"><i>04</i><div><b>OPT.SOP.2023-001 — 8 phụ lục</b><br>CMMIT file · Template_Mix_Match · Memo B2C Instore Promotion · Memo HVS Instore Promotion · Phiếu giao hàng KM Ngành hàng–Hậu Mãi · Logbook · Phiếu giao hàng KM Hậu Mãi–KH · Delivered Free Gift Summary report</div><em>10 năm</em></div><div class="form-item"><i>05</i><div><b>OPS.MM.00.004 — chứng từ điều chỉnh</b><br>Stock Quantity Adjustment · Minutes of Destruction · Phiếu điều chỉnh của ngành hàng · Biên bản An ninh (Code 4) · Biên bản QA (Code 9)</div><em>IT/ALC · 10 năm</em></div><div class="form-item"><i>06</i><div><b>OPS.Memo.2022-003 — Lệnh chuyển hàng</b><br>Lệnh chuyển hàng nội bộ có đủ chữ ký 2 TT, trạng thái Shipped trước khi chuyển và validate trong 24 giờ</div><em>2 TT lưu</em></div></div><div class="note-bar"><span class="tag">Kiểm tra</span><div>IT/ALC chỉ nhập hệ thống khi chứng từ có <b>đủ chữ ký đúng cấp</b> và chứng từ đính kèm hợp lệ. Thiếu chữ ký là lỗi phổ biến nhất khiến phiếu bị trả lại.</div></div></div></section><section class="sec" id="s10" aria-labelledby="s10-t"><div class="sec-head"><div class="sec-num is-glyph" aria-hidden="true">A–Z</div><div class="sec-title"><h2 id="s10-t">Viết tắt thường gặp</h2><p>Bảng đối chiếu nhanh các chữ viết tắt xuất hiện trong tài liệu vận hành.</p></div><div class="sec-meta"><span class="chip">27 thuật ngữ</span></div></div><div class="sec-body"><dl class="gloss"><div><dt>DS / ADS</dt><dd>Giám sát / Trợ lý Giám sát ngành hàng</dd></div><div><dt>FM</dt><dd>Quản lý nhóm ngành hàng (Floor Manager)</dd></div><div><dt>SGM</dt><dd>Giám đốc Trung tâm (Store General Manager)</dd></div><div><dt>GOR / GNHH</dt><dd>Goods Receiving / nhận hàng hóa</dd></div><div><dt>GRM / GRS</dt><dd>Giám sát nhận hàng (Manager / Supervisor)</dd></div><div><dt>LP</dt><dd>An ninh — Loss Prevention</dd></div><div><dt>RLPM</dt><dd>Quản lý An ninh vùng (Regional LP Manager)</dd></div><div><dt>HoLP / LPAD</dt><dd>Trưởng phòng An ninh / Phó Giám đốc LP</dd></div><div><dt>CM</dt><dd>Category Manager — phụ trách ngành hàng</dd></div><div><dt>SCM</dt><dd>Supply Chain Manager</dd></div><div><dt>HOR</dt><dd>Head of Region</dd></div><div><dt>DOA</dt><dd>Delegation of Authority — thẩm quyền phân cấp</dd></div><div><dt>IT / ALC</dt><dd>Bộ phận nhập liệu điều chỉnh tồn kho</dd></div><div><dt>KTT</dt><dd>Kho Trung Tâm</dd></div><div><dt>DC</dt><dd>Distribution Center — kho trung chuyển</dd></div><div><dt>LSP</dt><dd>Logistics Service Provider</dd></div><div><dt>DSD</dt><dd>Giao hàng trực tiếp tại cửa hàng</dd></div><div><dt>PAXD</dt><dd>Giao hàng phân chia sẵn</dd></div><div><dt>BBXD</dt><dd>Giao hàng gộp theo TTTM</dd></div><div><dt>CS</dt><dd>Hàng nhập khẩu lưu tại KTT</dd></div><div><dt>MAV</dt><dd>Moving Average Value — giá bình quân</dd></div><div><dt>GIT</dt><dd>Goods In Transit — hàng đang chuyển</dd></div><div><dt>HVS</dt><dd>Khách hàng HVS (hợp đồng / tổ chức)</dd></div><div><dt>C&C</dt><dd>Cash &amp; Carry</dd></div><div><dt>BOM</dt><dd>Ban giám đốc / Board of Management</dd></div><div><dt>PDA</dt><dd>Thiết bị cầm tay dùng nhập liệu tại cửa hàng</dd></div><div><dt>IP</dt><dd>Instore promotion — khuyến mãi riêng của TT</dd></div></dl><div class="note-bar"><span class="tag">Nguồn</span><div>Viết tắt lấy từ mục định nghĩa của 9 tài liệu và sheet “Ghi chu chung” của file Excel bảng mã điều chỉnh tồn kho.</div></div></div></section></div><div class="empty" id="empty"><b>Không tìm thấy nội dung</b>Thử một mã như <code>Code 925</code>, <code>GNHH</code> hoặc <code>CAR</code>.</div>
+<footer class="foot">
+  <div>Tổng hợp từ 9 tệp trong <code>H:\SOP GOR</code> · bản 00.005 trùng nội dung 00.004.</div>
+  <div>Tra cứu nhanh — luôn đối chiếu tài liệu gốc trước khi áp dụng.</div>
+</footer>
+
+</div>
+</main>
+</div>
+
+<div class="hits" id="hits" role="status" aria-live="polite"></div>
+<button class="to-top" id="toTop" type="button" title="Về đầu trang" aria-label="Về đầu trang">
+  <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" aria-hidden="true"><path d="M12 19V5M5 12l7-7 7 7"></path></svg>
+</button>
+
+<script>
+
+(function () {
+  var html = document.documentElement;
+  var KEY = 'sop-handbook-theme';
+  var themeBtn = document.getElementById('btnTheme');
+  var fsBtn = document.getElementById('btnFs');
+  var railBtn = document.getElementById('btnRail');
+  var printBtn = document.getElementById('btnPrint');
+  var q = document.getElementById('q');
+  var hits = document.getElementById('hits');
+  var empty = document.getElementById('empty');
+  var intro = document.getElementById('intro');
+  var tocCount = document.getElementById('tocCount');
+  var toTop = document.getElementById('toTop');
+  var bar = document.getElementById('bar');
+  var secs = Array.prototype.slice.call(document.querySelectorAll('.sec'));
+  var tocLinks = Array.prototype.slice.call(document.querySelectorAll('.toc a'));
+  var tocItems = Array.prototype.slice.call(document.querySelectorAll('.toc li'));
+  var search = document.querySelector('.search');
+
+  if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) {
+    html.setAttribute('data-motion', 'off');
+  }
+
+  /* ---------- theme ---------- */
+  function setTheme(t) {
+    html.setAttribute('data-theme', t);
+    try { localStorage.setItem(KEY, t); } catch (e) {}
+    themeBtn.setAttribute('aria-pressed', t === 'dark' ? 'true' : 'false');
+    themeBtn.querySelector('span').textContent = t === 'dark' ? 'Tối' : 'Sáng';
+    themeBtn.title = t === 'dark' ? 'Chuyển giao diện sáng' : 'Chuyển giao diện tối';
+  }
+  var saved = null;
+  try { saved = localStorage.getItem(KEY); } catch (e) {}
+  setTheme(saved === 'dark' ? 'dark' : 'light');
+  themeBtn.addEventListener('click', function () {
+    setTheme(html.getAttribute('data-theme') === 'dark' ? 'light' : 'dark');
+  });
+
+  /* ---------- rail ---------- */
+  function isNarrow() { return window.matchMedia('(max-width: 1024px)').matches; }
+  railBtn.addEventListener('click', function () {
+    if (isNarrow()) {
+      html.classList.toggle('rail-open');
+    } else {
+      html.classList.toggle('rail-off');
+    }
+    railBtn.setAttribute('aria-pressed', html.classList.contains('rail-off') ? 'true' : 'false');
+  });
+  var scrim = document.querySelector('.rail-scrim');
+  if (scrim) scrim.addEventListener('click', function () { html.classList.remove('rail-open'); });
+
+  /* ---------- fullscreen ---------- */
+  fsBtn.addEventListener('click', function () {
+    if (!document.fullscreenElement) {
+      var p = html.requestFullscreen && html.requestFullscreen();
+      if (p && p.catch) p.catch(function () {});
+    } else if (document.exitFullscreen) {
+      document.exitFullscreen();
+    }
+  });
+  document.addEventListener('fullscreenchange', function () {
+    var on = !!document.fullscreenElement;
+    fsBtn.setAttribute('aria-pressed', on ? 'true' : 'false');
+    fsBtn.querySelector('span').textContent = on ? 'Thoát' : 'Toàn màn hình';
+  });
+
+  printBtn.addEventListener('click', function () { window.print(); });
+
+  /* ---------- progress + to top ---------- */
+  var ticking = false;
+  function onScroll() {
+    var doc = document.documentElement;
+    var max = doc.scrollHeight - window.innerHeight;
+    var pct = max > 0 ? (window.scrollY / max) * 100 : 0;
+    bar.style.width = pct.toFixed(2) + '%';
+    toTop.classList.toggle('is-on', window.scrollY > 900);
+    ticking = false;
+  }
+  window.addEventListener('scroll', function () {
+    if (!ticking) { ticking = true; window.requestAnimationFrame(onScroll); }
+  }, { passive: true });
+  onScroll();
+  toTop.addEventListener('click', function () {
+    window.scrollTo({ top: 0, behavior: html.getAttribute('data-motion') === 'off' ? 'auto' : 'smooth' });
+  });
+
+  /* ---------- reveal + scrollspy ---------- */
+  if ('IntersectionObserver' in window) {
+    var reveal = new IntersectionObserver(function (entries) {
+      entries.forEach(function (en) {
+        if (en.isIntersecting) {
+          en.target.classList.add('is-inview');
+          reveal.unobserve(en.target);
+        }
+      });
+    }, { rootMargin: '0px 0px -8% 0px', threshold: 0.03 });
+    secs.forEach(function (s) { reveal.observe(s); });
+
+    var spy = new IntersectionObserver(function (entries) {
+      entries.forEach(function (en) {
+        if (!en.isIntersecting) return;
+        var id = en.target.id;
+        tocLinks.forEach(function (a) {
+          a.classList.toggle('is-active', a.getAttribute('href') === '#' + id);
+        });
+      });
+    }, { rootMargin: '-18% 0px -66% 0px', threshold: 0 });
+    secs.forEach(function (s) { spy.observe(s); });
+  } else {
+    secs.forEach(function (s) { s.classList.add('is-inview'); });
+  }
+
+  /* ---------- search ---------- */
+  var marks = [];
+  function clearMarks() {
+    marks.forEach(function (m) {
+      var p = m.parentNode;
+      if (!p) return;
+      p.replaceChild(document.createTextNode(m.textContent), m);
+      p.normalize();
+    });
+    marks = [];
+  }
+  function markIn(root, needle) {
+    var walker = document.createTreeWalker(root, NodeFilter.SHOW_TEXT, {
+      acceptNode: function (n) {
+        if (!n.nodeValue || !n.nodeValue.trim()) return NodeFilter.FILTER_REJECT;
+        var tag = n.parentNode && n.parentNode.nodeName;
+        if (tag === 'SCRIPT' || tag === 'STYLE' || tag === 'MARK') return NodeFilter.FILTER_REJECT;
+        return n.nodeValue.toLowerCase().indexOf(needle) >= 0 ? NodeFilter.FILTER_ACCEPT : NodeFilter.FILTER_REJECT;
+      }
+    });
+    var nodes = [], n;
+    while ((n = walker.nextNode())) nodes.push(n);
+    nodes.forEach(function (node) {
+      var text = node.nodeValue, low = text.toLowerCase(), idx, last = 0, frag = document.createDocumentFragment();
+      idx = low.indexOf(needle);
+      while (idx >= 0) {
+        frag.appendChild(document.createTextNode(text.slice(last, idx)));
+        var m = document.createElement('mark');
+        m.className = 'hit';
+        m.textContent = text.substr(idx, needle.length);
+        frag.appendChild(m);
+        marks.push(m);
+        last = idx + needle.length;
+        idx = low.indexOf(needle, last);
+      }
+      frag.appendChild(document.createTextNode(text.slice(last)));
+      node.parentNode.replaceChild(frag, node);
+    });
+  }
+  var tHandle = null;
+  function runSearch() {
+    var term = (q.value || '').trim().toLowerCase();
+    clearMarks();
+    if (term.length < 2) {
+      secs.forEach(function (s) { s.classList.remove('is-hidden'); });
+      tocItems.forEach(function (li) { li.classList.remove('is-hidden'); });
+      intro.classList.remove('is-hidden');
+      tocCount.textContent = secs.length + ' mục';
+      empty.classList.remove('is-on');
+      hits.classList.remove('is-on');
+      return;
+    }
+    var found = 0, first = null;
+    secs.forEach(function (s, i) {
+      var match = s.textContent.toLowerCase().indexOf(term) >= 0;
+      s.classList.toggle('is-hidden', !match);
+      if (tocItems[i]) tocItems[i].classList.toggle('is-hidden', !match);
+      if (match) { found++; if (!first) first = s; markIn(s, term); }
+    });
+    intro.classList.toggle('is-hidden', found > 0);
+    tocCount.textContent = found + ' mục';
+    empty.classList.toggle('is-on', found === 0);
+    hits.textContent = found + ' mục khớp “' + q.value.trim() + '” — Esc để xóa';
+    hits.classList.add('is-on');
+    if (first) {
+      var r = first.getBoundingClientRect();
+      if (r.top < 70 || r.top > window.innerHeight * 0.55) {
+        first.scrollIntoView({
+          behavior: html.getAttribute('data-motion') === 'off' ? 'auto' : 'smooth',
+          block: 'start'
+        });
+      }
+    }
+  }
+  q.addEventListener('input', function () {
+    clearTimeout(tHandle);
+    tHandle = setTimeout(runSearch, 140);
+  });
+  q.addEventListener('keydown', function (e) {
+    if (e.key === 'Escape') { q.value = ''; runSearch(); q.blur(); }
+  });
+  search.addEventListener('click', function () {
+    if (isNarrow()) { search.classList.add('is-open'); q.focus(); }
+  });
+
+  document.addEventListener('keydown', function (e) {
+    var tag = (e.target && e.target.tagName) || '';
+    var typing = tag === 'INPUT' || tag === 'TEXTAREA' || (e.target && e.target.isContentEditable);
+    if (e.key === '/' && !typing) { e.preventDefault(); if (isNarrow()) search.classList.add('is-open'); q.focus(); }
+    if ((e.key === 'f' || e.key === 'F') && !typing && !e.ctrlKey && !e.metaKey) { fsBtn.click(); }
+    if ((e.key === 't' || e.key === 'T') && !typing && !e.ctrlKey && !e.metaKey) { themeBtn.click(); }
+    if (e.key === '\\' && !typing) { railBtn.click(); }
+    if (e.key === 'Escape') {
+      html.classList.remove('rail-open');
+      if (document.activeElement === q && q.value === '') q.blur();
+    }
+  });
+
+  tocLinks.forEach(function (a) {
+    a.addEventListener('click', function () {
+      html.classList.remove('rail-open');
+      tocLinks.forEach(function (x) { x.classList.remove('is-active'); });
+      a.classList.add('is-active');
+    });
+  });
+
+  /* ---------- wide-table hint ---------- */
+  function scrollHints() {
+    Array.prototype.forEach.call(document.querySelectorAll('.tblock'), function (b) {
+      var w = b.querySelector('.twrap');
+      if (!w) return;
+      b.classList.toggle('is-scroll', w.scrollWidth > w.clientWidth + 4);
+    });
+  }
+  Array.prototype.forEach.call(document.querySelectorAll('.tblock .twrap'), function (w) {
+    w.addEventListener('scroll', function () {
+      if (w.scrollLeft > 12) w.parentNode.classList.remove('is-scroll');
+    }, { passive: true });
+  });
+  scrollHints();
+  window.addEventListener('resize', scrollHints, { passive: true });
+})();
+
+</script>
+</body>
+</html>
