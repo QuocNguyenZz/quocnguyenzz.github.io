@@ -75,6 +75,10 @@
     background:linear-gradient(180deg,#F6E9C2,var(--gold-2));-webkit-background-clip:text;background-clip:text;
     -webkit-text-fill-color:transparent;color:var(--gold-1);font-variant-numeric:tabular-nums}
   .kpi-sub{font-size:11px;color:var(--muted);margin-top:2px}
+/* v20261105: KPI tong Sale Amount (-VAT) - so 11 chu so -> ha co chu cho vua the */
+.kpi-value.kpi-money{font-size:22px;letter-spacing:-.1px;white-space:nowrap}
+@media (max-width:760px){.kpi-value.kpi-money{font-size:14px}}
+
 
   /* ---------- Panel / toolbar ---------- */
   .panel{background:var(--panel);border:1px solid var(--line);border-radius:var(--radius);
@@ -297,7 +301,7 @@
     <div class="kpi"><div class="kpi-label">Dòng dữ liệu</div><div class="kpi-value" id="kpiLines">0</div><div class="kpi-sub">Items lines</div></div>
     <div class="kpi"><div class="kpi-label">Tổng số lượng</div><div class="kpi-value" id="kpiQty">0</div><div class="kpi-sub">Delivered qty</div></div>
     <div class="kpi"><div class="kpi-label">Khách hàng</div><div class="kpi-value" id="kpiCust">0</div><div class="kpi-sub">Customers</div></div>
-    <div class="kpi"><div class="kpi-label">Ngành hàng</div><div class="kpi-value" id="kpiDiv">0</div><div class="kpi-sub">Divisions</div></div>
+    <div class="kpi"><div class="kpi-label">Tổng Sale Amount (-VAT)</div><div class="kpi-value kpi-money" id="kpiSale">0</div><div class="kpi-sub">Total sale (-VAT)</div></div>
     <div class="kpi"><div class="kpi-label">Mặt hàng</div><div class="kpi-value" id="kpiAno">0</div><div class="kpi-sub">Articles</div></div>
   </div>
 
@@ -339,12 +343,12 @@ document.getElementById('srcCount').textContent = ALL.length.toLocaleString('vi-
 
 // KPI
 (function(){
-  const custs=new Set(), divs=new Set(), anos=new Set(); let sum=0;
-  ALL.forEach(r=>{custs.add(r.cust); divs.add(r.div); anos.add(r.ano); sum+=Number(r.qty)||0;});
+  const custs=new Set(), divs=new Set(), anos=new Set(); let sum=0, sumSale=0;
+  ALL.forEach(r=>{custs.add(r.cust); divs.add(r.div); anos.add(r.ano); sum+=Number(r.qty)||0; sumSale+=Number(r.sale)||0;});
   document.getElementById('kpiLines').textContent = ALL.length.toLocaleString('vi-VN');
   document.getElementById('kpiQty').textContent = sum.toLocaleString('vi-VN',{minimumFractionDigits:0,maximumFractionDigits:2});
   document.getElementById('kpiCust').textContent = custs.size.toLocaleString('vi-VN');
-  document.getElementById('kpiDiv').textContent = divs.size.toLocaleString('vi-VN');
+  document.getElementById('kpiSale').textContent = sumSale.toLocaleString('vi-VN',{maximumFractionDigits:0});
   document.getElementById('kpiAno').textContent = anos.size.toLocaleString('vi-VN');
 })();
 

@@ -430,6 +430,10 @@ td.num.is-neg{color:var(--red);font-weight:700;}
 td.num.is-zero{color:var(--zero);opacity:.85;}
 td.num.is-pos{color:var(--good);}
 .kpi-value.is-neg{color:var(--red);} .kpi-value.is-pos{color:var(--good);} .kpi-value.is-zero{color:var(--zero);}
+/* v20261105: KPI tong Sale Amount (-VAT) - so 11 chu so -> ha co chu cho vua the */
+.kpi-value.kpi-money{font-size:22px;letter-spacing:-.1px;white-space:nowrap}
+@media (max-width:760px){.kpi-value.kpi-money{font-size:14px}}
+
 
 /* v20261030-hidescroll: an thanh cuon trong cua so chi tiet (PC khac bi thanh cuon de len bang) - van cuon bang chuot/cam ung */
 .overlay *, .detail, .detail *, #scDeptModal *, #minusModal *, .scm-tablewrap, .hist-list {
@@ -627,7 +631,7 @@ td.num.is-pos{color:var(--good);}
     <div class="kpi"><div class="kpi-label">Dòng dữ liệu</div><div class="kpi-value" id="kpiLines">0</div><div class="kpi-sub">Items lines</div></div>
     <div class="kpi"><div class="kpi-label">Tổng số lượng</div><div class="kpi-value" id="kpiQty">0</div><div class="kpi-sub">Delivered qty</div></div>
     <div class="kpi"><div class="kpi-label">Khách hàng</div><div class="kpi-value" id="kpiCust">0</div><div class="kpi-sub">Customers</div></div>
-    <div class="kpi"><div class="kpi-label">Ngành hàng</div><div class="kpi-value" id="kpiDiv">0</div><div class="kpi-sub">Divisions</div></div>
+    <div class="kpi"><div class="kpi-label">Tổng Sale Amount (-VAT)</div><div class="kpi-value kpi-money" id="kpiSale">0</div><div class="kpi-sub">Total sale (-VAT)</div></div>
     <div class="kpi"><div class="kpi-label">Mặt hàng</div><div class="kpi-value" id="kpiAno">0</div><div class="kpi-sub">Articles</div></div>
   </div>
 
@@ -757,7 +761,7 @@ function render(){
   document.getElementById('kpiLines').textContent = total.toLocaleString('vi-VN');
   document.getElementById('kpiQty').textContent = sumQty.toLocaleString('vi-VN',{minimumFractionDigits:0,maximumFractionDigits:2});
   document.getElementById('kpiCust').textContent = custs.size.toLocaleString('vi-VN');
-  document.getElementById('kpiDiv').textContent = divs.size.toLocaleString('vi-VN');
+  document.getElementById('kpiSale').textContent = fmtMoney(sumSale);
   document.getElementById('kpiAno').textContent = anos.size.toLocaleString('vi-VN');
 
   // stat bar
