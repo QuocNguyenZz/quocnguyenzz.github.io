@@ -646,6 +646,13 @@ table.data tbody tr.sc-nodata:hover{opacity:.85;}
   letter-spacing:.1em; text-transform:uppercase; color:var(--text);
   background:var(--surface-2); border-bottom:1px solid var(--g-04);
 }
+#scDeptModal .scm-filter-row{display:flex; gap:8px; align-items:center; margin:0 0 10px; flex-wrap:wrap;}
+#scDeptModal .scm-filter-row select,
+#scDeptModal .scm-filter-row input{background:var(--surface-2); color:var(--text); border:1px solid var(--line-soft); border-radius:8px; padding:6px 10px; font-size:12px; font-family:inherit;}
+#scDeptModal .scm-filter-row input{flex:1; min-width:160px;}
+#scDeptModal .scm-filter-row select{min-width:150px;}
+#scDeptModal .scm-filter-count{font-size:11px; color:var(--legend); white-space:nowrap;}
+#scDeptModal .scm-row.scm-hidden{display:none;}
 #scDeptModal .scm-tablewrap,
 #minusModal .scm-tablewrap{max-height:46vh; overflow:auto;}
 #scDeptModal table.scm-table,
@@ -6916,6 +6923,17 @@ window.TOP50_DATA = {"dates": [20261101, 20261102, 20261103, 20261104, 20261105,
     <div class="scm-kpis" id="scmKpis"></div>
     <div class="scm-card">
       <h4 id="scmTableTitle">CHI TIẾT DÒNG</h4>
+      <div class="scm-filter-row" id="scmFilterRow">
+        <select id="scmFilterCode" aria-label="Lọc theo reason code" title="Lọc theo reason code">
+          <option value="all">Tất cả reason code</option>
+          <option value="2">2 · HÀNG HƯ HỎNG</option>
+          <option value="3">3 · SAI NHÃN</option>
+          <option value="6">6 · ĐIỀU CHỈNH</option>
+          <option value="925">925 · PERISHABLE</option>
+        </select>
+        <input type="search" id="scmFilterText" placeholder="Lọc: reason code, mô tả, article, tên hàng, qty, amount…" autocomplete="off" aria-label="Lọc bảng chi tiết">
+        <span id="scmFilterCount" class="scm-filter-count"></span>
+      </div>
       <div class="scm-tablewrap"><table class="scm-table">
         <thead><tr><th>REASON_CODE</th><th>REASON_DESC</th><th>ARTICLE</th><th>ARTDESC</th><th class="num">QTY</th><th class="num">AMOUNT</th></tr></thead>
         <tbody id="scmBody"></tbody>
@@ -6930,10 +6948,9 @@ window.TOP50_DATA = {"dates": [20261101, 20261102, 20261103, 20261104, 20261105,
 (function(){
   function escHtml(s){ return String(s===null||s===undefined?'':s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;').replace(/'/g,'&#39;'); }
   function scmQty(v){
-    if (v===null||v===undefined||isNaN(Number(v))) return '';
+    if (v===null||v===undefined||v===''||isNaN(Number(v))) return '';
     var n = Number(v);
-    var r = Math.abs(n) < 1 ? Math.round(n*100)/100 : Math.round(n*10)/10;
-    return r.toLocaleString('en-US',{maximumFractionDigits:2});
+    return n.toLocaleString('en-US',{maximumFractionDigits:10});
   }
   function scmReasonName(code, d){
     if (d && d.reasonNames && d.reasonNames[code]) return d.reasonNames[code];
@@ -7007,6 +7024,7 @@ window.TOP50_DATA = {"dates": [20261101, 20261102, 20261103, 20261104, 20261105,
         '<td class="num">' + escHtml(fmtVnd(total)) + '</td></tr>';
       body.innerHTML = h;
     }
+    scmResetFilter();
     modal.classList.add('open');
     document.body.style.overflow = 'hidden';
   }
@@ -7081,6 +7099,45 @@ window.TOP50_DATA = {"dates": [20261101, 20261102, 20261103, 20261104, 20261105,
   wireScModalTable('scNgayTable', 'ngay');
   wireScModalTable('scMtdTable', 'mtd');
   var scmLastList = [];
+  function scmApplyFilter(){
+    var codeSel = document.getElementById('scmFilterCode');
+    var txtInp = document.getElementById('scmFilterText');
+    var cnt = document.getElementById('scmFilterCount');
+    var code = codeSel ? codeSel.value : 'all';
+    var q = txtInp ? txtInp.value.trim().toLowerCase() : '';
+    var rows = document.querySelectorAll('#scmBody tr.scm-row');
+    var shown = 0, total = rows.length;
+    for (var i = 0; i < rows.length; i++){
+      var tr = rows[i];
+      var r = scmLastList[Number(tr.getAttribute('data-idx'))];
+      var codeOk = true, textOk = true;
+      if (r){
+        codeOk = (code === 'all' || Number(r.reason_code) === Number(code));
+        if (q){
+          var hay = [r.reason_code, r.reason_desc, r.root_code, r.artdesc, r.qty, r.amount]
+            .map(function(x){ return String(x===null||x===undefined?'':x).toLowerCase(); }).join(' ');
+          textOk = hay.indexOf(q) >= 0;
+        }
+      }
+      if (codeOk && textOk){ tr.classList.remove('scm-hidden'); shown++; }
+      else tr.classList.add('scm-hidden');
+    }
+    if (cnt){
+      if (q || code !== 'all') cnt.textContent = 'Hiển thị ' + shown + '/' + total + ' dòng';
+      else cnt.textContent = '';
+    }
+  }
+  function scmResetFilter(){
+    var codeSel = document.getElementById('scmFilterCode');
+    var txtInp = document.getElementById('scmFilterText');
+    if (codeSel) codeSel.value = 'all';
+    if (txtInp) txtInp.value = '';
+    scmApplyFilter();
+  }
+  var scmFilterCode = document.getElementById('scmFilterCode');
+  var scmFilterText = document.getElementById('scmFilterText');
+  if (scmFilterCode) scmFilterCode.addEventListener('change', scmApplyFilter);
+  if (scmFilterText) scmFilterText.addEventListener('input', scmApplyFilter);
   window.openScDeptModal = openScDeptModal;
   window.closeScDeptModal = closeScDeptModal;
 })();
