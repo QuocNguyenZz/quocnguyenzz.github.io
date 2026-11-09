@@ -3811,14 +3811,24 @@ function renderSc(){
   $('sc_dayItems').textContent = fmtInt(ngDetail.length);
   $('sc_mtdItems').textContent = fmtInt(scFilter.mtdDetail.length);
 
-  var legNg = ng ? rcLegendWith(ng.reasonNames, ng.dayCols) : '';
-  var legDay = rcLegend(d.dayCols);
-  var legMtd = rcLegend(d.mtdCols);
-  var legTop = rcLegend(d.scCols);
-
-  var tblNg = scPivotTable(ngRows, ng ? ng.dayCols : [], true, true);
-  var tblDay = scPivotTable(scFilter.dayRows, d.dayCols, true, true);
-  var tblMtd = scPivotTable(scFilter.mtdRows, d.mtdCols, true, false, true);
+  // An cac cot reason_code khong co gia tri (tong = 0 tren toan bo du lieu) — user yeu cau 09/11.
+  function _scNonZeroCols(cols, rows){
+    cols = cols || [];
+    var rset = rows || [];
+    var out = cols.filter(function(c){
+      return rset.some(function(r){ return Number((r.rc || {})[c]) !== 0; });
+    });
+    return out.length ? out : cols;
+  }
+  var ngCols = _scNonZeroCols(ng ? ng.dayCols : [], ng ? ng.dayRows : []);
+  var dayCols = _scNonZeroCols(d.dayCols, d.dayRows);
+  var mtdCols = _scNonZeroCols(d.mtdCols, d.mtdRows);
+  var legNg = ng ? rcLegendWith(ng.reasonNames, ngCols) : '';
+  var legDay = rcLegend(dayCols);
+  var legMtd = rcLegend(mtdCols);
+  var tblNg = scPivotTable(ngRows, ngCols, true, true);
+  var tblDay = scPivotTable(scFilter.dayRows, dayCols, true, true);
+  var tblMtd = scPivotTable(scFilter.mtdRows, mtdCols, true, false, true);
 
   var topCols = d.scCols;
   var htmlTop = '<thead><tr><th>DECS</th><th class="num">ROOT_CODE</th><th>ARTDESC</th>' +
@@ -6758,7 +6768,7 @@ window.TOP50_DATA = {"dates": [20261101, 20261102, 20261103, 20261104, 20261105,
     activateTab('sc');
   }
   bl_loadState();
-  var _dataUrls = ['sc-data.json?t=' + Date.now()];
+  var _dataUrls = ['sc-data.json'];
   var _autoUrl = null, _autoSig = null;
 
   function _applyServerData(txt){
