@@ -6758,7 +6758,7 @@ window.TOP50_DATA = {"dates": [20261101, 20261102, 20261103, 20261104, 20261105,
     activateTab('sc');
   }
   bl_loadState();
-  var _dataUrls = ['sc-data.json?t=' + Date.now()];
+  var _dataUrls = ['sc-data.json'];
   var _autoUrl = null, _autoSig = null;
 
   function _applyServerData(txt){
@@ -7420,7 +7420,7 @@ window.TOP50_DATA = {"dates": [20261101, 20261102, 20261103, 20261104, 20261105,
     for (var i = 0; i < dd.length; i++){
       var r = dd[i];
       if (Number(r.dept) !== Number(deptNo)) continue;
-      if (r.reason_code !== 2 && r.reason_code !== 3 && r.reason_code !== 6 && r.reason_code !== 925) continue;
+      if (r.reason_code === 0 || r.reason_code === 120 || r.reason_code === 230) continue;
       if ((Number(r.qty) || 0) === 0 && (Number(r.amount) || 0) === 0) continue;
       return true;
     }
