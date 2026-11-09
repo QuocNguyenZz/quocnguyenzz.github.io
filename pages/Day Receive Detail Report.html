@@ -3823,6 +3823,7 @@ function renderSc(){
   var ngCols = _scNonZeroCols(ng ? ng.dayCols : [], ng ? ng.dayRows : []);
   var dayCols = _scNonZeroCols(d.dayCols, d.dayRows);
   var mtdCols = _scNonZeroCols(d.mtdCols, d.mtdRows);
+  var legTop = rcLegend(d.scCols);
   var legNg = ng ? rcLegendWith(ng.reasonNames, ngCols) : '';
   var legDay = rcLegend(dayCols);
   var legMtd = rcLegend(mtdCols);
@@ -6770,7 +6771,7 @@ window.TOP50_DATA = {"dates": [20261101, 20261102, 20261103, 20261104, 20261105,
     activateTab('sc');
   }
   bl_loadState();
-  var _dataUrls = ['sc-data.json?t=' + Date.now()];
+  var _dataUrls = ['sc-data.json'];
   var _autoUrl = null, _autoSig = null;
 
   function _applyServerData(txt){
