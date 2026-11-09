@@ -3816,6 +3816,7 @@ function renderSc(){
     cols = cols || [];
     var rset = rows || [];
     var out = cols.filter(function(c){
+      if (c === 0) return false;   // an cot code 0 (NO REASON) theo yeu cau user 09/11
       return rset.some(function(r){ return Number((r.rc || {})[c]) !== 0; });
     });
     return out.length ? out : cols;
@@ -6772,7 +6773,7 @@ window.TOP50_DATA = {"dates": [20261101, 20261102, 20261103, 20261104, 20261105,
     activateTab('sc');
   }
   bl_loadState();
-  var _dataUrls = ['sc-data.json?t=' + Date.now()];
+  var _dataUrls = ['sc-data.json'];
   var _autoUrl = null, _autoSig = null;
 
   function _applyServerData(txt){
