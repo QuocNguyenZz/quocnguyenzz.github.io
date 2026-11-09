@@ -6758,7 +6758,7 @@ window.TOP50_DATA = {"dates": [20261101, 20261102, 20261103, 20261104, 20261105,
     activateTab('sc');
   }
   bl_loadState();
-  var _dataUrls = ['sc-data.json?t=' + Date.now()];
+  var _dataUrls = ['sc-data.json'];
   var _autoUrl = null, _autoSig = null;
 
   function _applyServerData(txt){
@@ -7185,9 +7185,11 @@ window.TOP50_DATA = {"dates": [20261101, 20261102, 20261103, 20261104, 20261105,
   }
   function scmRenderBody(list, d, sums, total){
     var body = document.getElementById('scmBody');
+     var _mc = (d && d.dayCols) ? d.dayCols.filter(function(c){ return c !== 0 && c !== 120 && c !== 230; }) : [2,3,6,925];
+     if (!_mc.length) _mc = [2,3,6,925];
     if (scmSortKey === null){
       var h = '';
-      modalCodes.forEach(function(c){
+      _mc.forEach(function(c){
         var grp = list.filter(function(r){ return r.reason_code === c; });
         if (!grp.length) return;
         grp.forEach(function(r){
@@ -7205,7 +7207,7 @@ window.TOP50_DATA = {"dates": [20261101, 20261102, 20261103, 20261104, 20261105,
         h += '<tr class=\"scm-subtotal\"><td colspan=\"5\">' + c + ' \\u00b7 ' + escHtml(scmReasonName(c, d)) + ' — TỔNG</td>' +
           '<td class=\"num\">' + escHtml(fmtVnd(sums[c])) + '</td></tr>';
       });
-      h += '<tr class=\"scm-grand\"><td colspan=\"5\">Tổng cộng 2 + 3 + 6 + 925</td>' +
+      h += '<tr class=\"scm-grand\"><td colspan=\"5\">Tổng cộng ' + _mc.join(' + ') + '</td>' +
         '<td class=\"num\">' + escHtml(fmtVnd(total)) + '</td></tr>';
       body.innerHTML = h;
     } else {
