@@ -6757,7 +6757,7 @@ window.TOP50_DATA = {"dates": [20261101, 20261102, 20261103, 20261104, 20261105,
     activateTab('sc');
   }
   bl_loadState();
-  var _dataUrls = ['sc-data.json?t=' + Date.now()];
+  var _dataUrls = ['sc-data.json'];
   var _autoUrl = null, _autoSig = null;
 
   function _applyServerData(txt){
@@ -7039,12 +7039,18 @@ window.TOP50_DATA = {"dates": [20261101, 20261102, 20261103, 20261104, 20261105,
     var ng = (typeof scDayActive === 'function') ? scDayActive() : window.SCDAY_DATA;
     var d = isNgay ? ng : ((typeof scActive === 'function') ? scActive() : window.SC_DATA);
     if (!d) return;
+    // Ma ly do hien trong modal: lay tu cols cua nguon (loai 0 NO REASON, 120/230 MUTATION)
+    // de tu dong the hien them code moi (922, 923, 924, 972...) ma khong sua tay.
+    var _modalCols = isNgay ? (d.dayCols || []) : (isMtd ? (d.mtdCols || d.dayCols || []) : (d.dayCols || []));
+    var modalCodes = _modalCols.filter(function(c){ return c !== 0 && c !== 120 && c !== 230; });
+    if (!modalCodes.length) modalCodes = [2, 3, 6, 925];
     var sub = document.getElementById('scmSub');
-    if (sub) sub.textContent = isNgay ? 'Stock Correction BY DAY \u00b7 chi ti\u1ebft l\u00fd do code 2 / 3 / 6 / 925' : (isMtd ? 'Stock Correction MTD \u00b7 chi ti\u1ebft l\u00fd do code 2 / 3 / 6 / 925' : 'Stock Correction BY Yesterday \u00b7 chi ti\u1ebft l\u00fd do code 2 / 3 / 6 / 925');
+    if (sub) sub.textContent = (isNgay ? 'Stock Correction BY DAY' : (isMtd ? 'Stock Correction MTD' : 'Stock Correction BY Yesterday')) +
+      ' \u00b7 chi ti\u1ebft l\u00fd do code ' + modalCodes.join(' / ');
     var rows = (isMtd && d && d.mtdDetail) ? d.mtdDetail : (d && d.dayDetail ? d.dayDetail : []);
     var list = rows.filter(function(r){
       if (Number(r.dept) !== Number(deptNo)) return false;
-      if (r.reason_code !== 2 && r.reason_code !== 3 && r.reason_code !== 6 && r.reason_code !== 925) return false;
+      if (modalCodes.indexOf(r.reason_code) === -1) return false;
       var q = Number(r.qty) || 0, a = Number(r.amount) || 0;
       if (q === 0 && a === 0) return false;
       return true;
@@ -7055,18 +7061,19 @@ window.TOP50_DATA = {"dates": [20261101, 20261102, 20261103, 20261104, 20261105,
     });
     document.getElementById('scmKicker').textContent = 'DEPT № ' + deptNo;
     document.getElementById('scmTitle').textContent = String(decsName || '');
-    var sums = {2:0, 3:0, 6:0, 925:0}, counts = {2:0, 3:0, 6:0, 925:0}, total = 0;
+    var sums = {}, counts = {}, total = 0;
+    modalCodes.forEach(function(c){ sums[c] = 0; counts[c] = 0; });
     list.forEach(function(r){
       var a = Number(r.amount) || 0;
       sums[r.reason_code] += a; counts[r.reason_code]++; total += a;
     });
     var kpis = '';
-    [2, 3, 6, 925].forEach(function(c){
+    modalCodes.forEach(function(c){
       kpis += '<div class="scm-kpi"><div class="k">' + c + ' · ' + escHtml(scmReasonName(c, d)) + '</div>' +
         '<div class="v">' + fmtVnd(sums[c]) + '</div>' +
         '<div class="n">' + fmtInt(counts[c]) + ' dòng</div></div>';
     });
-    kpis += '<div class="scm-kpi total"><div class="k">Tổng 2+3+6+925</div>' +
+    kpis += '<div class="scm-kpi total"><div class="k">Tổng ' + modalCodes.join('+') + '</div>' +
       '<div class="v">' + fmtVnd(total) + '</div>' +
       '<div class="n">' + fmtInt(list.length) + ' dòng chi tiết</div></div>';
     document.getElementById('scmKpis').innerHTML = kpis;
@@ -7075,7 +7082,7 @@ window.TOP50_DATA = {"dates": [20261101, 20261102, 20261103, 20261104, 20261105,
     document.getElementById('scmTableTitle').textContent = 'CHI TIẾT DÒNG (' + fmtInt(list.length) + ')';
         var body = document.getElementById('scmBody');
     if (!list.length){
-      body.innerHTML = '<tr><td colspan="6"><div class="scm-empty">Không có dòng chi tiết nào với code 2 / 3 / 6 / 925 cho ngành hàng này.</div></td></tr>';
+      body.innerHTML = '<tr><td colspan="6"><div class="scm-empty">Không có dòng chi tiết nào với code 2 / 3 / 6 / 922 / 925 / 972 cho ngành hàng này.</div></td></tr>';
     } else {
       scmRenderBody(list, d, sums, total);
     }
@@ -7179,7 +7186,7 @@ window.TOP50_DATA = {"dates": [20261101, 20261102, 20261103, 20261104, 20261105,
     var body = document.getElementById('scmBody');
     if (scmSortKey === null){
       var h = '';
-      [2, 3, 6, 925].forEach(function(c){
+      modalCodes.forEach(function(c){
         var grp = list.filter(function(r){ return r.reason_code === c; });
         if (!grp.length) return;
         grp.forEach(function(r){
