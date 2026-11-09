@@ -3792,7 +3792,12 @@ function renderSc(){
         if (!r.decs) r.decs = fb[r.dept_no].decs || r.decs;
       }
     });
-    var _zc = [2, 3, 6, 925];
+    // 09/11/2026: truoc day _zc chi gom [2,3,6,925] -> sau khi them reason code
+    // 923 (Inventory +) / 924 (Inventory -) tu nguon PDA Fox, moi dong chi co
+    // 923/924 non-zero nen bi loc sach -> bang BY DAY trong (0 dong). Nay dung
+    // toan bo dayCols (moi reason code co trong SCDAY_DATA) de giu cac dong co
+    // bat ky gia tri non-zero nao, chi an cac dong hoan toan bang 0.
+    var _zc = (ng && Array.isArray(ng.dayCols) && ng.dayCols.length) ? ng.dayCols.slice() : [2, 3, 6, 925];
     ngRows = ngRows.filter(function(r){
       for (var zi = 0; zi < _zc.length; zi++){
         if (Number((r.rc || {})[_zc[zi]]) || 0) return true;
