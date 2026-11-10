@@ -3782,7 +3782,12 @@ function renderSc(){
   if (!d) return;
 
   var ng = scDayActive();
-  $('scDayLabel').textContent = fmtToday();
+  /* Ngay hien thi = ngay cua DU LIEU THAT, khong phai hom nay: khi Symphony chua
+     phat hanh du lieu hom nay (CSV rong) thi file ngay van giu Data_Ngay cu, nen
+     nhan phai bam theo so lieu dang hien thi. */
+  var _ddNgay = (ng && ng.dayDate !== null && ng.dayDate !== undefined) ? ng.dayDate
+              : ((d.dayDate !== null && d.dayDate !== undefined) ? d.dayDate : null);
+  $('scDayLabel').textContent = (_ddNgay !== null) ? fmtDate(_ddNgay) : fmtToday();
   $('scMtdLabel').textContent = d.mtdLabel;
 
   scFilter.dayRows = d.dayRows;
