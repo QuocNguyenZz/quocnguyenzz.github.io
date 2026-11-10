@@ -2115,6 +2115,19 @@ function bl_serialToYmdInt(serial){
   var d = excelSerialToDate(serial);
   return d.getFullYear() * 10000 + (d.getMonth()+1) * 100 + d.getDate();
 }
+/* 10/11/2026 (yeu cau user): serial cua NGAY HOM NAY (theo gio may) - dung de biet
+   BY DAY da co du lieu cua hom nay chua. */
+function bl_todaySerial(){
+  var d = new Date();
+  return Math.round(Date.UTC(d.getFullYear(), d.getMonth(), d.getDate()) / 86400000) + 25569;
+}
+/* 10/11/2026 (yeu cau user): sap xep bang theo DEPT_NO tang dan (so, khong phai chuoi). */
+function bl_byDeptNo(a, b){
+  var x = (a && a.dept_no !== null && a.dept_no !== undefined && isFinite(Number(a.dept_no))) ? Number(a.dept_no) : Infinity;
+  var y = (b && b.dept_no !== null && b.dept_no !== undefined && isFinite(Number(b.dept_no))) ? Number(b.dept_no) : Infinity;
+  if (x !== y) return x - y;
+  return String((a && a.dept_name) || '').localeCompare(String((b && b.dept_name) || ''));
+}
 
 /* ============================================================
    FILE UPLOAD / REFRESH (all pages)
@@ -3782,15 +3795,19 @@ function renderSc(){
   if (!d) return;
 
   var ng = scDayActive();
-  /* Ngay hien thi = ngay cua DU LIEU THAT, khong phai hom nay: khi Symphony chua
-     phat hanh du lieu hom nay (CSV rong) thi file ngay van giu Data_Ngay cu, nen
-     nhan phai bam theo so lieu dang hien thi. */
-  var _ddNgay = (ng && ng.dayDate !== null && ng.dayDate !== undefined) ? ng.dayDate
-              : ((d.dayDate !== null && d.dayDate !== undefined) ? d.dayDate : null);
-  $('scDayLabel').textContent = (_ddNgay !== null) ? fmtDate(_ddNgay) : fmtToday();
+  /* 10/11/2026 (yeu cau user): BY DAY chi the hien du lieu CUA HOM NAY.
+     Khi Symphony chua phat hanh du lieu hom nay (CSV rong -> file ngay van giu
+     Data_Ngay cu) thi de TRONG bang, KPI ngay = —, nhan DAY: = hom nay.
+     Truoc day nhan bam theo ngay du lieu cu -> nguoi xem tuong la so hom nay. */
+  var _todaySer = bl_todaySerial();
+  var _ngDate = (ng && ng.dayDate !== null && ng.dayDate !== undefined && isFinite(Number(ng.dayDate)))
+              ? Math.round(Number(ng.dayDate)) : null;
+  var _hasToday = (_ngDate !== null && _ngDate === _todaySer);
+  $('scDayLabel').textContent = fmtDate(_todaySer);
   $('scMtdLabel').textContent = d.mtdLabel;
 
-  scFilter.dayRows = d.dayRows;
+  /* BY Yesterday: sap xep DEPT_NO tang dan (giu nguyen bo loc + modal chi tiet). */
+  scFilter.dayRows = d.dayRows.slice().sort(bl_byDeptNo);
   scFilter.mtdRows = d.mtdRows;
   var sDay = $('scDayDeptSearch').value;
   if (sDay !== 'all') scFilter.dayRows = scFilter.dayRows.filter(function(r){ return r.dept_no !== null && r.dept_no !== undefined && Number(r.dept_no) === Number(sDay); });
@@ -3833,9 +3850,15 @@ function renderSc(){
     });
   })();
 
-  $('sc_dayTotal').textContent = fmtVnd(sumBy(ngRows, 'total'));
+  /* Chua co du lieu hom nay -> bang BY DAY trong, KPI ngay = — (xem chu thich o tren). */
+  if (!_hasToday){
+    ngRows = [];
+    ngDetail = [];
+  }
+
+  $('sc_dayTotal').textContent = _hasToday ? fmtVnd(sumBy(ngRows, 'total')) : '\u2014';
   $('sc_mtdTotal').textContent = fmtVnd(sumBy(scFilter.mtdRows, 'total'));
-  $('sc_dayItems').textContent = fmtInt(ngDetail.length);
+  $('sc_dayItems').textContent = _hasToday ? fmtInt(ngDetail.length) : '\u2014';
   $('sc_mtdItems').textContent = fmtInt(scFilter.mtdDetail.length);
 
   // An cac cot reason_code khong co gia tri (tong = 0 tren toan bo du lieu) — user yeu cau 09/11.
@@ -3852,10 +3875,16 @@ function renderSc(){
   var dayCols = _scNonZeroCols(d.dayCols, d.dayRows);
   var mtdCols = _scNonZeroCols(d.mtdCols, d.mtdRows);
   var legTop = rcLegend(d.scCols);
-  var legNg = ng ? rcLegendWith(ng.reasonNames, ngCols) : '';
+  var legNg = (_hasToday && ng) ? rcLegendWith(ng.reasonNames, ngCols) : '';
   var legDay = rcLegend(dayCols);
   var legMtd = rcLegend(mtdCols);
-  var tblNg = scPivotTable(ngRows, ngCols, true, true);
+  var tblNg = _hasToday
+    ? scPivotTable(ngRows, ngCols, true, true)
+    : ('<thead><tr><th>DEPT_NO</th><th>DEPT_NAME</th><th>DECS</th>' +
+       '<th class="num">GRAND TOTAL</th></tr></thead><tbody>' +
+       '<tr><td colspan="4" style="text-align:center;font-style:italic;opacity:.62;padding:14px 6px;">' +
+       'Chưa có dữ liệu ngày ' + fmtDate(_todaySer) + ' — Symphony chưa phát hành số liệu hôm nay.' +
+       '</td></tr></tbody>');
   var tblDay = scPivotTable(scFilter.dayRows, dayCols, true, true);
   var tblMtd = scPivotTable(scFilter.mtdRows, mtdCols, true, false, true);
 
