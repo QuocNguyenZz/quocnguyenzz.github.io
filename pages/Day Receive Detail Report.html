@@ -3268,6 +3268,12 @@ function renderMinus(){
 
   var qDaily = $('minusDailyDeptSearch').value.trim().toLowerCase();
   var daily = qDaily ? d.daily.filter(function(r){ return String(r.dept_no).toLowerCase().indexOf(qDaily) >= 0; }) : d.daily;
+  /* 10/11/2026 (yeu cau user): sap xep bang Daily Minus Stock theo CATEGORY tang dan
+     (cat co tien to so 02/04/05 -> gom nhom tu nhien). Khong anh huong den
+     cats/dRows (bieu do) va tong dStock/dAmt. */
+  daily = daily.slice().sort(function(a, b){
+    return String((a && a.cat) || '').localeCompare(String((b && b.cat) || ''));
+  });
   var html = '<thead><tr><th>CATEGORY</th><th class="num">DEPT_NO</th><th class="num">STOCK</th><th class="num">AMOUNT</th></tr></thead><tbody>';
   var dStock = 0, dAmt = 0;
   var dDetail = (d.minusDetail && d.minusDetail.length) ? d.minusDetail : [];
