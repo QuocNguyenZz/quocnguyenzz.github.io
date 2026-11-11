@@ -3877,9 +3877,17 @@ function renderSc(){
   $('sc_dayItems').textContent = _hasToday ? fmtInt(ngDetail.length) : '\u2014';
   $('sc_mtdItems').textContent = fmtInt(scFilter.mtdDetail.length);
 
+  /* 11/11/2026 (user): KHONG hien thi cac cot reason code nay tren bang
+     (BY DAY / BY Yesterday / MTD / TOP 10). Gia tri VAN duoc tinh trong GRAND TOTAL
+     va van hien trong modal chi tiet. Muon an them code khac thi them so vao mang. */
+  var SC_HIDE_COLS = [972];
+  function _scVisibleCols(cols){
+    return (cols || []).filter(function(c){ return SC_HIDE_COLS.indexOf(Number(c)) === -1; });
+  }
+
   // An cac cot reason_code khong co gia tri (tong = 0 tren toan bo du lieu) — user yeu cau 09/11.
   function _scNonZeroCols(cols, rows){
-    cols = cols || [];
+    cols = _scVisibleCols(cols);
     var rset = rows || [];
     var out = cols.filter(function(c){
       if (c === 0) return false;   // an cot code 0 (NO REASON) theo yeu cau user 09/11
@@ -3894,10 +3902,10 @@ function renderSc(){
      cho bang gon — nhung GIU cot 0 (NO REASON) vi day la phan lon gia tri dieu chinh
      cua BAKERY / BUTCHERY / PRODUCE... Neu tat ca deu 0 thi giu nguyen danh sach cot. */
   var _topRows = scFilter.top10.filter(function(r){ return !r.subtotal; });
-  var topCols = (d.scCols || []).filter(function(c){
+  var topCols = _scVisibleCols(d.scCols).filter(function(c){
     return _topRows.some(function(r){ return Number((r.rc || {})[c]) !== 0; });
   });
-  if (!topCols.length) topCols = (d.scCols || []).slice();
+  if (!topCols.length) topCols = _scVisibleCols(d.scCols);
   var legTop = rcLegend(topCols);
   var legNg = (_hasToday && ng) ? rcLegendWith(ng.reasonNames, ngCols) : '';
   var legDay = rcLegend(dayCols);
