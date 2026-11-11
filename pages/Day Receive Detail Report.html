@@ -7324,7 +7324,7 @@ window.TOP50_DATA = {"dates": [20261101, 20261102, 20261103, 20261104, 20261105,
     document.getElementById('scmTableTitle').textContent = 'CHI TIẾT DÒNG (' + fmtInt(list.length) + ')';
         var body = document.getElementById('scmBody');
     if (!list.length){
-      body.innerHTML = '<tr><td colspan="6"><div class="scm-empty">Không có dòng chi tiết nào với code 2 / 3 / 6 / 922 / 925 / 972 cho ngành hàng này.</div></td></tr>';
+      body.innerHTML = '<tr><td colspan="6"><div class="scm-empty">Không có dòng chi tiết nào với code ' + _mc.join(' / ') + ' cho ngành hàng này.</div></td></tr>';
     } else {
       scmRenderBody(list, d, sums, total);
     }
@@ -7426,8 +7426,14 @@ window.TOP50_DATA = {"dates": [20261101, 20261102, 20261103, 20261104, 20261105,
   }
   function scmRenderBody(list, d, sums, total){
     var body = document.getElementById('scmBody');
-     var _mc = (d && d.dayCols) ? d.dayCols.filter(function(c){ return c !== 0 && c !== 120 && c !== 230; }) : [2,3,6,925];
-     if (!_mc.length) _mc = [2,3,6,925];
+     var _seen = {};
+     (list || []).forEach(function(r){
+       if (r && r.reason_code !== null && r.reason_code !== undefined) _seen[r.reason_code] = 1;
+     });
+     var _mc = Object.keys(_seen).map(Number).filter(function(c){ return c !== 0 && c !== 120 && c !== 230; })
+       .sort(function(a, b){ return a - b; });
+     if (!_mc.length) _mc = (d && d.dayCols) ? d.dayCols.filter(function(c){ return c !== 0 && c !== 120 && c !== 230; }) : [2, 3, 6, 925];
+     if (!_mc.length) _mc = [2, 3, 6, 925];
     if (scmSortKey === null){
       var h = '';
       _mc.forEach(function(c){
