@@ -3570,7 +3570,7 @@ function renderTop50(){
       mtdHtml += '<tr>' +
         '<td>' + (idx+1) + '</td>' +
         '<td class="num">' + r.art_no + '</td>' +
-        '<td>' + r.name + '</td>' +
+        '<td><b>' + r.name + '</b></td>' +
         '<td>' + r.dept + '</td>' +
         '<td class="num">' + fmtDec(r.qty, 1) + '</td>' +
         '<td class="num">' + fmtVnd(r.amount) + '</td></tr>';
@@ -3602,7 +3602,7 @@ function renderTop50(){
     html += '<tr>' +
       '<td>' + (idx+1) + '</td>' +
       '<td class="num">' + r.art_no + '</td>' +
-      '<td>' + r.name + '</td>' +
+      '<td><b>' + r.name + '</b></td>' +
       '<td>' + r.dept + '</td>' +
       '<td class="num">' + fmtDec(r.qty, 1) + '</td>' +
       '<td class="num">' + fmtVnd(r.amount) + '</td>' +
@@ -3626,7 +3626,7 @@ function renderTop50(){
   meta.deptRows.forEach(function(r){
     var cls = r.subtotal ? ' class="row-total"' : '';
     html2 += '<tr' + cls + '>' +
-      '<td>' + r.name + '</td>' +
+      '<td><b>' + r.name + '</b></td>' +
       '<td class="num">' + (r.dept_no === null ? '' : r.dept_no) + '</td>' +
       '<td class="num">' + (r.target === null || r.target === undefined ? '' : fmtVnd(r.target * 1000000)) + '</td>' +
       '<td class="num">' + fmtVnd(r.sales_vat) + '</td>' +
@@ -3641,7 +3641,7 @@ function renderTop50(){
   rank.forEach(function(r, i){
     html3 += '<tr class="dr-row" data-dept="' + (r.dept_no === null || r.dept_no === undefined ? '' : r.dept_no) + '" data-name="' + String(r.name||'').replace(/"/g,'&quot;') + '" style="cursor:pointer;">' +
       '<td>' + (i+1) + '</td>' +
-      '<td>' + r.name + '</td>' +
+      '<td><b>' + r.name + '</b></td>' +
       '<td class="num">' + (r.dept_no === null || r.dept_no === undefined ? '' : r.dept_no) + '</td>' +
       '<td class="num">' + fmtVnd(r.sales_vat) + '</td>' +
       '<td class="num">' + fmtVnd(r.mtd_vat) + '</td></tr>';
