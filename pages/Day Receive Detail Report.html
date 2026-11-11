@@ -7419,10 +7419,10 @@ window.TOP50_DATA = {"dates": [20261101, 20261102, 20261103, 20261104, 20261105,
     var ng = (typeof scDayActive === 'function') ? scDayActive() : window.SCDAY_DATA;
     var d = isNgay ? ng : ((typeof scActive === 'function') ? scActive() : window.SC_DATA);
     if (!d) return;
-    // Ma ly do hien trong modal: lay tu cols cua nguon (loai 0 NO REASON, 120/230 MUTATION)
-    // de tu dong the hien them code moi (922, 923, 924, 972...) ma khong sua tay.
+    // Ma ly do hien trong modal: lay tu cols cua nguon. Chi loai 120/230 (MUTATION, tu huy nhau).
+    // Code 0 (NO REASON) GIU LAI de khong thieu thong tin (vd dept 550 chi co code 0).
     var _modalCols = isNgay ? (d.dayCols || []) : (isMtd ? (d.mtdCols || d.dayCols || []) : (d.dayCols || []));
-    var modalCodes = _modalCols.filter(function(c){ return c !== 0 && c !== 120 && c !== 230; });
+    var modalCodes = _modalCols.filter(function(c){ return c !== 120 && c !== 230; });
     if (!modalCodes.length) modalCodes = [2, 3, 6, 925];
     // 11/11: nap day du cac reason code vao filter (truoc day chi co 4 code co dinh).
     var _codeSel = document.getElementById('scmFilterCode');
@@ -7578,10 +7578,10 @@ window.TOP50_DATA = {"dates": [20261101, 20261102, 20261103, 20261104, 20261105,
      (list || []).forEach(function(r){
        if (r && r.reason_code !== null && r.reason_code !== undefined) _seen[r.reason_code] = 1;
      });
-     var _mc = Object.keys(_seen).map(Number).filter(function(c){ return c !== 0 && c !== 120 && c !== 230; })
+     var _mc = Object.keys(_seen).map(Number).filter(function(c){ return c !== 120 && c !== 230; })
        .sort(function(a, b){ return a - b; });
-     if (!_mc.length) _mc = (d && d.dayCols) ? d.dayCols.filter(function(c){ return c !== 0 && c !== 120 && c !== 230; }) : [2, 3, 6, 925];
-     if (!_mc.length) _mc = [2, 3, 6, 925];
+     if (!_mc.length) _mc = (d && d.dayCols) ? d.dayCols.filter(function(c){ return c !== 120 && c !== 230; }) : [0, 2, 3, 6, 925];
+     if (!_mc.length) _mc = [0, 2, 3, 6, 925];
     if (scmSortKey === null){
       var h = '';
       _mc.forEach(function(c){
