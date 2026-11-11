@@ -693,6 +693,12 @@ table.data tbody tr.sc-nodata:hover{opacity:.85;}
 #scDeptModal table.scm-table td.scm-prod{color:var(--text); font-weight:600;}
 #scDeptModal .scm-empty,
 #minusModal .scm-empty{padding:36px 12px; text-align:center; color:var(--muted); font-size:12px;}
+/* 11/11/2026: dong ghi chu "da an N dong QTY = 0" trong bang chi tiet (reason 972) */
+#scDeptModal table.scm-table tbody tr.scm-note td,
+#minusModal table.scm-table tbody tr.scm-note td{
+  background:rgba(201,162,39,.10); color:var(--muted); font-size:11px; font-style:italic;
+  border-bottom:none; text-align:left;
+}
 #scDeptModal table.scm-table tbody tr.scm-row{cursor:pointer;}
 #scDeptModal table.scm-table tr.scm-open td{background:rgba(50,166,74,.12);}
 #scDeptModal table.scm-table tr.scm-detail td{background:rgba(246,251,248,.9); padding:10px 12px 12px 34px;}
@@ -7222,6 +7228,17 @@ window.TOP50_DATA = {"dates": [20261101, 20261102, 20261103, 20261104, 20261105,
       if (x.reason_code !== y.reason_code) return x.reason_code - y.reason_code;
       return (Number(y.amount) || 0) - (Number(x.amount) || 0);
     });
+    /* 11/11/2026 (yeu cau user): AN cac dong QTY = 0 khoi BANG chi tiet.
+       Vi du reason 972 "Reception modif": chi dieu chinh GIA TRI lo hang nhap,
+       khong doi so luong -> QTY = 0 nhung AMOUNT <> 0 (dung du lieu Symphony).
+       KPI va dong TONG van tinh tren `list` (day du) -> tong tien khong doi. */
+    var qtyZero = list.filter(function(r){ return (Number(r.qty) || 0) === 0; });
+    var viewList = list.filter(function(r){ return (Number(r.qty) || 0) !== 0; });
+    var qtyZeroAmt = 0;
+    qtyZero.forEach(function(r){ qtyZeroAmt += (Number(r.amount) || 0); });
+    var hideNote = qtyZero.length
+      ? ('Đã ẩn ' + fmtInt(qtyZero.length) + ' dòng QTY = 0 (chỉ điều chỉnh giá trị: ' + fmtVnd(qtyZeroAmt) + ')')
+      : '';
     document.getElementById('scmKicker').textContent = 'DEPT № ' + deptNo;
     document.getElementById('scmTitle').textContent = String(decsName || '');
     var sums = {}, counts = {}, total = 0;
@@ -7240,14 +7257,18 @@ window.TOP50_DATA = {"dates": [20261101, 20261102, 20261103, 20261104, 20261105,
       '<div class="v">' + fmtVnd(total) + '</div>' +
       '<div class="n">' + fmtInt(list.length) + ' dòng chi tiết</div></div>';
     document.getElementById('scmKpis').innerHTML = kpis;
-    scmLastList = list;
-    scmLastRender = {list: list, d: d, sums: sums, total: total};
-    document.getElementById('scmTableTitle').textContent = 'CHI TIẾT DÒNG (' + fmtInt(list.length) + ')';
+    scmLastList = viewList;
+    scmLastRender = {list: viewList, d: d, sums: sums, total: total, note: hideNote};
+    document.getElementById('scmTableTitle').textContent = 'CHI TIẾT DÒNG (' + fmtInt(viewList.length) + ')';
         var body = document.getElementById('scmBody');
-    if (!list.length){
-      body.innerHTML = '<tr><td colspan="6"><div class="scm-empty">Không có dòng chi tiết nào với code 2 / 3 / 6 / 922 / 925 / 972 cho ngành hàng này.</div></td></tr>';
+    if (!viewList.length){
+      body.innerHTML = '<tr><td colspan="6"><div class="scm-empty">' +
+        (qtyZero.length
+          ? ('Không có dòng có số lượng ≠ 0. ' + escHtml(hideNote) + '.')
+          : ('Không có dòng chi tiết nào với code ' + escHtml(modalCodes.join(' / ')) + ' cho ngành hàng này.')) +
+        '</div></td></tr>';
     } else {
-      scmRenderBody(list, d, sums, total);
+      scmRenderBody(viewList, d, sums, total, hideNote);
     }
     scmResetFilter();
 
@@ -7345,7 +7366,7 @@ window.TOP50_DATA = {"dates": [20261101, 20261102, 20261103, 20261104, 20261105,
       if (ind) ind.textContent = (scmSortKey === key) ? (scmSortDir === 1 ? '\\u25B2' : '\\u25BC') : '';
     }
   }
-  function scmRenderBody(list, d, sums, total){
+  function scmRenderBody(list, d, sums, total, note){
     var body = document.getElementById('scmBody');
      var _mc = (d && d.dayCols) ? d.dayCols.filter(function(c){ return c !== 0 && c !== 120 && c !== 230; }) : [2,3,6,925];
      if (!_mc.length) _mc = [2,3,6,925];
@@ -7371,6 +7392,7 @@ window.TOP50_DATA = {"dates": [20261101, 20261102, 20261103, 20261104, 20261105,
       });
       h += '<tr class=\"scm-grand\"><td colspan=\"5\">Tổng cộng ' + _mc.join(' + ') + '</td>' +
         '<td class=\"num\">' + escHtml(fmtVnd(total)) + '</td></tr>';
+      if (note) h += '<tr class=\"scm-note\"><td colspan=\"6\">' + escHtml(note) + '</td></tr>';
       body.innerHTML = h;
     } else {
       var arr = list.slice().sort(function(x, y){
@@ -7393,6 +7415,7 @@ window.TOP50_DATA = {"dates": [20261101, 20261102, 20261103, 20261104, 20261105,
       });
       h += '<tr class=\"scm-grand\"><td colspan=\"5\">Tổng cộng (sắp xếp ' + (scmSortDir === 1 ? 'tăng' : 'giảm') + ')</td>' +
         '<td class=\"num\">' + escHtml(fmtVnd(total)) + '</td></tr>';
+      if (note) h += '<tr class=\"scm-note\"><td colspan=\"6\">' + escHtml(note) + '</td></tr>';
       body.innerHTML = h;
     }
     scmUpdateSortIndicators();
@@ -7443,7 +7466,7 @@ window.TOP50_DATA = {"dates": [20261101, 20261102, 20261103, 20261104, 20261105,
       if (scmSortKey === key) scmSortDir = -scmSortDir;
       else { scmSortKey = key; scmSortDir = 1; }
       if (scmLastRender){
-        scmRenderBody(scmLastRender.list, scmLastRender.d, scmLastRender.sums, scmLastRender.total);
+        scmRenderBody(scmLastRender.list, scmLastRender.d, scmLastRender.sums, scmLastRender.total, scmLastRender.note);
         scmResetFilter();
       }
     });
