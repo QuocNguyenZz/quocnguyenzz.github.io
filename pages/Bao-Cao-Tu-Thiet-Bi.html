@@ -247,7 +247,7 @@
   }
 
   /* ---------- Save state + toast ---------- */
-  .save-state{font-size:12px;color:var(--muted);white-space:nowrap;margin-left:auto}
+  .save-state{font-size:12px;color:var(--muted);white-space:nowrap;margin-left:auto;display:inline-block;min-height:1.3em;vertical-align:middle}
   .save-state b{color:#14511D}
   .save-state i{color:var(--gold-1);font-style:normal}
   .btn-save{border:1.5px solid var(--gold-2);background:linear-gradient(180deg,var(--gold-1),var(--gold-2));
@@ -1016,7 +1016,7 @@ function updateSaveState(){
   const n = diffAdj(SAVED_ADJ, ADJ).length + diffNotes(SAVED_NOTES, NOTES).length +
     diffCats(SAVED_CATS, CATS).length + diffUnits(SAVED_UNITS, UNITS).length;
   if (n || histDirty){
-    el.innerHTML = '';
+    el.innerHTML = '<i>Chưa lưu (' + n + ' thay đổi)</i>';
   } else if (savedAt){
     el.innerHTML = '<b>✓ Đã lưu</b> ' + fmtTime(savedAt);
   } else {
@@ -1154,6 +1154,46 @@ function runSearch(){
 }
 
 function adjCount(){ return Object.keys(ADJ).length; }
+
+function refreshAfterStep(stt){
+  // Cap nhat tai cho (khong render lai toan bang) de tranh "dut" va mat focus/scroll.
+  const r = ALL.filter(function(x){ return x.stt === stt; })[0];
+  if (r){
+    const btn = document.querySelector('.step-btn[data-stt="' + stt + '"]');
+    const row = btn ? btn.closest('tr') : null;
+    const v = row ? row.querySelector('.step-val') : null;
+    const q = effQty(r);
+    const isAdj = ADJ[stt] !== undefined;
+    if (v){
+      v.textContent = fmtStep(q);
+      v.classList.toggle('adj', isAdj);
+      v.title = isAdj ? ('Đã điều chỉnh (gốc ' + fmtStep(r.qty) + ')') : 'Số lượng gốc';
+    }
+  }
+  // KPI
+  const units = new Set(), names = new Set();
+  let sumQty = 0;
+  filtered.forEach(function(r){ units.add(effUnit(r)); names.add(norm(r.name)); sumQty += effQty(r); });
+  sumQty = Math.round(sumQty * 100) / 100;
+  document.getElementById('kpiLines').textContent = filtered.length.toLocaleString('vi-VN');
+  document.getElementById('kpiQty').textContent = sumQty.toLocaleString('vi-VN');
+  document.getElementById('kpiUnit').textContent = units.size.toLocaleString('vi-VN');
+  document.getElementById('kpiAdj').textContent = adjCount().toLocaleString('vi-VN');
+  document.getElementById('kpiItems').textContent = names.size.toLocaleString('vi-VN');
+  // stat bar
+  const searchWord = $q.value.trim();
+  let msg;
+  if (filter_active()){
+    msg = 'Kết quả lọc: <b>' + filtered.length.toLocaleString('vi-VN') + '</b> dòng';
+    if (curUnit) msg += ' · ĐVT: <b>' + esc(curUnit) + '</b>';
+    if (searchWord) msg += ' · Từ khóa: <b>&#8220;' + esc(searchWord) + '&#8221;</b>';
+    if (filtered.length === 0) msg += ' — thử từ khóa khác hoặc bỏ đơn vị tính';
+  } else {
+    msg = 'Hiển thị <b>' + filtered.length.toLocaleString('vi-VN') + '</b> dòng — toàn bộ tủ thiết bị';
+  }
+  if (adjCount()) msg += ' · <b>' + adjCount() + '</b> dòng đã điều chỉnh +/−';
+  stat.innerHTML = msg;
+}
 
 function render(){
   const total = filtered.length;
@@ -1370,7 +1410,7 @@ tbody.addEventListener('click', function(e){
     if (nv < 0) nv = 0;
     if (nv === r.qty) delete ADJ[stt]; else ADJ[stt] = nv;
     updateSaveState(); // chưa ghi lịch sử, chưa lưu — chờ bấm Lưu
-    render();
+    refreshAfterStep(stt);
     return;
   }
   const a = e.target.closest('.ano-btn');
