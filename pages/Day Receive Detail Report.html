@@ -3921,10 +3921,15 @@ function renderSc(){
      cho bang gon — nhung GIU cot 0 (NO REASON) vi day la phan lon gia tri dieu chinh
      cua BAKERY / BUTCHERY / PRODUCE... Neu tat ca deu 0 thi giu nguyen danh sach cot. */
   var _topRows = scFilter.top10.filter(function(r){ return !r.subtotal; });
+  /* 11/11: an them code 0 (NO REASON) va 120 (MUTATION IN) trong bang TOP 10 theo yeu cau user. */
+  var TOP_HIDE_COLS = [0, 120];
   var topCols = _scVisibleCols(d.scCols).filter(function(c){
+    if (TOP_HIDE_COLS.indexOf(Number(c)) !== -1) return false;
     return _topRows.some(function(r){ return Number((r.rc || {})[c]) !== 0; });
   });
-  if (!topCols.length) topCols = _scVisibleCols(d.scCols);
+  if (!topCols.length) topCols = _scVisibleCols(d.scCols).filter(function(c){
+    return TOP_HIDE_COLS.indexOf(Number(c)) === -1;
+  });
   var legTop = rcLegend(topCols);
   var legNg = (_hasToday && ng) ? rcLegendWith(ng.reasonNames, ngCols) : '';
   var legDay = rcLegend(dayCols);
