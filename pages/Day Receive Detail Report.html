@@ -3737,6 +3737,31 @@ function rcLegendWith(reasonNames, cols){
 function scNumCell(v){
   return '<td class="num">' + fmtVnd(v) + '</td>';
 }
+
+/* 11/11/2026 (user): KHONG hien thi VA KHONG tinh vao GRAND TOTAL cac reason code nay.
+   - An cot: BY DAY / BY Yesterday / MTD / TOP 10 + legend.
+   - GRAND TOTAL (bang, KPI, chart, cot tong cua TOP 10) = total - tong cac code bi an.
+   - Modal chi tiet van hien day du (KPI + danh sach dong) de doi soat voi Symphony.
+   Muon an them code khac thi them so vao mang. */
+var SC_HIDE_COLS = [972];
+function _scVisibleCols(cols){
+  return (cols || []).filter(function(c){ return SC_HIDE_COLS.indexOf(Number(c)) === -1; });
+}
+function scHiddenSum(r){
+  var rc = (r && r.rc) || {}, s = 0;
+  for (var i = 0; i < SC_HIDE_COLS.length; i++){ s += num(rc[SC_HIDE_COLS[i]]); }
+  return s;
+}
+function scTotal(r){
+  if (!r) return 0;
+  return num(r.total) - scHiddenSum(r);
+}
+function sumScTotal(rows){
+  var s = 0;
+  for (var i = 0; i < (rows || []).length; i++){ s += scTotal(rows[i]); }
+  return s;
+}
+
 function scPivotTable(rows, cols, withDecs, withTotal, hlTotal){
   var gtCls = hlTotal ? ' gt-col' : '';
   var html = '<thead><tr><th>DEPT_NO</th><th>DEPT_NAME</th>' + (withDecs ? '<th>DECS</th>' : '') +
@@ -3748,14 +3773,14 @@ function scPivotTable(rows, cols, withDecs, withTotal, hlTotal){
       '<td>' + r.dept_name + '</td>' +
       (withDecs ? '<td>' + r.decs + '</td>' : '') +
       cols.map(function(c){ return scNumCell(r.rc[c]); }).join('') +
-      '<td class="num' + gtCls + '">' + fmtVnd(r.total) + '</td></tr>';
+      '<td class="num' + gtCls + '">' + fmtVnd(scTotal(r)) + '</td></tr>';
   });
   if (withTotal && rows.length){
     var sums = {}, gTotal = 0;
     cols.forEach(function(c){ sums[c] = 0; });
     rows.forEach(function(r){
       cols.forEach(function(c){ sums[c] += r.rc[c]; });
-      gTotal += r.total;
+      gTotal += scTotal(r);
     });
     html += '<tr class="row-total"><td colspan="' + (2 + (withDecs ? 1 : 0)) + '">Grand Total</td>' +
       cols.map(function(c){ return scNumCell(sums[c]); }).join('') +
@@ -3872,18 +3897,12 @@ function renderSc(){
     ngDetail = [];
   }
 
-  $('sc_dayTotal').textContent = _hasToday ? fmtVnd(sumBy(ngRows, 'total')) : '\u2014';
-  $('sc_mtdTotal').textContent = fmtVnd(sumBy(scFilter.mtdRows, 'total'));
+  $('sc_dayTotal').textContent = _hasToday ? fmtVnd(sumScTotal(ngRows)) : '\u2014';
+  $('sc_mtdTotal').textContent = fmtVnd(sumScTotal(scFilter.mtdRows));
   $('sc_dayItems').textContent = _hasToday ? fmtInt(ngDetail.length) : '\u2014';
   $('sc_mtdItems').textContent = fmtInt(scFilter.mtdDetail.length);
 
-  /* 11/11/2026 (user): KHONG hien thi cac cot reason code nay tren bang
-     (BY DAY / BY Yesterday / MTD / TOP 10). Gia tri VAN duoc tinh trong GRAND TOTAL
-     va van hien trong modal chi tiet. Muon an them code khac thi them so vao mang. */
-  var SC_HIDE_COLS = [972];
-  function _scVisibleCols(cols){
-    return (cols || []).filter(function(c){ return SC_HIDE_COLS.indexOf(Number(c)) === -1; });
-  }
+  /* SC_HIDE_COLS / _scVisibleCols / scTotal(): khai bao o pham vi global (gan scPivotTable). */
 
   // An cac cot reason_code khong co gia tri (tong = 0 tren toan bo du lieu) — user yeu cau 09/11.
   function _scNonZeroCols(cols, rows){
@@ -3927,14 +3946,14 @@ function renderSc(){
     if (r.subtotal){
       htmlTop += '<tr class="row-total"><td>' + r.decs + '</td><td></td><td></td>' +
         topCols.map(function(){ return '<td class="num"></td>'; }).join('') +
-        '<td class="num">' + fmtVnd(r.total) + '</td></tr>';
+        '<td class="num">' + fmtVnd(scTotal(r)) + '</td></tr>';
     } else {
       htmlTop += '<tr>' +
         '<td>' + r.decs + '</td>' +
         '<td class="num">' + (r.root_code !== null && r.root_code !== undefined ? r.root_code : '') + '</td>' +
         '<td>' + r.artdesc + '</td>' +
         topCols.map(function(c){ return scNumCell(r.rc[c]); }).join('') +
-        '<td class="num">' + fmtVnd(r.total) + '</td></tr>';
+        '<td class="num">' + fmtVnd(scTotal(r)) + '</td></tr>';
     }
   });
   htmlTop += '</tbody>';
@@ -3957,7 +3976,7 @@ function renderSc(){
 function renderScCharts(){
   var d = scActive();
 
-  var dayTot = scFilter.dayRows.map(function(r){ return {name: r.dept_name + ' · ' + r.decs, val: r.total}; })
+  var dayTot = scFilter.dayRows.map(function(r){ return {name: r.dept_name + ' · ' + r.decs, val: scTotal(r)}; })
     .filter(function(x){ return x.val !== 0; })
     .sort(function(a,b){ return Math.abs(b.val) - Math.abs(a.val); });
   mkVBar('vbarScDay', dayTot.map(function(x){ return x.name; }), dayTot.map(function(x){ return Number(Math.abs(x.val).toFixed(0)); }), '#5BAF70', true, compactNum);
@@ -3965,6 +3984,7 @@ function renderScCharts(){
   var rcDay = {};
   scFilter.dayDetail.forEach(function(r){
     if (r.reason_code === null) return;
+    if (SC_HIDE_COLS.indexOf(Number(r.reason_code)) !== -1) return;   /* code bi an -> khong dua vao donut */
     var k = r.reason_code;
     rcDay[k] = (rcDay[k] || 0) + r.cost;
   });
@@ -3972,11 +3992,11 @@ function renderScCharts(){
   mkDonut('donutScReason', rcKeys.map(function(k){ return k + ' · ' + scReasonLabel(k); }), rcKeys.map(function(k){ return rcDay[k]; }), SERIES_COLORS);
 
   var mtdOrder = scFilter.mtdRows.slice().sort(function(a,b){ return (Number(a.dept_no)||0) - (Number(b.dept_no)||0); });
-  mkVBar('lineScMtd', mtdOrder.map(function(r){ return r.dept_name + ' ' + r.dept_no; }), mtdOrder.map(function(r){ return r.total != null ? Math.abs(Number(r.total.toFixed(0))) : 0; }), '#5BAF70', true, compactNum);
+  mkVBar('lineScMtd', mtdOrder.map(function(r){ return r.dept_name + ' ' + r.dept_no; }), mtdOrder.map(function(r){ var v = scTotal(r); return Math.abs(Number(v.toFixed(0))); }), '#5BAF70', true, compactNum);
 
   var items = scFilter.top10.filter(function(r){ return !r.subtotal; }).slice()
-    .sort(function(a,b){ return Math.abs(b.total) - Math.abs(a.total); }).slice(0,10);
-  mkHBar('hbarScTop', items.map(function(r){ return r.artdesc.slice(0,24) + ' (' + r.decs + ')'; }), items.map(function(r){ return r.total != null ? Number(r.total.toFixed(0)) : 0; }), '#5BAF70');
+    .sort(function(a,b){ return Math.abs(scTotal(b)) - Math.abs(scTotal(a)); }).slice(0,10);
+  mkHBar('hbarScTop', items.map(function(r){ return r.artdesc.slice(0,24) + ' (' + r.decs + ')'; }), items.map(function(r){ return Number(scTotal(r).toFixed(0)); }), '#5BAF70');
 }
 
 function buildScReasonFilter(){
