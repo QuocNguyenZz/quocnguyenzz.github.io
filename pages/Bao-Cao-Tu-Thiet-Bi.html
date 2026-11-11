@@ -1023,7 +1023,7 @@ function updateSaveState(){
     el.innerHTML = 'Chưa có thay đổi';
   }
 }
-function stepOf(r){ return (String(effUnit(r)).toLowerCase() === 'bao') ? 0.5 : 1; }
+function stepOf(r){ return (String(effUnit(r)).toLowerCase() === 'bao') ? 0.25 : 1; }
 function effQty(r){ return (ADJ[r.stt] !== undefined) ? ADJ[r.stt] : r.qty; }
 function effCat(r){ return effCatOf(r.stt, CATS); }
 function effUnit(r){ return effUnitOf(r.stt, UNITS); }
