@@ -7330,8 +7330,16 @@ window.TOP50_DATA = {"dates": [20261101, 20261102, 20261103, 20261104, 20261105,
     var daysWithData = Object.keys(daily).filter(function(k){ return daily[k] !== 0; }).length;
     var avg = daysWithData ? (total / daysWithData) : 0;
     var kpi = document.getElementById('drmKpis');
+    // max / min daily sales (chi tinh cac ngay co data)
+    var _vals = Object.keys(daily).map(function(k){ return daily[k]; }).filter(function(v){ return v !== 0; });
+    var _max = _vals.length ? Math.max.apply(null, _vals) : 0;
+    var _min = _vals.length ? Math.min.apply(null, _vals) : 0;
+    var _maxDay = '', _minDay = '';
+    Object.keys(daily).forEach(function(k){ if (daily[k] === _max && !_maxDay) _maxDay = k.slice(6,8) + '/' + k.slice(4,6); });
+    Object.keys(daily).forEach(function(k){ if (daily[k] === _min && !_minDay) _minDay = k.slice(6,8) + '/' + k.slice(4,6); });
     kpi.innerHTML =
-      '<div class="scm-kpi"><div class="k">Tổng sales (-VAT)</div><div class="v">' + drmFmt(total) + '</div><div class="n">' + dates.length + ' ngày</div></div>' +
+      '<div class="scm-kpi"><div class="k">Sale cao nhất (-VAT)</div><div class="v">' + drmFmt(_max) + '</div><div class="n">' + (_maxDay || '—') + '</div></div>' +
+      '<div class="scm-kpi"><div class="k">Sale thấp nhất (-VAT)</div><div class="v">' + drmFmt(_min) + '</div><div class="n">' + (_minDay || '—') + '</div></div>' +
       '<div class="scm-kpi"><div class="k">Trung bình / ngày</div><div class="v">' + drmFmt(Math.round(avg)) + '</div><div class="n">' + daysWithData + ' ngày có data</div></div>' +
       '<div class="scm-kpi"><div class="k">MTD Sales (-VAT)</div><div class="v">' + drmFmt((function(){ var last = d.dateMeta[String(dates[dates.length-1])]; var r = last && (last.deptRows||[]).find(function(x){return String(x.dept_no)===String(deptNo);}); return r ? r.mtd_vat : 0; })()) + '</div><div class="n">lũy kế</div></div>';
     // calendar
