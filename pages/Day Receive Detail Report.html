@@ -3651,19 +3651,85 @@ $('dayDatePicker').addEventListener('change', function(){
   renderDay();
 });
 
+function topDeptNameMap(date){
+  var d = window.TOP50_DATA;
+  if (!d) return {};
+  var meta = d.dateMeta && (d.dateMeta[String(date)] || d.dateMeta[date]);
+  var map = {};
+  if (meta && meta.deptRows){
+    meta.deptRows.forEach(function(r){ if (r && r.dept_no !== null && r.dept_no !== undefined) map[String(r.dept_no)] = r.name; });
+  }
+  return map;
+}
+function computeMtdTop50(date){
+  var d = window.TOP50_DATA;
+  if (!d || !d.dates) return null;
+  var y = Math.floor(date/10000), m = Math.floor((date%10000)/100);
+  var today = d.latestDate;
+  var ty = Math.floor(today/10000), tm = Math.floor((today%10000)/100);
+  var isCurrentMonth = (y === ty && m === tm);
+  var endDay = isCurrentMonth ? (today % 100) : new Date(y, m, 0).getDate();
+  var deptMap = topDeptNameMap(date);
+  var acc = {};
+  var salesVat = 0;
+  (d.dates || []).forEach(function(ymd){
+    var yy = Math.floor(ymd/10000), mm = Math.floor((ymd%10000)/100), dd = ymd % 100;
+    if (yy !== y || mm !== m) return;
+    if (dd > endDay) return;
+    var meta = d.dateMeta && (d.dateMeta[String(ymd)] || d.dateMeta[ymd]);
+    if (!meta) return;
+    salesVat += (meta.storeTotal ? (meta.storeTotal.sales_vat || 0) : 0);
+    (meta.items || []).forEach(function(it){
+      var art = String(it[0]);
+      var deptNo = it[1];
+      var qty = it[2];
+      var amt = it[3];
+      var e = acc[art];
+      if (!e){ e = acc[art] = {art_no: art, name: (d.artNames && d.artNames[art]) ? d.artNames[art] : '', dept_no: deptNo, qty: 0, amount: 0}; }
+      e.qty += qty; e.amount += amt;
+      if (!e.dept && deptNo !== null && deptNo !== undefined){ e.dept = deptMap[String(deptNo)] || String(deptNo); }
+    });
+  });
+  if (!deptMap || Object.keys(deptMap).length === 0){
+    // fallback: build from any meta in this month
+    (d.dates || []).forEach(function(ymd){
+      var yy = Math.floor(ymd/10000), mm = Math.floor((ymd%10000)/100);
+      if (yy !== y || mm !== m) return;
+      var meta = d.dateMeta && (d.dateMeta[String(ymd)] || d.dateMeta[ymd]);
+      if (meta && meta.deptRows){
+        meta.deptRows.forEach(function(r){ if (r && r.dept_no !== null && r.dept_no !== undefined && !deptMap[String(r.dept_no)]) deptMap[String(r.dept_no)] = r.name; });
+      }
+    });
+    Object.keys(acc).forEach(function(k){ var e = acc[k]; if (e && !e.dept && e.dept_no !== null && e.dept_no !== undefined) e.dept = deptMap[String(e.dept_no)] || String(e.dept_no); });
+  }
+  Object.keys(acc).forEach(function(k){ var e = acc[k]; if (!e.dept) e.dept = e.dept_no !== null && e.dept_no !== undefined ? String(e.dept_no) : ''; });
+  var arr = Object.keys(acc).map(function(k){ return acc[k]; })
+    .filter(function(x){ return x.amount !== 0 || x.qty !== 0; })
+    .sort(function(a,b){ return b.amount - a.amount; })
+    .slice(0, 50);
+  var totalQty = arr.reduce(function(s,x){ return s + (x.qty||0); }, 0);
+  var totalAmt = arr.reduce(function(s,x){ return s + (x.amount||0); }, 0);
+  var monthLabel = String(m).padStart(2,'0') + '/' + y;
+  var startStr = '01/' + String(m).padStart(2,'0') + '/' + y;
+  var endStr = String(endDay).padStart(2,'0') + '/' + String(m).padStart(2,'0') + '/' + y;
+  return {items: arr, total: {qty: totalQty, amt: totalAmt}, salesVat: salesVat, endDay: endDay,
+          monthLabel: monthLabel, rangeLabel: startStr + ' – ' + endStr, isCurrentMonth: isCurrentMonth};
+}
+
 function renderTop50(){
   var d = window.TOP50_DATA;
   if (!d) return;
   var date = topSelectedDate || d.latestDate;
   var meta = d.dateMeta[date];
   if (!meta) return;
+  var mtd = computeMtdTop50(date);
 
   var isLatest = date === d.latestDate;
   $('topInvoiceLabel').textContent = fmtInt(d.invoices.today) + ' hóa đơn · MTD ' + fmtInt(d.invoices.mtd);
 
   var st = meta.storeTotal;
   $('tk_sales').textContent = st ? fmtVnd(st.sales_vat) : '0';
-  $('tk_mtd').textContent = st ? fmtVnd(st.mtd_vat) : '0';
+  $('tk_mtd').textContent = mtd ? fmtVnd(mtd.salesVat) : '0';
   $('tk_invoice').textContent = fmtInt(d.invoices.today);
   var top3 = (meta.top50 || []).slice(0, 3);
   var top3Html = top3.map(function(r, i){
@@ -3672,8 +3738,9 @@ function renderTop50(){
   }).join('<br>');
   $('tk_top3').innerHTML = top3Html || '-';
 
-  /* MTD (PivotTable2) - table + line chart */
-  var mtdRows = (d.mtdTop50 && d.mtdTop50.length) ? d.mtdTop50 : null;
+  /* MTD (tong hop theo thang cua ngay dang chon) - table + line chart */
+  var mtd = computeMtdTop50(date);
+  var mtdRows = (mtd && mtd.items && mtd.items.length) ? mtd.items : null;
   var mtdHtml = '';
   var mMeta = $('topMtdMeta');
   if (mtdRows){
@@ -3687,19 +3754,17 @@ function renderTop50(){
         '<td class="num">' + fmtDec(r.qty, 1) + '</td>' +
         '<td class="num">' + fmtVnd(r.amount) + '</td></tr>';
     });
-    var mQtyT = d.mtdTotal ? d.mtdTotal.qty : mtdRows.reduce(function(s,x){ return s + num(x.qty); }, 0);
-    var mAmtT = d.mtdTotal ? d.mtdTotal.amt : mtdRows.reduce(function(s,x){ return s + num(x.amount); }, 0);
+    var mQtyT = mtd.total.qty;
+    var mAmtT = mtd.total.amt;
     mtdHtml += '<tr class="row-total"><td></td><td></td><td>Grand Total</td><td></td>' +
       '<td class="num">' + fmtDec(mQtyT, 1) + '</td>' +
       '<td class="num">' + fmtVnd(mAmtT) + '</td></tr></tbody>';
   }
   if (mMeta){
     if (mtdRows){
-      var mLabTxt = (d.mtdMeta && d.mtdMeta.from) ? String(d.mtdMeta.from).trim() + ' ' + topFmtYmd(bl_serialToYmdInt(d.mtdMeta.to)) : 'MTD';
-      var mSumAmt = d.mtdTotal ? d.mtdTotal.amt : mtdRows.reduce(function(s,x){ return s + num(x.amount); }, 0);
-      mMeta.textContent = mtdRows.length + ' items · ' + mLabTxt + ' · Tổng ' + fmtVnd(mSumAmt);
+      mMeta.textContent = mtdRows.length + ' items · ' + (mtd.isCurrentMonth ? 'MTD tháng ' + mtd.monthLabel + ' (đến ' + mtd.rangeLabel.split(' – ')[1] + ')' : 'Tổng tháng ' + mtd.monthLabel + ' (' + mtd.rangeLabel + ')') + ' · Tổng ' + fmtVnd(mtd.total.amt);
     } else {
-      mMeta.textContent = 'Chưa có dữ liệu PivotTable2 (chờ refresh dữ liệu)';
+      mMeta.textContent = 'Chưa có dữ liệu cho tháng này';
     }
   }
 
