@@ -7420,6 +7420,7 @@ window.TOP50_DATA = {"dates": [20261101, 20261102, 20261103, 20261104, 20261105,
   var drmState = null;
   function drmFmt(n){ if (n===null||n===undefined||isNaN(Number(n))) return '—'; return Number(n).toLocaleString('vi-VN'); }
   function drmQty(n){ var v = Number(n); if (!isFinite(v)) return '—'; return (Math.round(v*1000)/1000).toLocaleString('vi-VN', {maximumFractionDigits:3}); }
+  function drmYMDLabel(ymd){ var s = String(ymd); return s.slice(6,8) + '/' + s.slice(4,6) + '/' + s.slice(0,4); }
   function escHtml(s){ return String(s===null||s===undefined?'':s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;').replace(/'/g,'&#39;'); }
   function closeDrmDayDetail(){
     var box = document.getElementById('drmDayDetail');
