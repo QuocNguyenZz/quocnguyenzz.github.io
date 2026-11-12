@@ -3804,29 +3804,51 @@ function renderTop50(){
   });
   var deptKeys = Object.keys(byDept).sort(function(a,b){ return byDept[b] - byDept[a]; });
 
-  var html2 = '<thead><tr><th>NAME</th><th class="num">DEPT_NO</th><th class="num">TARGET</th><th class="num">SALES (-VAT)</th><th class="num">SALES (+VAT)</th><th class="num">MTD SALES (-VAT)</th><th class="num">MTD SALES (+VAT)</th></tr></thead><tbody>';
+  // Tong theo thang dang chon (de Dept Ranking theo logic thang)
+  var monthDeptSales = {};
+  var _monthDates = d.dates.filter(function(dt){
+    return Math.floor(dt/10000) === Math.floor(date/10000) && Math.floor((dt%10000)/100) === Math.floor((date%10000)/100);
+  });
+  _monthDates.forEach(function(ymd){
+    var meta2 = d.dateMeta[ymd] || d.dateMeta[String(ymd)];
+    if (!meta2 || !meta2.deptRows) return;
+    meta2.deptRows.forEach(function(r){
+      if (r.subtotal || r.dept_no === null || r.dept_no === undefined) return;
+      var e = monthDeptSales[r.dept_no];
+      if (!e){ e = monthDeptSales[r.dept_no] = {dept_no: r.dept_no, name: r.name, target: r.target, sales: 0}; }
+      e.sales += (r.sales_vat || 0);
+      if (e.target === null && r.target !== null) e.target = r.target;
+    });
+  });
+
+  var html2 = '<thead><tr><th>NAME</th><th class="num">DEPT_NO</th><th class="num">TARGET</th><th class="num">SALES (-VAT)</th><th class="num">SALES (+VAT)</th><th class="num">TỔNG THÁNG (-VAT)</th><th class="num">TỔNG THÁNG (+VAT)</th></tr></thead><tbody>';
   meta.deptRows.forEach(function(r){
     var cls = r.subtotal ? ' class="row-total"' : '';
+    var mds = monthDeptSales[r.dept_no];
     html2 += '<tr' + cls + '>' +
       '<td><b>' + r.name + '</b></td>' +
       '<td class="num">' + (r.dept_no === null ? '' : r.dept_no) + '</td>' +
       '<td class="num">' + (r.target === null || r.target === undefined ? '' : fmtVnd(r.target * 1000000)) + '</td>' +
       '<td class="num">' + fmtVnd(r.sales_vat) + '</td>' +
       '<td class="num">' + fmtVnd(r.sales_plus) + '</td>' +
-      '<td class="num">' + fmtVnd(r.mtd_vat) + '</td>' +
+      '<td class="num">' + fmtVnd(mds ? mds.sales : r.mtd_vat) + '</td>' +
       '<td class="num">' + fmtVnd(r.mtd_plus) + '</td></tr>';
   });
 
-  var rank = meta.deptRows.filter(function(r){ return !r.subtotal; })
-    .sort(function(a,b){ return b.mtd_vat - a.mtd_vat; });
-  var html3 = '<thead><tr><th>#</th><th>NAME</th><th class="num">DEPT_NO</th><th class="num">SALE VAT(-)</th><th class="num">MTD SALES (-VAT)</th></tr></thead><tbody>';
+  var rank = meta.deptRows.filter(function(r){ return !r.subtotal && r.dept_no !== null && r.dept_no !== undefined; })
+    .map(function(r){ 
+      var mds = monthDeptSales[r.dept_no];
+      return {dept_no: r.dept_no, name: r.name, sales_vat: r.sales_vat, monthSales: (mds ? mds.sales : r.mtd_vat)};
+    })
+    .sort(function(a,b){ return b.monthSales - a.monthSales; });
+  var html3 = '<thead><tr><th>#</th><th>NAME</th><th class="num">DEPT_NO</th><th class="num">SALE VAT(-)</th><th class="num">TỔNG THÁNG (-VAT)</th></tr></thead><tbody>';
   rank.forEach(function(r, i){
-    html3 += '<tr class="dr-row" data-dept="' + (r.dept_no === null || r.dept_no === undefined ? '' : r.dept_no) + '" data-name="' + String(r.name||'').replace(/"/g,'&quot;') + '" style="cursor:pointer;">' +
+    html3 += '<tr class="dr-row" data-dept="' + r.dept_no + '" data-name="' + String(r.name||'').replace(/"/g,'&quot;') + '" style="cursor:pointer;">' +
       '<td>' + (i+1) + '</td>' +
       '<td><b>' + r.name + '</b></td>' +
-      '<td class="num">' + (r.dept_no === null || r.dept_no === undefined ? '' : r.dept_no) + '</td>' +
+      '<td class="num">' + r.dept_no + '</td>' +
       '<td class="num">' + fmtVnd(r.sales_vat) + '</td>' +
-      '<td class="num">' + fmtVnd(r.mtd_vat) + '</td></tr>';
+      '<td class="num">' + fmtVnd(r.monthSales) + '</td></tr>';
   });
 
   var topDept = rank.slice(0, 10);
@@ -3843,7 +3865,7 @@ function renderTop50(){
     function(){ var mt = $('top50MtdTable'); if (mt) mt.innerHTML = mtdHtml || '<thead><tr><th>#</th></tr></thead>'; },
     function(){ $('top50Table').innerHTML = html; $('topItemsCount').textContent = topRows.length + ' / ' + meta.top50.length + ' items'; },
     function(){ $('topDeptTable').innerHTML = html2 + '</tbody>'; $('topDeptRankTable').innerHTML = html3 + '</tbody>'; },
-    function(){ mkHBar('hbarTop10', items.slice(0,10).map(function(r){ return r.name.slice(0,26) + ' (' + r.dept + ')'; }), items.slice(0,10).map(function(r){ return Number(r.amount.toFixed(0)); }), '#5BAF70'); mkDonut('donutTopDept', deptKeys.map(function(k){ return k + ' · ' + fmtVnd(byDept[k]); }), deptKeys.map(function(k){ return byDept[k]; }), SERIES_COLORS); mkHBar('hbarTopDept', topDept.map(function(r){ return r.name.slice(0,26) + ' (' + r.dept_no + ')'; }), topDept.map(function(r){ return Number(r.mtd_plus.toFixed(0)); }), '#5BAF70'); mkHBar('hbarTopDeptToday', topDeptToday.map(function(r){ return r.name.slice(0,26) + ' (' + r.dept_no + ')'; }), topDeptToday.map(function(r){ return Number(r.sales_vat.toFixed(0)); }), '#5BAF70'); renderTopTargetChart(); if (mtdChart) mtdChart(); }
+    function(){ mkHBar('hbarTop10', items.slice(0,10).map(function(r){ return r.name.slice(0,26) + ' (' + r.dept + ')'; }), items.slice(0,10).map(function(r){ return Number(r.amount.toFixed(0)); }), '#5BAF70'); mkDonut('donutTopDept', deptKeys.map(function(k){ return k + ' · ' + fmtVnd(byDept[k]); }), deptKeys.map(function(k){ return byDept[k]; }), SERIES_COLORS); mkHBar('hbarTopDept', topDept.map(function(r){ return r.name.slice(0,26) + ' (' + r.dept_no + ')'; }), topDept.map(function(r){ return Number((r.monthSales || 0).toFixed(0)); }), '#5BAF70'); mkHBar('hbarTopDeptToday', topDeptToday.map(function(r){ return r.name.slice(0,26) + ' (' + r.dept_no + ')'; }), topDeptToday.map(function(r){ return Number(r.sales_vat.toFixed(0)); }), '#5BAF70'); renderTopTargetChart(); if (mtdChart) mtdChart(); }
   ]);
 }
 
