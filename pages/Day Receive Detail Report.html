@@ -3517,7 +3517,7 @@ function renderDay(){
     $('dayResultCount').textContent = rows.length + ' / ' + meta.sumRows.length + ' dòng';
 
     var html = '';
-    rows.forEach(function(r){
+    sortDesc(rows, function(r){ return r.ty_le; }).forEach(function(r){
       var pct = r.ty_le * 100;
       var pctClass = pct >= 10 ? 'pct-high' : 'pct-low';
       var lechBadge = r.lech ? '<span class="badge badge-warn">' + trimStr(r.lech) + '</span>' : '';
