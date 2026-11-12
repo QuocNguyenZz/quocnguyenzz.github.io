@@ -3851,7 +3851,8 @@ var topTargetDept = null;
 function buildTopTargetDept(){
   var d = window.TOP50_DATA;
   if (!d || !d.dateMeta) return;
-  var meta = d.dateMeta[d.dates[d.dates.length-1]];
+  var date = topSelectedDate || d.latestDate;
+  var meta = d.dateMeta[date] || d.dateMeta[d.latestDate];
   if (!meta) return;
   var sel = $('topTargetDept');
   if (!sel) return;
@@ -3873,10 +3874,16 @@ function renderTopTargetChart(){
   var sel = $('topTargetDept');
   if (!sel) return;
   var dep = sel.value;
+  var date = topSelectedDate || d.latestDate;
+  var y = Math.floor(date/10000), m = Math.floor((date%10000)/100);
+  // thang hien tai (theo ngay chon) -> lay tat ca ngay trong thang co data
+  var monthDates = d.dates.filter(function(dt){
+    return Math.floor(dt/10000) === y && Math.floor((dt%10000)/100) === m;
+  });
   var labels = [], vat = [], tgt = [];
   var tgtVal = null;
-  d.dates.forEach(function(dt){
-    var meta = d.dateMeta[dt];
+  monthDates.forEach(function(dt){
+    var meta = d.dateMeta[dt] || d.dateMeta[String(dt)];
     if (!meta) return;
     labels.push(topFmtYmd(dt).slice(0,5));
     if (!dep){
