@@ -579,7 +579,8 @@ table.data tbody tr.sc-nodata:hover{opacity:.85;}
 .pct-low{color:var(--good);}
 
 /* ---------------------------------------------------------- 8. OVERLAYS */
-#scDeptModal, #deptRankModal,
+#scDeptModal,
+#deptRankModal,
 #minusModal{
   display:none; position:fixed; inset:0; z-index:2000;
   background:var(--overlay);
@@ -587,22 +588,26 @@ table.data tbody tr.sc-nodata:hover{opacity:.85;}
   align-items:flex-start; justify-content:center; overflow:auto;
   padding:clamp(12px,3vw,34px) clamp(10px,2vw,18px);
 }
-#scDeptModal, #deptRankModal.open,
+#scDeptModal.open,
+#deptRankModal.open,
 #minusModal.open{display:flex; animation:overlayIn 150ms ease;}
 @keyframes overlayIn{from{opacity:0;}to{opacity:1;}}
 
-#scDeptModal, #deptRankModal .scm-panel,
+#scDeptModal .scm-panel,
+#deptRankModal .scm-panel,
 #minusModal .scm-panel{
   position:relative; width:100%; max-width:980px; padding:24px 24px 20px;
   background:var(--surface);
   border:1px solid var(--border); border-radius:16px;
   box-shadow:var(--shadow);
 }
-#scDeptModal, #deptRankModal.open .scm-panel,
+#scDeptModal.open .scm-panel,
+#deptRankModal.open .scm-panel,
 #minusModal.open .scm-panel{animation:panelIn 150ms ease both;}
 @keyframes panelIn{from{opacity:0; transform:translateY(8px);}to{opacity:1; transform:none;}}
 
-#scDeptModal, #deptRankModal .scm-close,
+#scDeptModal .scm-close,
+#deptRankModal .scm-close,
 #minusModal .scm-close{
   position:absolute; top:14px; right:14px; width:34px; height:34px; border-radius:50%;
   display:flex; align-items:center; justify-content:center;
@@ -610,100 +615,121 @@ table.data tbody tr.sc-nodata:hover{opacity:.85;}
   color:var(--text-2); font-size:17px; line-height:1;
   transition:background var(--t) ease, color var(--t) ease, border-color var(--t) ease;
 }
-#scDeptModal, #deptRankModal .scm-close:hover,
+#scDeptModal .scm-close:hover,
+#deptRankModal .scm-close:hover,
 #minusModal .scm-close:hover{background:var(--red-bg); color:var(--red); border-color:var(--red-soft);}
 
-#scDeptModal, #deptRankModal .scm-kicker,
+#scDeptModal .scm-kicker,
+#deptRankModal .scm-kicker,
 #minusModal .scm-kicker{font-size:11px; font-weight:700; letter-spacing:.14em; text-transform:uppercase; color:var(--legend);}
-#scDeptModal, #deptRankModal .scm-title,
+#scDeptModal .scm-title,
+#deptRankModal .scm-title,
 #minusModal .scm-title{
   font-size:clamp(19px,2.6vw,26px); font-weight:800; text-transform:uppercase; letter-spacing:-.01em;
   margin:4px 0; color:var(--text);
 }
-#scDeptModal, #deptRankModal .scm-sub,
+#scDeptModal .scm-sub,
+#deptRankModal .scm-sub,
 #minusModal .scm-sub{font-size:12px; color:var(--muted); margin-bottom:16px;}
-#scDeptModal, #deptRankModal .scm-kpis{display:grid; grid-template-columns:repeat(5,minmax(0,1fr)); gap:10px; margin-bottom:16px;}
+#scDeptModal .scm-kpis,
+#deptRankModal .scm-kpis,
+#minusModal .scm-kpis{display:grid; grid-template-columns:repeat(5,minmax(0,1fr)); gap:10px; margin-bottom:16px;}
 #minusModal .scm-kpis{display:grid; grid-template-columns:repeat(3,minmax(0,1fr)); gap:10px; margin-bottom:16px;}
-#scDeptModal, #deptRankModal .scm-kpi,
+#scDeptModal .scm-kpi,
+#deptRankModal .scm-kpi,
 #minusModal .scm-kpi{
   background:var(--surface-2); border:1px solid var(--border);
   border-radius:12px; padding:11px 13px;
 }
-#scDeptModal, #deptRankModal .scm-kpi .k,
+#scDeptModal .scm-kpi .k,
+#deptRankModal .scm-kpi .k,
 #minusModal .scm-kpi .k{font-size:11px; font-weight:700; letter-spacing:.08em; text-transform:uppercase; color:var(--legend);}
-#scDeptModal, #deptRankModal .scm-kpi .v,
+#scDeptModal .scm-kpi .v,
+#deptRankModal .scm-kpi .v,
 #minusModal .scm-kpi .v{font-size:22px; font-weight:800; color:var(--text); margin:3px 0; font-variant-numeric:tabular-nums;}
-#scDeptModal, #deptRankModal .scm-kpi .v.is-neg,
+#scDeptModal .scm-kpi .v.is-neg,
+#deptRankModal .scm-kpi .v.is-neg,
 #minusModal .scm-kpi .v.is-neg{color:var(--red);}
-#scDeptModal, #deptRankModal .scm-kpi.total .v{font-size:17px;}
-#scDeptModal, #deptRankModal .scm-kpi .n,
+#scDeptModal .scm-kpi.total .v,
+#deptRankModal .scm-kpi.total .v{font-size:17px;}
+#scDeptModal .scm-kpi .n,
+#deptRankModal .scm-kpi .n,
 #minusModal .scm-kpi .n{font-size:12px; color:var(--muted);}
-#scDeptModal, #deptRankModal .scm-card,
+#scDeptModal .scm-card,
 #minusModal .scm-card{border:1px solid var(--border); border-radius:12px; overflow:hidden; background:var(--page);}
-#scDeptModal, #deptRankModal .scm-card h4,
+#scDeptModal .scm-card h4,
 #minusModal .scm-card h4{
   margin:0; padding:11px 15px; font-size:11px; font-weight:800;
   letter-spacing:.1em; text-transform:uppercase; color:var(--text);
   background:var(--surface-2); border-bottom:1px solid var(--g-04);
 }
-#scDeptModal, #deptRankModal .scm-filter-row{display:flex; gap:8px; align-items:center; margin:0 0 10px; flex-wrap:wrap;}
-#scDeptModal, #deptRankModal .scm-filter-row select,
-#scDeptModal, #deptRankModal .scm-filter-row input{background:var(--surface-2); color:var(--text); border:1px solid var(--line-soft); border-radius:8px; padding:6px 10px; font-size:12px; font-family:inherit;}
-#scDeptModal, #deptRankModal .scm-filter-row input{flex:1; min-width:160px;}
-#scDeptModal, #deptRankModal .scm-filter-row select{min-width:150px;}
-#scDeptModal, #deptRankModal .scm-filter-count{font-size:11px; color:var(--legend); white-space:nowrap;}
-#scDeptModal, #deptRankModal .scm-row.scm-hidden{display:none;}
-#scDeptModal, #deptRankModal table.scm-table thead th.scm-sortable{cursor:pointer; user-select:none;}
-#scDeptModal, #deptRankModal table.scm-table thead th.scm-sortable:hover{color:var(--accent);}
-#scDeptModal, #deptRankModal .scm-sort-ind{font-size:9px; opacity:.55; margin-left:3px;}
-#scDeptModal, #deptRankModal .scm-tablewrap,
+#scDeptModal .scm-filter-row{display:flex; gap:8px; align-items:center; margin:0 0 10px; flex-wrap:wrap;}
+#scDeptModal .scm-filter-row select,
+#scDeptModal .scm-filter-row input{background:var(--surface-2); color:var(--text); border:1px solid var(--line-soft); border-radius:8px; padding:6px 10px; font-size:12px; font-family:inherit;}
+#scDeptModal .scm-filter-row input{flex:1; min-width:160px;}
+#scDeptModal .scm-filter-row select{min-width:150px;}
+#scDeptModal .scm-filter-count{font-size:11px; color:var(--legend); white-space:nowrap;}
+#scDeptModal .scm-row.scm-hidden{display:none;}
+#scDeptModal table.scm-table thead th.scm-sortable{cursor:pointer; user-select:none;}
+#scDeptModal table.scm-table thead th.scm-sortable:hover{color:var(--accent);}
+#scDeptModal .scm-sort-ind{font-size:9px; opacity:.55; margin-left:3px;}
+#scDeptModal .scm-tablewrap,
 #minusModal .scm-tablewrap{max-height:46vh; overflow:auto;}
 #deptRankModal .scm-kpis{grid-template-columns:repeat(4,minmax(0,1fr));}
 #deptRankModal .scm-kpi{min-height:74px; display:flex; flex-direction:column; justify-content:space-between;}
 #deptRankModal .scm-kpi .v{white-space:nowrap; font-size:18px;}
 #topDeptRankTable tr.dr-row{cursor:pointer; transition:background .12s ease;}
 #topDeptRankTable tr.dr-row:hover{background:var(--row-hover);}
-#scDeptModal, #deptRankModal table.scm-table,
+/* v20261112-drmsheet: lich thang trong modal Dept Ranking (co the co gian theo man hinh) */
+#deptRankModal .drm-month{font-weight:700;margin-bottom:6px;}
+#deptRankModal .drm-calwrap{overflow-x:auto; -webkit-overflow-scrolling:touch;}
+#deptRankModal table.drm-cal{width:100%; border-collapse:separate; border-spacing:4px 4px; font-size:11px; table-layout:fixed;}
+#deptRankModal table.drm-cal thead th{text-align:center; color:var(--muted); font-weight:700; padding:4px; font-size:11px;}
+#deptRankModal table.drm-cal td.drm-cell{min-width:44px; height:52px; vertical-align:top; text-align:center; padding:4px 2px; border:1px solid var(--border); border-radius:8px;}
+#deptRankModal table.drm-cal td.drm-cell .d{font-weight:700; font-size:11px; line-height:1.15;}
+#deptRankModal table.drm-cal td.drm-cell .v{font-size:9px; margin-top:2px; font-weight:600; line-height:1.2;}
+#deptRankModal table.drm-cal td.drm-cell .v.is-none{opacity:.4; font-weight:400;}
+#scDeptModal table.scm-table,
 #minusModal table.scm-table{width:100%; border-collapse:collapse; font-size:12px;}
-#scDeptModal, #deptRankModal table.scm-table thead th,
+#scDeptModal table.scm-table thead th,
 #minusModal table.scm-table thead th{
   position:sticky; top:0; z-index:2;
   background:var(--surface-2); color:var(--text); text-align:left; padding:9px 11px;
   font-size:10.5px; font-weight:800; letter-spacing:.08em; text-transform:uppercase; white-space:nowrap;
 }
-#scDeptModal, #deptRankModal table.scm-table thead th.num,
-#scDeptModal, #deptRankModal table.scm-table td.num,
+#scDeptModal table.scm-table thead th.num,
+#scDeptModal table.scm-table td.num,
 #minusModal table.scm-table thead th.num,
 #minusModal table.scm-table td.num{text-align:right; white-space:nowrap;}
-#scDeptModal, #deptRankModal table.scm-table td,
+#scDeptModal table.scm-table td,
 #minusModal table.scm-table td{padding:8px 11px; border-bottom:1px solid var(--row-line); color:var(--text-2);}
-#scDeptModal, #deptRankModal table.scm-table tr.scm-row:hover td,
+#scDeptModal table.scm-table tr.scm-row:hover td,
 #minusModal table.scm-table tr.scm-row:hover td{background:var(--row-hover);}
-#scDeptModal, #deptRankModal table.scm-table tr.scm-subtotal td,
+#scDeptModal table.scm-table tr.scm-subtotal td,
 #minusModal table.scm-table tr.scm-subtotal td{background:rgba(50,166,74,.12); font-weight:700; color:var(--text);}
-#scDeptModal, #deptRankModal table.scm-table tr.scm-grand td,
+#scDeptModal table.scm-table tr.scm-grand td,
 #minusModal table.scm-table tr.scm-grand td{background:var(--surface-3); font-weight:800; color:var(--gold);}
-#scDeptModal, #deptRankModal table.scm-table td.num.is-neg,
+#scDeptModal table.scm-table td.num.is-neg,
 #minusModal table.scm-table td.num.is-neg{color:var(--red);}
-#scDeptModal, #deptRankModal table.scm-table td.num.is-pos,
+#scDeptModal table.scm-table td.num.is-pos,
 #minusModal table.scm-table td.num.is-pos{color:var(--good);}
-#scDeptModal, #deptRankModal table.scm-table td.num.is-zero,
+#scDeptModal table.scm-table td.num.is-zero,
 #minusModal table.scm-table td.num.is-zero{color:var(--zero); opacity:.85;}
-#scDeptModal, #deptRankModal .scm-badge,
+#scDeptModal .scm-badge,
 #minusModal .scm-badge{
   display:inline-block; min-width:26px; text-align:center;
   background:var(--surface-3); color:var(--text-2);
   border-radius:6px; padding:2px 9px; font-size:11px; font-weight:800;
 }
-#scDeptModal, #deptRankModal table.scm-table td.scm-prod{color:var(--text); font-weight:600;}
-#scDeptModal, #deptRankModal .scm-empty,
+#scDeptModal table.scm-table td.scm-prod{color:var(--text); font-weight:600;}
+#scDeptModal .scm-empty,
 #minusModal .scm-empty{padding:36px 12px; text-align:center; color:var(--muted); font-size:12px;}
-#scDeptModal, #deptRankModal table.scm-table tbody tr.scm-row{cursor:pointer;}
-#scDeptModal, #deptRankModal table.scm-table tr.scm-open td{background:rgba(50,166,74,.12);}
-#scDeptModal, #deptRankModal table.scm-table tr.scm-detail td{background:rgba(246,251,248,.9); padding:10px 12px 12px 34px;}
-#scDeptModal, #deptRankModal .scm-detailgrid{display:grid; grid-template-columns:repeat(4,minmax(0,1fr)); gap:8px 16px; font-size:11px;}
-#scDeptModal, #deptRankModal .scm-detailgrid .dk{color:var(--legend); text-transform:uppercase; font-size:10px; letter-spacing:.08em;}
-#scDeptModal, #deptRankModal .scm-detailgrid .dv{color:var(--text); font-weight:600;}
+#scDeptModal table.scm-table tbody tr.scm-row{cursor:pointer;}
+#scDeptModal table.scm-table tr.scm-open td{background:rgba(50,166,74,.12);}
+#scDeptModal table.scm-table tr.scm-detail td{background:rgba(246,251,248,.9); padding:10px 12px 12px 34px;}
+#scDeptModal .scm-detailgrid{display:grid; grid-template-columns:repeat(4,minmax(0,1fr)); gap:8px 16px; font-size:11px;}
+#scDeptModal .scm-detailgrid .dk{color:var(--legend); text-transform:uppercase; font-size:10px; letter-spacing:.08em;}
+#scDeptModal .scm-detailgrid .dv{color:var(--text); font-weight:600;}
 
 /* --------------------------------------------- 9. EMPTY STATE / LANDING */
 #emptyState{
@@ -1085,8 +1111,8 @@ table.data tbody tr.sc-nodata:hover{opacity:.85;}
   #pageThietBi .search{min-width:100%;}
   #pageThietBi .search button{padding:0 18px;}
   #pageThietBi .chips{padding:0 14px 14px;}
-  #scDeptModal, #deptRankModal .scm-kpis{grid-template-columns:repeat(3,minmax(0,1fr));}
-  #scDeptModal, #deptRankModal .scm-detailgrid{grid-template-columns:repeat(2,minmax(0,1fr));}
+  #scDeptModal .scm-kpis, #deptRankModal .scm-kpis{grid-template-columns:repeat(3,minmax(0,1fr));}
+  #scDeptModal .scm-detailgrid, #deptRankModal .scm-detailgrid{grid-template-columns:repeat(2,minmax(0,1fr));}
 }
 @media (max-width:640px){
   #dashboard{padding:12px 10px 26px;}
@@ -1109,20 +1135,20 @@ table.data tbody tr.sc-nodata:hover{opacity:.85;}
   .filter-row select,.filter-row input[type=text]{width:100%; min-width:0;}
   .filter-row input.search-inline{min-width:0;}
   .result-count{margin-left:0;}
-  #scDeptModal, #deptRankModal .scm-kpis,#minusModal .scm-kpis{grid-template-columns:repeat(2,minmax(0,1fr));}
-  #scDeptModal, #deptRankModal .scm-kpi .v,#minusModal .scm-kpi .v{font-size:16px;}
-  #scDeptModal, #deptRankModal .scm-kpi.total .v{font-size:15px;}
+  #scDeptModal .scm-kpis, #deptRankModal .scm-kpis,#minusModal .scm-kpis{grid-template-columns:repeat(2,minmax(0,1fr));}
+  #scDeptModal .scm-kpi .v, #deptRankModal .scm-kpi .v,#minusModal .scm-kpi .v{font-size:16px;}
+  #scDeptModal .scm-kpi.total .v, #deptRankModal .scm-kpi.total .v{font-size:15px;}
   #minusModal table.scm-table th:first-child,
   #minusModal table.scm-table td:first-child{display:none;}
-  #scDeptModal, #deptRankModal table.scm-table,
+  #scDeptModal table.scm-table, #deptRankModal table.scm-table,
   #minusModal table.scm-table{font-size:10.5px;}
-  #scDeptModal, #deptRankModal table.scm-table thead th,
-  #scDeptModal, #deptRankModal table.scm-table td,
+  #scDeptModal table.scm-table thead th, #deptRankModal table.scm-table thead th,
+  #scDeptModal table.scm-table td, #deptRankModal table.scm-table td,
   #minusModal table.scm-table thead th,
   #minusModal table.scm-table td{padding:7px 7px;}
-  #scDeptModal, #deptRankModal .scm-title,#minusModal .scm-title{font-size:19px;}
-  #scDeptModal, #deptRankModal .scm-panel,#minusModal .scm-panel{padding:18px 14px 16px; border-radius:14px;}
-  #scDeptModal, #deptRankModal .scm-tablewrap,#minusModal .scm-tablewrap{max-height:54vh;}
+  #scDeptModal .scm-title, #deptRankModal .scm-title,#minusModal .scm-title{font-size:19px;}
+  #scDeptModal .scm-panel, #deptRankModal .scm-panel,#minusModal .scm-panel{padding:18px 14px 16px; border-radius:14px;}
+  #scDeptModal .scm-tablewrap, #deptRankModal .scm-tablewrap,#minusModal .scm-tablewrap{max-height:54vh;}
   table.data{font-size:11.5px;}
   table.data thead th{padding:9px 10px; font-size:10px;}
   table.data td{padding:8px 10px;}
@@ -1139,6 +1165,27 @@ table.data tbody tr.sc-nodata:hover{opacity:.85;}
   #pageThietBi .tbl table td:first-child{position:sticky; left:0; z-index:2; background:var(--surface); box-shadow:1px 0 0 var(--border);}
   #pageThietBi .tbl table thead th:first-child{z-index:6; background:var(--surface-2);}
   .menu-panel{left:10px; min-width:min(290px,92vw);}
+}
+
+/* v20261112-drmsheet: modal Dept Ranking tren dien thoai = tam toan man hinh, lich tu co gian
+   (truoc day bang lich rong 340px > khung 310px o may 360px -> cot T7 bi cat, phai cuon ngang) */
+@media (max-width:760px){
+  #deptRankModal{padding:0; align-items:flex-start;}
+  #deptRankModal .scm-panel{max-width:none; min-height:100vh; border-radius:0; border-left:0; border-right:0; padding:16px 12px 22px;}
+  #deptRankModal .scm-close{top:10px; right:10px;}
+  #deptRankModal .scm-title{font-size:18px;}
+  #deptRankModal .scm-sub{margin-bottom:12px; font-size:11.5px;}
+  #deptRankModal .scm-kpis{grid-template-columns:repeat(2,minmax(0,1fr)); gap:8px; margin-bottom:12px;}
+  #deptRankModal .scm-kpi{min-height:0; padding:9px 10px;}
+  #deptRankModal .scm-kpi .k{font-size:9.5px; letter-spacing:.04em; line-height:1.25;}
+  #deptRankModal .scm-kpi .v{font-size:15px; white-space:normal;}
+  #deptRankModal .scm-kpi .n{font-size:10.5px;}
+  #deptRankModal .drm-month{font-size:13px;}
+  #deptRankModal table.drm-cal{font-size:10px; border-spacing:3px 3px;}
+  #deptRankModal table.drm-cal thead th{font-size:10px; padding:2px;}
+  #deptRankModal table.drm-cal td.drm-cell{min-width:0; height:46px; padding:3px 0; border-radius:6px;}
+  #deptRankModal table.drm-cal td.drm-cell .d{font-size:10.5px;}
+  #deptRankModal table.drm-cal td.drm-cell .v{font-size:8.5px; margin-top:1px;}
 }
 
 
@@ -1344,10 +1391,10 @@ html[data-theme="dark"] .tree-bg{opacity:.22; mix-blend-mode:screen; filter:blur
 
 
 /* v20261030-hidescroll: an thanh cuon trong cua so chi tiet (PC khac bi thanh cuon de len bang) - van cuon bang chuot/cam ung */
-.overlay *, .detail, .detail *, #scDeptModal, #deptRankModal *, #minusModal *, .scm-tablewrap, .hist-list {
+.overlay *, .detail, .detail *, #scDeptModal *, #deptRankModal *, #minusModal *, .scm-tablewrap, .hist-list {
   scrollbar-width: none !important; -ms-overflow-style: none !important;
 }
-.overlay ::-webkit-scrollbar, .detail ::-webkit-scrollbar, #scDeptModal, #deptRankModal ::-webkit-scrollbar,
+.overlay ::-webkit-scrollbar, .detail ::-webkit-scrollbar, #scDeptModal ::-webkit-scrollbar, #deptRankModal ::-webkit-scrollbar,
 #minusModal ::-webkit-scrollbar, .scm-tablewrap::-webkit-scrollbar, .hist-list::-webkit-scrollbar {
   display: none !important; width: 0 !important; height: 0 !important;
 }
@@ -1366,6 +1413,8 @@ html[data-theme="dark"] .tree-bg{opacity:.22; mix-blend-mode:screen; filter:blur
     .music-bars span:nth-child(2) { animation-delay: .2s !important; }
     .music-bars span:nth-child(3) { animation-delay: .4s !important; }
     @keyframes musicBar { 0%, 100% { height: 4px; } 50% { height: 13px; } }
+    /* v20261112-drmsheet: ẩn nút nhạc khi modal đang mở (nút nằm ngoài .app-shell nên luôn đè lên modal) */
+    body.modal-open .music-toggle { display: none !important; }
 </style>
 <script>
 /* particles.js v2.0.0 embedded inline (offline) - VincentGarreau */
@@ -3054,7 +3103,14 @@ function activateTab(tab){
   renderCurrentTab();
 }
 document.querySelectorAll('.tab').forEach(function(t){
-  t.addEventListener('click', function(){ activateTab(this.getAttribute('data-tab')); });
+  t.addEventListener('click', function(){
+    activateTab(this.getAttribute('data-tab'));
+    /* v20261112-drmsheet: tren dien thoai drawer dang mo phu kin man hinh -> dong sau khi chon tab
+       (truoc day drawer con mo nen bam vao bang Dept Ranking bi drawer chan, khong mo duoc modal) */
+    if (window.__closeSidebar) window.__closeSidebar();
+    var _mb = document.getElementById('menuBtn');
+    if (_mb) _mb.classList.remove('active');
+  });
 });
 try{ syncTopTitle(currentTab); }catch(e){}
 
@@ -7376,10 +7432,10 @@ window.TOP50_DATA = {"dates": [20261101, 20261102, 20261103, 20261104, 20261105,
     var vals = Object.keys(daily).map(function(k){ return daily[k]; });
     var maxV = Math.max.apply(null, vals.map(function(v){ return Math.abs(v); }));
     if (!maxV) maxV = 1;
-    var html = '<div style="font-weight:700;margin-bottom:6px;">Tháng ' + String(m).padStart(2,'0') + '/' + y + '</div>';
-    html += '<table style="width:100%;border-collapse:separate;border-spacing:4px 4px;font-size:11px;">';
+    var html = '<div class="drm-month">Tháng ' + String(m).padStart(2,'0') + '/' + y + '</div>';
+    html += '<div class="drm-calwrap"><table class="drm-cal">';
     html += '<thead><tr>';
-    ['CN','T2','T3','T4','T5','T6','T7'].forEach(function(wd){ html += '<th style="text-align:center;color:var(--muted);font-weight:700;padding:4px;">' + wd + '</th>'; });
+    ['CN','T2','T3','T4','T5','T6','T7'].forEach(function(wd){ html += '<th>' + wd + '</th>'; });
     html += '</tr></thead><tbody>';
     var day = 1;
     var started = false;
@@ -7397,9 +7453,9 @@ window.TOP50_DATA = {"dates": [20261101, 20261102, 20261103, 20261104, 20261105,
           var bg = has ? 'rgba(50,166,74,' + (0.15 + 0.55*intensity).toFixed(2) + ')' : 'var(--surface-2)';
           var color = has ? 'var(--text)' : 'var(--muted)';
           var valTxt = has ? (Math.abs(v) >= 1000000 ? (v/1000000).toFixed(1)+'M' : (Math.abs(v) >= 1000 ? (v/1000).toFixed(0)+'k' : v)) : '';
-          html += '<td style="background:' + bg + ';border:1px solid var(--border);border-radius:8px;padding:4px 2px;text-align:center;min-width:44px;height:52px;vertical-align:top;color:' + color + ';">' +
-            '<div style="font-weight:700;font-size:11px;">' + day + '</div>' +
-            (has ? '<div style="font-size:9px;margin-top:2px;font-weight:600;">' + (v < 0 ? '-' : '') + valTxt.replace('-','') + '</div>' : '<div style="font-size:9px;margin-top:2px;opacity:.4;">—</div>') +
+          html += '<td class="drm-cell" style="background:' + bg + ';color:' + color + ';">' +
+            '<div class="d">' + day + '</div>' +
+            (has ? '<div class="v">' + (v < 0 ? '-' : '') + valTxt.replace('-','') + '</div>' : '<div class="v is-none">—</div>') +
             '</td>';
           day++;
         }
@@ -7407,7 +7463,7 @@ window.TOP50_DATA = {"dates": [20261101, 20261102, 20261103, 20261104, 20261105,
       html += '</tr>';
       if (day > daysInMonth && started) { /* keep going to fill */ }
     }
-    html += '</tbody></table>';
+    html += '</tbody></table></div>';
     document.getElementById('drmCal').innerHTML = html;
     document.getElementById('drmLegend').textContent = 'Xanh đậm = doanh số cao. Chỉ ' + daysWithData + ' ngày có dữ liệu trong khoảng ' + dayFmtYmd(dates[0]) + ' – ' + dayFmtYmd(dates[dates.length-1]) + '.';
     modal.classList.add('open');
@@ -8952,6 +9008,28 @@ window.renderThietBi = function(){ try { render(); } catch(e){} };
       return;
     }
   });
+})();
+</script>
+
+<script>
+/* v20261112-drmsheet: nút nhạc là con trực tiếp của <body> (z-index 330) nên LUÔN vẽ trên modal
+   (modal nằm trong .app-shell z-index:1) -> trên điện thoại nút "Tắt nhạc" che dòng cuối của modal.
+   Ẩn nút nhạc khi có modal đang mở (nhạc vẫn phát bình thường). */
+(function(){
+  var IDS = ['deptRankModal', 'scDeptModal', 'minusModal', 'addOverlay', 'overlay'];
+  function sync(){
+    var any = IDS.some(function(id){
+      var e = document.getElementById(id);
+      return !!(e && e.classList.contains('open'));
+    });
+    document.body.classList.toggle('modal-open', any);
+  }
+  IDS.forEach(function(id){
+    var e = document.getElementById(id);
+    if (!e || !window.MutationObserver) return;
+    new MutationObserver(sync).observe(e, {attributes:true, attributeFilter:['class']});
+  });
+  sync();
 })();
 </script>
 </body>
