@@ -3354,20 +3354,44 @@ function mkLineDual(id, labels, s1, c1, s2, c2, n1, n2){
     if (typeof Chart === 'undefined') return;
     dc(id);
     var el = $(id); if (!el) return;
+    var dataLabels = (s1 || []).map(function(v){ return compactNum(v); });
     charts[id] = new Chart(el.getContext('2d'), {
       type:'line',
       data:{labels:labels, datasets:[
-        {label:n1, data:s1, borderColor:c1 || '#5BAF70', backgroundColor:c1 || '#5BAF70', fill:false, tension:0.3, pointRadius:3, pointBackgroundColor:c1 || '#5BAF70', borderWidth:2},
-        {label:n2, data:s2, borderColor:c2 || '#5BAF70', backgroundColor:c2 || '#5BAF70', fill:false, tension:0.3, pointRadius:3, pointBorderColor:c2 || '#5BAF70', borderDash:[6,4], borderWidth:2}
+        {label:n1, data:s1, borderColor:c1 || '#5BAF70', backgroundColor:c1 || '#5BAF70', fill:false, tension:0.25, pointRadius:4, pointHoverRadius:6, pointBackgroundColor:c1 || '#5BAF70', pointBorderColor:'#FFFFFF', pointBorderWidth:1.5, borderWidth:2.5},
+        {label:n2, data:s2, borderColor:c2 || '#5BAF70', backgroundColor:c2 || '#5BAF70', fill:false, tension:0.25, pointRadius:2.5, pointBorderColor:c2 || '#5BAF70', borderDash:[6,4], borderWidth:1.8}
       ]},
       options:{
         responsive:true, maintainAspectRatio:false,
-        plugins:{legend:{display:true, position:'top', labels:{font:{size:9}, color:'#14511D', boxWidth:16, padding:10}}},
+        layout:{padding:{top:18}},
+        plugins:{
+          legend:{display:true, position:'top', labels:{font:{size:9, weight:'600'}, color:'#14511D', boxWidth:16, padding:10}},
+          tooltip:{enabled:true, mode:'index', intersect:false}
+        },
         scales:{
-          x:{ticks:{font:{size:8.5}, color:'#14511D', maxRotation:60, minRotation:0, autoSkip:true, autoSkipPadding:14, maxTicksLimit:window.innerWidth<700?6:8}, grid:{display:false}},
+          x:{ticks:{font:{size:8.5}, color:'#14511D', maxRotation:60, minRotation:0, autoSkip:true, autoSkipPadding:14, maxTicksLimit:window.innerWidth<700?6:10}, grid:{display:false}},
           y:{ticks:{font:{size:9}, color:'#14511D', callback:function(v){ return compactNum(v); }}, grid:{color:'rgba(20,81,29,.10)'}}
         }
-      }
+      },
+      plugins:[{
+        id:'saleLabels',
+        afterDatasetsDraw: function(chart){
+          var ctx = chart.ctx;
+          var meta = chart.getDatasetMeta(0);
+          if (!meta || !meta.data) return;
+          ctx.save();
+          ctx.font = 'bold 9px Inter, sans-serif';
+          ctx.fillStyle = '#14511D';
+          ctx.textAlign = 'center';
+          ctx.textBaseline = 'bottom';
+          meta.data.forEach(function(pt, i){
+            var v = (s1 || [])[i];
+            if (v === null || v === undefined || v === 0) return;
+            ctx.fillText(compactNum(v), pt.x, pt.y - 6);
+          });
+          ctx.restore();
+        }
+      }]
     });
   });
 }
