@@ -3577,6 +3577,14 @@ function buildTopDatePicker(){
 $('topDatePicker').addEventListener('change', function(){
   var v = topDateToYmd(this.value);
   if (v === null) return;
+  var d = window.TOP50_DATA;
+  if (d && d.dates && d.dates.indexOf(v) < 0){
+    var best = null;
+    for (var i=0;i<d.dates.length;i++){ if (d.dates[i] <= v){ best = d.dates[i]; } }
+    if (best === null) best = d.dates[0];
+    v = best;
+    this.value = topYmdToDate(v);
+  }
   topSelectedDate = v;
   renderTop50();
 });
