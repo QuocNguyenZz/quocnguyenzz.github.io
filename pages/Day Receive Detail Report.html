@@ -1862,7 +1862,7 @@ var pJS=function(e,a){var t=document.querySelector("#"+e+" > .particles-js-canva
       <div class="kpi-card">
         <div class="kpi-icon">🥇</div>
         <div class="kpi-en">Top 3 Items</div><div class="kpi-vi">3 mặt hàng bán chạy nhất hôm nay</div>
-        <div class="kpi-value" id="tk_top3" style="font-size:11px; line-height:1.4; white-space:normal; text-align:left;">-</div>
+        <div class="kpi-value" id="tk_top3" style="font-size:11px; line-height:1.4; white-space:normal; text-align:left; color:var(--red);">-</div>
       </div>
     </div>
 
@@ -3659,8 +3659,8 @@ function renderTop50(){
   $('tk_invoice').textContent = fmtInt(d.invoices.today);
   var top3 = (meta.top50 || []).slice(0, 3);
   var top3Html = top3.map(function(r, i){
-    var nm = String(r.name || '').slice(0, 24).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');
-    return (i+1) + '. ' + nm + ' · ' + fmtVnd(r.amount);
+    var nm = String(r.name || '').slice(0, 28).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');
+    return (i+1) + '. ' + nm;
   }).join('<br>');
   $('tk_top3').innerHTML = top3Html || '-';
 
