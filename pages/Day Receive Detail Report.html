@@ -683,6 +683,12 @@ table.data tbody tr.sc-nodata:hover{opacity:.85;}
 /* v20261112-drmsheet: lich thang trong modal Dept Ranking (co the co gian theo man hinh) */
 #deptRankModal .drm-month{font-weight:700;margin-bottom:6px;}
 #deptRankModal .drm-calwrap{overflow-x:auto; -webkit-overflow-scrolling:touch;}
+#deptRankModal .drm-cal-head{display:flex; align-items:center; justify-content:space-between; gap:8px; margin-bottom:8px;}
+#deptRankModal .drm-cal-head .drm-month{flex:1; text-align:center; font-weight:700; font-size:13px;}
+#deptRankModal .drm-nav{width:30px; height:30px; border-radius:50%; border:1px solid var(--border); background:var(--surface-2);
+  color:var(--text); font-size:13px; cursor:pointer; display:flex; align-items:center; justify-content:center; flex-shrink:0;}
+#deptRankModal .drm-nav:hover:not(:disabled){background:var(--accent); color:var(--on-accent); border-color:var(--accent);}
+#deptRankModal .drm-nav:disabled{opacity:.35; cursor:not-allowed;}
 #deptRankModal table.drm-cal{width:100%; border-collapse:separate; border-spacing:4px 4px; font-size:11px; table-layout:fixed;}
 #deptRankModal table.drm-cal thead th{text-align:center; color:var(--muted); font-weight:700; padding:4px; font-size:11px;}
 #deptRankModal table.drm-cal td.drm-cell{min-width:44px; height:52px; vertical-align:top; text-align:center; padding:4px 2px; border:1px solid var(--border); border-radius:8px;}
@@ -7505,6 +7511,84 @@ window.TOP50_DATA = {"dates": [20260901, 20260902, 20260903, 20260904, 20260905,
   function drmQty(n){ var v = Number(n); if (!isFinite(v)) return '—'; return (Math.round(v*1000)/1000).toLocaleString('vi-VN', {maximumFractionDigits:3}); }
   function drmYMDLabel(ymd){ var s = String(ymd); return s.slice(6,8) + '/' + s.slice(4,6) + '/' + s.slice(0,4); }
   function escHtml(s){ return String(s===null||s===undefined?'':s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;').replace(/'/g,'&#39;'); }
+  var drmCalMonth = null;
+  var drmCalMonths = [];
+  var drmCalDaily = null;
+  var drmCalDates = null;
+  var drmCalDeptNo = null;
+  function drmCalHasData(ym){
+    if (!drmCalDates) return false;
+    return drmCalDates.some(function(d){ return Math.floor(d/10000)*100 + Math.floor((d%10000)/100) === ym; });
+  }
+  function renderDrmCalendar(){
+    var d = window.TOP50_DATA;
+    if (!d || !drmCalDaily) return;
+    var daily = drmCalDaily;
+    var dates = drmCalDates;
+    var deptNo = drmCalDeptNo;
+    var y = drmCalMonth.y, m = drmCalMonth.m;
+    var firstDow = new Date(y, m-1, 1).getDay();
+    var daysInMonth = new Date(y, m, 0).getDate();
+    var vals = Object.keys(daily).map(function(k){ return daily[k]; });
+    var maxV = Math.max.apply(null, vals.map(function(v){ return Math.abs(v); }));
+    if (!maxV) maxV = 1;
+    // month nav
+    var ym = y*100 + m;
+    var idx = drmCalMonths.indexOf(ym);
+    var prevYm = idx > 0 ? drmCalMonths[idx-1] : null;
+    var nextYm = (idx >= 0 && idx < drmCalMonths.length-1) ? drmCalMonths[idx+1] : null;
+    var html = '<div class="drm-cal-head">';
+    html += '<button type="button" class="drm-nav" data-dir="-1"' + (prevYm ? '' : ' disabled') + ' aria-label="Tháng trước">◀</button>';
+    html += '<div class="drm-month">Tháng ' + String(m).padStart(2,'0') + '/' + y + '</div>';
+    html += '<button type="button" class="drm-nav" data-dir="1"' + (nextYm ? '' : ' disabled') + ' aria-label="Tháng sau">▶</button>';
+    html += '</div>';
+    html += '<div class="drm-calwrap"><table class="drm-cal">';
+    html += '<thead><tr>';
+    ['CN','T2','T3','T4','T5','T6','T7'].forEach(function(wd){ html += '<th>' + wd + '</th>'; });
+    html += '</tr></thead><tbody>';
+    var day = 1;
+    var started = false;
+    for (var week = 0; week < 6 && day <= daysInMonth; week++){
+      html += '<tr>';
+      for (var wd = 0; wd < 7; wd++){
+        if (!started && wd === firstDow) started = true;
+        if (!started || day > daysInMonth){
+          html += '<td></td>';
+        } else {
+          var ymd = y*10000 + m*100 + day;
+          var v = daily[ymd];
+          var has = (v !== undefined && v !== 0);
+          var intensity = has ? (Math.abs(v)/maxV) : 0;
+          var bg = has ? 'rgba(50,166,74,' + (0.15 + 0.55*intensity).toFixed(2) + ')' : 'var(--surface-2)';
+          var color = has ? 'var(--text)' : 'var(--muted)';
+          var valTxt = has ? (Math.abs(v) >= 1000000 ? (v/1000000).toFixed(1)+'M' : (Math.abs(v) >= 1000 ? (v/1000).toFixed(0)+'k' : v)) : '';
+          html += '<td class="drm-cell' + (has ? ' is-data' : '') + '" data-ymd="' + ymd + '" style="background:' + bg + ';color:' + color + ';">' +
+            '<div class="d">' + day + '</div>' +
+            (has ? '<div class="v">' + (v < 0 ? '-' : '') + valTxt.replace('-','') + '</div>' : '<div class="v is-none">—</div>') +
+            '</td>';
+          day++;
+        }
+      }
+      html += '</tr>';
+      if (day > daysInMonth && started) { /* keep going to fill */ }
+    }
+    html += '</tbody></table></div>';
+    document.getElementById('drmCal').innerHTML = html;
+    // wire nav
+    var cal = document.getElementById('drmCal');
+    cal.querySelectorAll('.drm-nav').forEach(function(btn){
+      btn.addEventListener('click', function(){
+        var dir = parseInt(this.getAttribute('data-dir'), 10);
+        var i2 = drmCalMonths.indexOf(drmCalMonth.y*100 + drmCalMonth.m);
+        var ni = i2 + dir;
+        if (ni < 0 || ni >= drmCalMonths.length) return;
+        var nk = drmCalMonths[ni];
+        drmCalMonth = {y: Math.floor(nk/100), m: nk % 100};
+        closeDrmDayDetail();
+        renderDrmCalendar();
+      });
+    });
+  }
   function closeDrmDayDetail(){
     var box = document.getElementById('drmDayDetail');
     if (box) box.innerHTML = '';
@@ -7635,49 +7719,28 @@ window.TOP50_DATA = {"dates": [20260901, 20260902, 20260903, 20260904, 20260905,
       '<div class="scm-kpi"><div class="k">Sale thấp nhất (-VAT)</div><div class="v">' + drmFmt(_min) + '</div><div class="n">' + (_minDay || '—') + '</div></div>' +
       '<div class="scm-kpi"><div class="k">Trung bình / ngày</div><div class="v">' + drmFmt(Math.round(avg)) + '</div><div class="n">' + daysWithData + ' ngày có data</div></div>' +
       '<div class="scm-kpi"><div class="k">MTD Sales (-VAT)</div><div class="v">' + drmFmt((function(){ var last = d.dateMeta[String(dates[dates.length-1])]; var r = last && (last.deptRows||[]).find(function(x){return String(x.dept_no)===String(deptNo);}); return r ? r.mtd_vat : 0; })()) + '</div><div class="n">lũy kế</div></div>';
-    // calendar
+    // calendar (ho tro xem cac thang co data)
     var latest = dates[dates.length-1];
-    var y = Math.floor(latest/10000), m = Math.floor((latest%10000)/100);
-    var firstDow = new Date(y, m-1, 1).getDay(); // 0=Sun
-    var daysInMonth = new Date(y, m, 0).getDate();
-    // max for color scale
-    var vals = Object.keys(daily).map(function(k){ return daily[k]; });
-    var maxV = Math.max.apply(null, vals.map(function(v){ return Math.abs(v); }));
-    if (!maxV) maxV = 1;
-    var html = '<div class="drm-month">Tháng ' + String(m).padStart(2,'0') + '/' + y + '</div>';
-    html += '<div class="drm-calwrap"><table class="drm-cal">';
-    html += '<thead><tr>';
-    ['CN','T2','T3','T4','T5','T6','T7'].forEach(function(wd){ html += '<th>' + wd + '</th>'; });
-    html += '</tr></thead><tbody>';
-    var day = 1;
-    var started = false;
-    for (var week = 0; week < 6 && day <= daysInMonth; week++){
-      html += '<tr>';
-      for (var wd = 0; wd < 7; wd++){
-        if (!started && wd === firstDow) started = true;
-        if (!started || day > daysInMonth){
-          html += '<td></td>';
-        } else {
-          var ymd = y*10000 + m*100 + day;
-          var v = daily[ymd];
-          var has = (v !== undefined && v !== 0);
-          var intensity = has ? (Math.abs(v)/maxV) : 0;
-          var bg = has ? 'rgba(50,166,74,' + (0.15 + 0.55*intensity).toFixed(2) + ')' : 'var(--surface-2)';
-          var color = has ? 'var(--text)' : 'var(--muted)';
-          var valTxt = has ? (Math.abs(v) >= 1000000 ? (v/1000000).toFixed(1)+'M' : (Math.abs(v) >= 1000 ? (v/1000).toFixed(0)+'k' : v)) : '';
-          html += '<td class="drm-cell' + (has ? ' is-data' : '') + '" data-ymd="' + ymd + '" style="background:' + bg + ';color:' + color + ';">' +
-            '<div class="d">' + day + '</div>' +
-            (has ? '<div class="v">' + (v < 0 ? '-' : '') + valTxt.replace('-','') + '</div>' : '<div class="v is-none">—</div>') +
-            '</td>';
-          day++;
-        }
-      }
-      html += '</tr>';
-      if (day > daysInMonth && started) { /* keep going to fill */ }
+    // danh sach thang co data
+    drmCalMonths = [];
+    var seen = {};
+    dates.forEach(function(ymd){
+      var key = Math.floor(ymd/10000)*100 + Math.floor((ymd%10000)/100);
+      if (!seen[key]){ seen[key] = true; drmCalMonths.push(key); }
+    });
+    drmCalMonths.sort(function(a,b){ return a-b; });
+    drmCalDaily = daily;
+    drmCalDates = dates;
+    drmCalDeptNo = deptNo;
+    if (!drmCalMonth || true){ drmCalMonth = {y: Math.floor(latest/10000), m: Math.floor((latest%10000)/100)}; }
+    // dam bao thang dang xem co trong danh sach thang co data
+    var curKey = drmCalMonth.y*100 + drmCalMonth.m;
+    if (drmCalMonths.indexOf(curKey) < 0){
+      var lk = drmCalMonths[drmCalMonths.length-1];
+      drmCalMonth = {y: Math.floor(lk/100), m: lk % 100};
     }
-    html += '</tbody></table></div>';
-    document.getElementById('drmCal').innerHTML = html;
-    document.getElementById('drmLegend').textContent = 'Xanh đậm = doanh số cao. Chỉ ' + daysWithData + ' ngày có dữ liệu trong khoảng ' + dayFmtYmd(dates[0]) + ' – ' + dayFmtYmd(dates[dates.length-1]) + '.';
+    renderDrmCalendar();
+    document.getElementById('drmLegend').textContent = 'Xanh đậm = doanh số cao. Chỉ ' + daysWithData + ' ngày có dữ liệu trong khoảng ' + dayFmtYmd(dates[0]) + ' – ' + dayFmtYmd(dates[dates.length-1]) + '. Bấm vào ngày có số để xem chi tiết mã hàng. Dùng ◀ ▶ để xem tháng khác.';
     modal.classList.add('open');
     document.body.style.overflow = 'hidden';
   }
