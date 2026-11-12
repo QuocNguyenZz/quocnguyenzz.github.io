@@ -1861,8 +1861,8 @@ var pJS=function(e,a){var t=document.querySelector("#"+e+" > .particles-js-canva
       </div>
       <div class="kpi-card">
         <div class="kpi-icon">🥇</div>
-        <div class="kpi-en">Top 1 Item</div><div class="kpi-vi">Mặt hàng bán chạy nhất</div>
-        <div class="kpi-value" id="tk_top1" style="font-size:13px;">-</div>
+        <div class="kpi-en">Top 3 Items</div><div class="kpi-vi">3 mặt hàng bán chạy nhất hôm nay</div>
+        <div class="kpi-value" id="tk_top3" style="font-size:11px; line-height:1.4; white-space:normal; text-align:left;">-</div>
       </div>
     </div>
 
@@ -3657,8 +3657,12 @@ function renderTop50(){
   $('tk_sales').textContent = st ? fmtVnd(st.sales_vat) : '0';
   $('tk_mtd').textContent = st ? fmtVnd(st.mtd_vat) : '0';
   $('tk_invoice').textContent = fmtInt(d.invoices.today);
-  var top1 = meta.top50[0];
-  $('tk_top1').textContent = top1 ? top1.name.slice(0, 30) : '-';
+  var top3 = (meta.top50 || []).slice(0, 3);
+  var top3Html = top3.map(function(r, i){
+    var nm = String(r.name || '').slice(0, 24).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');
+    return (i+1) + '. ' + nm + ' · ' + fmtVnd(r.amount);
+  }).join('<br>');
+  $('tk_top3').innerHTML = top3Html || '-';
 
   /* MTD (PivotTable2) - table + line chart */
   var mtdRows = (d.mtdTop50 && d.mtdTop50.length) ? d.mtdTop50 : null;
