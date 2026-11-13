@@ -3844,9 +3844,10 @@ function renderTop50(){
   var qTopDept = $('topDeptSearch').value.trim().toLowerCase();
   var topRows = qTopDept ? meta.top50.filter(function(r){ return String(r.dept).toLowerCase().indexOf(qTopDept) >= 0; }) : meta.top50;
   topRows.forEach(function(r, idx){
+    /* Stock on hand la ton kho HIEN TAI (tu PDA), khong phu thuoc ngay dang chon -> luon tra cuu d.stockOh */
     var soh = r.stock_oh;
     if (soh === null || soh === undefined){
-      soh = isLatest ? (d.stockOh[r.art_no] !== undefined ? d.stockOh[r.art_no] : '') : '—';
+      soh = (d.stockOh && d.stockOh[r.art_no] !== undefined) ? d.stockOh[r.art_no] : '';
     }
     html += '<tr>' +
       '<td>' + (idx+1) + '</td>' +
