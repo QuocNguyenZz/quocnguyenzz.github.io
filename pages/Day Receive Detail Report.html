@@ -8052,9 +8052,8 @@ window.TOP50_DATA = {"dates": [20260101, 20260102, 20260103, 20260104, 20260105,
       var meta = d.dateMeta[String(ymd)] || d.dateMeta[ymd];
       if (!meta) return;
       if (isAll) {
-        var _tot = 0;
-        (meta.deptRows || []).forEach(function(r){ _tot += (r.sales_vat || 0); });
-        daily[ymd] = _tot;
+        // Tong cong ty = storeTotal.sales_vat (khong cong subtotal de tranh nhan doi)
+        daily[ymd] = (meta.storeTotal ? (meta.storeTotal.sales_vat || 0) : 0);
       } else {
         var row = (meta.deptRows || []).find(function(r){ return String(r.dept_no) === String(deptNo); });
         daily[ymd] = row ? (row.sales_vat || 0) : 0;
