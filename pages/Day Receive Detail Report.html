@@ -1876,7 +1876,7 @@ var pJS=function(e,a){var t=document.querySelector("#"+e+" > .particles-js-canva
         </div>
       </div>
       <div class="sc-period">
-        <span class="sc-period-item">Date: <input type="date" id="topDatePicker" title="Chọn ngày"></span>
+        <span class="sc-period-item" style="display:inline-flex; align-items:center; gap:4px;"><button type="button" id="topDatePrev" title="Tháng trước" style="padding:2px 8px; border-radius:6px; border:1px solid var(--border); background:var(--surface-2); color:var(--text); cursor:pointer; font-weight:700;">&#8249;</button>Date: <input type="date" id="topDatePicker" title="Chọn ngày"><button type="button" id="topDateNext" title="Tháng sau" style="padding:2px 8px; border-radius:6px; border:1px solid var(--border); background:var(--surface-2); color:var(--text); cursor:pointer; font-weight:700;">&#8250;</button></span>
         <span class="sc-period-item">Invoice: <b id="topInvoiceLabel"></b></span>
       </div>
     </div>
@@ -3672,9 +3672,54 @@ function buildTopDatePicker(){
   var picker = $('topDatePicker');
   if (!picker) return;
   picker.min = topYmdToDate(d.dates[0]);
-  picker.max = topYmdToDate(d.dates[d.dates.length-1]);
+  // Cho phep chon den hom nay (khong chi den ngay co data moi nhat) de nguoi dung thu;
+  // neu ngay chon khong co data thi handler 'change' tu snap ve ngay co data gan nhat.
+  var _now = new Date();
+  var _todayYmd = _now.getFullYear()*10000 + (_now.getMonth()+1)*100 + _now.getDate();
+  picker.max = topYmdToDate(_todayYmd);
   if (!topSelectedDate || d.dates.indexOf(topSelectedDate) < 0) topSelectedDate = d.dates[d.dates.length-1];
   picker.value = topYmdToDate(topSelectedDate);
+  // Nut dieu huong thang (<>)
+  var prevBtn = $('topDatePrev');
+  var nextBtn = $('topDateNext');
+  if (prevBtn && !prevBtn._bound){ prevBtn._bound = true; prevBtn.addEventListener('click', function(){ topDateShiftMonth(-1); }); }
+  if (nextBtn && !nextBtn._bound){ nextBtn._bound = true; nextBtn.addEventListener('click', function(){ topDateShiftMonth(1); }); }
+}
+function topDateShiftMonth(delta){
+  var d = window.TOP50_DATA;
+  if (!d || !d.dates || !d.dates.length) return;
+  var cur = topSelectedDate || d.dates[d.dates.length-1];
+  var y = Math.floor(cur/10000), m = Math.floor((cur%10000)/100);
+  m += delta;
+  if (m < 1){ m = 12; y -= 1; }
+  if (m > 12){ m = 1; y += 1; }
+  // tim ngay co data gan nhat trong thang moi (uu tien ngay cung so ngay)
+  var day = cur % 100;
+  var lastDay = new Date(y, m, 0).getDate();
+  if (day > lastDay) day = lastDay;
+  var target = y*10000 + m*100 + day;
+  // snap ve ngay co data gan nhat <= target trong cung thang, neu khong co thi ngay co data dau tien cua thang
+  var best = null;
+  for (var i=0;i<d.dates.length;i++){
+    var dd = d.dates[i];
+    if (Math.floor(dd/10000)===y && Math.floor((dd%10000)/100)===m){
+      if (dd <= target){ if (best===null || dd>best) best=dd; }
+    }
+  }
+  if (best === null){
+    for (var i=0;i<d.dates.length;i++){
+      var dd = d.dates[i];
+      if (Math.floor(dd/10000)===y && Math.floor((dd%10000)/100)===m){ best = dd; break; }
+    }
+  }
+  if (best === null){
+    // khong co data trong thang nay -> giu nguyen, thong bao nhe
+    return;
+  }
+  topSelectedDate = best;
+  var picker = $('topDatePicker');
+  if (picker) picker.value = topYmdToDate(best);
+  if (typeof renderTop50 === 'function') renderTop50();
 }
 $('topDatePicker').addEventListener('change', function(){
   var v = topDateToYmd(this.value);
