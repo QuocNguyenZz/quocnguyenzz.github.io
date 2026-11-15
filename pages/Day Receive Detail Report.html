@@ -1468,6 +1468,29 @@ var pJS=function(e,a){var t=document.querySelector("#"+e+" > .particles-js-canva
   .sc-qj-btn:hover{background:var(--accent); color:#fff; border-color:var(--accent);}
   .sc-qj-btn:active{transform:scale(.96);}
 </style>
+
+<style>
+/* v20261115-fixmobile: restore responsive kpi-grid + page-title-row wrapping */
+@media (max-width:1120px){ .kpi-grid{grid-template-columns:repeat(3,minmax(0,1fr));} .kpi-grid.cols4{grid-template-columns:repeat(2,minmax(0,1fr));} }
+@media (max-width:1000px){ .kpi-grid,.kpi-grid.cols4{grid-template-columns:repeat(2,minmax(0,1fr));} }
+@media (max-width:760px){ .kpi-grid,.kpi-grid.cols4{grid-template-columns:repeat(2,minmax(0,1fr));} .page-title-row{flex-wrap:wrap;} .page-title-row > div{min-width:0; max-width:100%;} .sc-quickjump{min-width:0; max-width:100%;} }
+@media (max-width:640px){ .kpi-grid,.kpi-grid.cols4{grid-template-columns:repeat(1,minmax(0,1fr));} }
+</style>
+
+<style>
+/* v20261115-fixmobile2: restore responsive grid/layout rules that got dropped */
+@media (max-width:1240px){ .row-5545,.row-6238{grid-template-columns:1fr;} }
+@media (max-width:1120px){ .kpi-grid{grid-template-columns:repeat(3,minmax(0,1fr));} .kpi-grid.cols4{grid-template-columns:repeat(2,minmax(0,1fr));} }
+@media (max-width:1000px){ .kpi-grid,.kpi-grid.cols4{grid-template-columns:repeat(2,minmax(0,1fr));} }
+@media (max-width:760px){ .kpi-grid,.kpi-grid.cols4{grid-template-columns:repeat(2,minmax(0,1fr));} .page-title-row{flex-wrap:wrap;} .page-title-row > div{min-width:0; max-width:100%;} .sc-quickjump{min-width:0; max-width:100%;} }
+@media (max-width:640px){ .kpi-grid,.kpi-grid.cols4{grid-template-columns:repeat(1,minmax(0,1fr));} }
+</style>
+
+<style>
+/* v20261115-fixmobile3: allow .page (flex child) to shrink on mobile */
+.page{min-width:0; max-width:100%;}
+.app-shell > *{min-width:0;}
+</style>
 </head>
 <body>
   <!-- Nhac Noel -->
