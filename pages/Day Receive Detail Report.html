@@ -8195,8 +8195,7 @@ window.TOP50_DATA = {"dates": [20260101, 20260102, 20260103, 20260104, 20260105,
         var sel = document.getElementById('scmFilterCode');
         if (sel){
           sel.value = code;
-          // scmApplyFilter is inside the IIFE scope, not global -> trigger via change event
-          try { sel.dispatchEvent(new Event('change', {bubbles:true})); } catch(err){ }
+          if (typeof window.scmApplyFilter === 'function') window.scmApplyFilter();
         }
       });
     }
@@ -8417,6 +8416,7 @@ window.TOP50_DATA = {"dates": [20260101, 20260102, 20260103, 20260104, 20260105,
   }
   window.openScDeptModal = openScDeptModal;
   window.closeScDeptModal = closeScDeptModal;
+  window.scmApplyFilter = scmApplyFilter;
 })();
 </script>
 
