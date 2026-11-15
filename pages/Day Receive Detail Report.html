@@ -1690,17 +1690,22 @@ var pJS=function(e,a){var t=document.querySelector("#"+e+" > .particles-js-canva
 
   <!-- ============ PAGE 2: MINUS STOCK ============ -->
   <div id="pageMinus" class="page" style="display:none">
-    <div class="page-title-row">
-      <div>
-        <div class="title-en">Minus Stock</div>
-        <div class="title-vi">Hàng trừ khỏi kho · tồn kho âm theo danh mục</div>
+            <div class="page-title-row">
+      <div style="display:flex; flex-direction:column; gap:8px;">
+        <div>
+          <div class="title-en">Minus Stock</div>
+          <div class="title-vi">Hàng trừ khỏi kho · tồn kho âm theo danh mục</div>
+        </div>
+        <div class="sc-quickjump" style="display:flex; gap:6px; flex-wrap:wrap; align-items:center;">
+          <span style="font-size:12px; color:var(--muted); margin-right:4px;">Bảng:</span>
+          <button type="button" class="sc-qj-btn" data-target="minusDailyTable">Daily</button>
+          <button type="button" class="sc-qj-btn" data-target="minusDeptTable">By Dept</button>
+        </div>
       </div>
       <div class="sc-period">
         <span class="sc-period-item">PERIOD: <b id="minusPeriodLabel"></b></span>
-      </div>
     </div>
-
-    <div class="kpi-grid cols4" id="minusKpis">
+    </div>    <div class="kpi-grid cols4" id="minusKpis">
       <div class="kpi-card">
         <div class="kpi-icon">📦</div>
         <div class="kpi-en">Total Minus Qty</div><div class="kpi-vi">Tổng số lượng trừ khỏi kho</div>
@@ -1756,16 +1761,24 @@ var pJS=function(e,a){var t=document.querySelector("#"+e+" > .particles-js-canva
 
   <!-- ============ PAGE 3: DAY RECEIVE DETAIL ============ -->
   <div id="pageDay" class="page" style="display:none">
-    <div class="page-title-row">
-      <div>
-        <div class="title-en">Day Receive Detail</div>
-        <div class="title-vi">Chi tiết nhận hàng theo ngày · lệch số lượng nhận</div>
+        <div class="page-title-row">
+      <div style="display:flex; flex-direction:column; gap:8px;">
+        <div>
+          <div class="title-en">Day Receive Detail</div>
+          <div class="title-vi">Chi tiết nhận hàng theo ngày · lệch số lượng nhận</div>
+        </div>
+        <div class="sc-quickjump" style="display:flex; gap:6px; flex-wrap:wrap; align-items:center;">
+          <span style="font-size:12px; color:var(--muted); margin-right:4px;">Bảng:</span>
+          <button type="button" class="sc-qj-btn" data-target="mainTable">Main</button>
+          <button type="button" class="sc-qj-btn" data-target="dayDeviationTable">Deviation</button>
+          <button type="button" class="sc-qj-btn" data-target="dayReceivingTable">Receiving</button>
+        </div>
       </div>
       <div class="sc-period">
         <span class="sc-period-item">Date: <input type="date" id="dayDatePicker" title="Chọn ngày"> <b id="dayDateLabel"></b></span>
       </div>
     </div>
-
+    </div>
     <div class="kpi-grid" id="dayKpis">
       <div class="kpi-card">
         <div class="kpi-icon">⚠️</div>
@@ -1804,7 +1817,7 @@ var pJS=function(e,a){var t=document.querySelector("#"+e+" > .particles-js-canva
           <span class="result-count" id="dayResultCount"></span>
         </div>
         <div class="table-wrap" style="max-height:430px;">
-          <table class="data">
+          <table class="data" id="dayDeviationTable">
             <thead><tr>
               <th>ART_NO</th><th>FLOW_TYPE</th><th>DEPARTMENT</th><th>REF_ORD_NO</th><th>ART_SV_NAME</th>
               <th class="num">ORDER_QTY</th><th class="num">RCV_QTY</th><th class="num">DIFF_QTY</th><th>LỆCH</th><th class="num">TỶ LỆ</th>
@@ -1828,7 +1841,7 @@ var pJS=function(e,a){var t=document.querySelector("#"+e+" > .particles-js-canva
           <input type="text" id="dayTotalDeptSearch" class="search-inline" placeholder="Search DEPT_NO...">
         </div>
         <div class="table-wrap" style="max-height:400px;">
-          <table class="data">
+          <table class="data" id="dayReceivingTable">
             <thead><tr><th>DEPARTMENT</th><th class="num">DEPT_NO</th><th class="num">Sum of RCV_QTY</th><th class="num">Sum of AMOUNT</th><th class="num">% of Total</th></tr></thead>
             <tbody id="dayTotalTableBody"></tbody>
           </table>
@@ -1845,17 +1858,26 @@ var pJS=function(e,a){var t=document.querySelector("#"+e+" > .particles-js-canva
 
   <!-- ============ PAGE 4: TOP 50 SALES ============ -->
   <div id="pageTop50" class="page" style="display:none">
-    <div class="page-title-row">
-      <div>
-        <div class="title-en">TOP 50 For Sales</div>
-        <div class="title-vi">Top 50 mặt hàng bán chạy nhất hôm nay</div>
+        <div class="page-title-row">
+      <div style="display:flex; flex-direction:column; gap:8px;">
+        <div>
+          <div class="title-en">TOP 50 For Sales</div>
+          <div class="title-vi">Top 50 mặt hàng bán chạy nhất hôm nay</div>
+        </div>
+        <div class="sc-quickjump" style="display:flex; gap:6px; flex-wrap:wrap; align-items:center;">
+          <span style="font-size:12px; color:var(--muted); margin-right:4px;">Bảng:</span>
+          <button type="button" class="sc-qj-btn" data-target="top50MtdTable">MTD</button>
+          <button type="button" class="sc-qj-btn" data-target="top50Table">Daily</button>
+          <button type="button" class="sc-qj-btn" data-target="topDeptTable">Dept Ranking</button>
+          <button type="button" class="sc-qj-btn" data-target="topDeptRankTable">Dept Rank Table</button>
+        </div>
       </div>
       <div class="sc-period">
         <span class="sc-period-item">Date: <input type="date" id="topDatePicker" title="Chọn ngày"></span>
         <span class="sc-period-item">Invoice: <b id="topInvoiceLabel"></b></span>
       </div>
     </div>
-
+    </div>
     <div class="kpi-grid cols4" id="topKpis">
       <div class="kpi-card">
         <div class="kpi-icon">🏆</div>
