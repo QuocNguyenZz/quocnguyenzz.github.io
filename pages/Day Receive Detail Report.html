@@ -3748,7 +3748,7 @@ function computeMtdTop50(date){
       var qty = it[2];
       var amt = it[3];
       var e = acc[art];
-      if (!e){ e = acc[art] = {art_no: art, name: (d.artNames && d.artNames[art]) ? d.artNames[art] : '', dept_no: deptNo, qty: 0, amount: 0}; }
+      if (!e){ e = acc[art] = {art_no: art, name: (d.artNames && d.artNames[art]) ? d.artNames[art] : '', dept_no: deptNo, qty: 0, amount: 0, stock_oh: (d.stockOh && d.stockOh[art] !== undefined) ? d.stockOh[art] : null}; }
       e.qty += qty; e.amount += amt;
       if (!e.dept && deptNo !== null && deptNo !== undefined){ e.dept = deptMap[String(deptNo)] || String(deptNo); }
     });
@@ -3816,7 +3816,7 @@ function renderTop50(){
   var mtdHtml = '';
   var mMeta = $('topMtdMeta');
   if (mtdRows){
-    mtdHtml = '<thead><tr><th>#</th><th class="num">ART_NO</th><th>ART_SV_NAME</th><th>DEPT</th><th class="num">SALE_QTY</th><th class="num">SALE_AMT (-VAT)</th></tr></thead><tbody>';
+    mtdHtml = '<thead><tr><th>#</th><th class="num">ART_NO</th><th>ART_SV_NAME</th><th>DEPT</th><th class="num">SALE_QTY</th><th class="num">SALE_AMT (-VAT)</th><th class="num">STOCK_OH</th></tr></thead><tbody>';
     mtdRows.forEach(function(r, idx){
       mtdHtml += '<tr>' +
         '<td>' + (idx+1) + '</td>' +
@@ -3824,13 +3824,14 @@ function renderTop50(){
         '<td><b>' + r.name + '</b></td>' +
         '<td>' + r.dept + '</td>' +
         '<td class="num">' + fmtDec(r.qty, 1) + '</td>' +
-        '<td class="num">' + fmtVnd(r.amount) + '</td></tr>';
+        '<td class="num">' + fmtVnd(r.amount) + '</td>' +
+        '<td class="num">' + (r.stock_oh === null || r.stock_oh === undefined || r.stock_oh === '' ? '' : fmtDec(r.stock_oh, 1)) + '</td></tr>';
     });
     var mQtyT = mtd.total.qty;
     var mAmtT = mtd.total.amt;
     mtdHtml += '<tr class="row-total"><td></td><td></td><td>Grand Total</td><td></td>' +
       '<td class="num">' + fmtDec(mQtyT, 1) + '</td>' +
-      '<td class="num">' + fmtVnd(mAmtT) + '</td></tr></tbody>';
+      '<td class="num">' + fmtVnd(mAmtT) + '</td><td></td></tr></tbody>';
   }
   if (mMeta){
     if (mtdRows){
