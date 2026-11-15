@@ -8196,7 +8196,16 @@ window.TOP50_DATA = {"dates": [20260101, 20260102, 20260103, 20260104, 20260105,
         var sel = document.getElementById('scmFilterCode');
         if (sel){
           sel.value = code;
-          if (typeof window.scmApplyFilter === 'function') window.scmApplyFilter();
+          if (typeof window.scmApplyFilter === 'function') {
+            try { window.scmApplyFilter(); } catch(e){ console.log('scmApplyFilter err:', e.message); }
+          }
+          // debug
+          try {
+            var _rows = document.querySelectorAll('#scmBody tr.scm-row');
+            var _shown = 0;
+            _rows.forEach(function(r){ if(!r.classList.contains('scm-hidden')) _shown++; });
+            console.log('after filter code=' + code + ' shown=' + _shown + ' total=' + _rows.length);
+          } catch(e){}
         }
       });
     }
