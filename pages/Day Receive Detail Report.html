@@ -1467,6 +1467,10 @@ var pJS=function(e,a){var t=document.querySelector("#"+e+" > .particles-js-canva
   .sc-qj-btn:hover{background:var(--accent); color:#fff; border-color:var(--accent);}
   .sc-qj-btn:active{transform:scale(.96);}
 </style>
+<style>
+  .kpi-card.clickable-kpi{cursor:pointer; transition:transform .12s ease, box-shadow .12s ease;}
+  .kpi-card.clickable-kpi:hover{transform:translateY(-2px); box-shadow:0 6px 16px rgba(0,0,0,.12);}
+</style>
 </head>
 <body>
   <!-- Nhac Noel -->
@@ -9633,6 +9637,37 @@ window.renderThietBi = function(){ try { render(); } catch(e){} };
   if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', initScQuickJump);
   else initScQuickJump();
   document.addEventListener('click', function(e){ if (e.target && e.target.getAttribute && e.target.getAttribute('data-tab')) setTimeout(initScQuickJump, 50); });
+})();
+</script>
+
+<script>
+(function(){
+  function wireKpiModal(){
+    var salesCard = document.getElementById('tk_sales');
+    var mtdCard = document.getElementById('tk_mtd');
+    [salesCard, mtdCard].forEach(function(el){
+      if (!el || el._wired) return;
+      var card = el.closest ? el.closest('.kpi-card') : null;
+      if (!card) return;
+      card.classList.add('clickable-kpi');
+      el._wired = true;
+      card.addEventListener('click', function(){
+        var tbl = document.getElementById('topDeptRankTable');
+        if (!tbl) return;
+        var tr = tbl.querySelector('tr.dr-row');
+        if (!tr) return;
+        var dept = tr.getAttribute('data-dept');
+        var name = tr.getAttribute('data-name') || '';
+        if (typeof window.openDeptRankModal === 'function' && dept) {
+          window.openDeptRankModal(dept, name);
+        }
+      });
+    });
+  }
+  if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', wireKpiModal);
+  else wireKpiModal();
+  // re-wire after top50 render (table populated later)
+  document.addEventListener('click', function(e){ if (e.target && e.target.getAttribute && e.target.getAttribute('data-tab') === 'top50') setTimeout(wireKpiModal, 200); });
 })();
 </script>
 
