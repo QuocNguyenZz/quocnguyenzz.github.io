@@ -2039,24 +2039,25 @@ var pJS=function(e,a){var t=document.querySelector("#"+e+" > .particles-js-canva
 
   <!-- ============ PAGE 3: STOCK CORRECTION ============ -->
   <div id="pageSc" class="page" style="display:none">
-    <div class="page-title-row">
-      <div>
-        <div class="title-en">Stock Correction</div>
-        <div class="title-vi">Điều chỉnh tồn kho theo ngày và MTD</div>
+        <div class="page-title-row">
+      <div style="display:flex; flex-direction:column; gap:8px;">
+        <div>
+          <div class="title-en">Stock Correction</div>
+          <div class="title-vi">Di?u ch?nh t?n kho theo ng�y v� MTD</div>
+        </div>
+        <div class="sc-quickjump" style="display:flex; gap:6px; flex-wrap:wrap; align-items:center;">
+          <span style="font-size:12px; color:var(--muted); margin-right:4px;">B?ng:</span>
+          <button type="button" class="sc-qj-btn" data-target="scNgayTable">BY DAY</button>
+          <button type="button" class="sc-qj-btn" data-target="scDayTable">BY Yesterday</button>
+          <button type="button" class="sc-qj-btn" data-target="scMtdTable">MTD</button>
+          <button type="button" class="sc-qj-btn" data-target="scTopTable">TOP 10</button>
+        </div>
       </div>
       <div class="sc-period">
         <span class="sc-period-item">DAY: <b id="scDayLabel"></b></span>
         <span class="sc-period-item">MTD: <b id="scMtdLabel"></b></span>
       </div>
-      <div class="sc-quickjump" style="display:flex; gap:6px; flex-wrap:wrap; align-items:center;">
-        <span style="font-size:12px; color:var(--muted); margin-right:4px;">Bảng:</span>
-        <button type="button" class="sc-qj-btn" data-target="scNgayTable">BY DAY</button>
-        <button type="button" class="sc-qj-btn" data-target="scDayTable">BY Yesterday</button>
-        <button type="button" class="sc-qj-btn" data-target="scMtdTable">MTD</button>
-        <button type="button" class="sc-qj-btn" data-target="scTopTable">TOP 10</button>
-      </div>
     </div>
-
     <div class="kpi-grid cols4" id="scKpis">
       <div class="kpi-card">
         <div class="kpi-icon">📅</div>
