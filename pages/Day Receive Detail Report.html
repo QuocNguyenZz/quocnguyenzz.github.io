@@ -9653,7 +9653,13 @@ window.renderThietBi = function(){ try { render(); } catch(e){} };
       b.addEventListener('click', function(){
         var id = b.getAttribute('data-target');
         var el = document.getElementById(id);
-        if (el){ el.scrollIntoView({behavior:'smooth', block:'start'}); }
+        if (el){
+          // Tru dien tich header sticky (~72px) de 'dau table' khong bi che,
+          // va khong bi cuon xuong chart phia duoi.
+          var top = el.getBoundingClientRect().top + window.scrollY - 72;
+          if (top < 0) top = 0;
+          window.scrollTo({top: top, behavior:'smooth'});
+        }
       });
     });
   }
