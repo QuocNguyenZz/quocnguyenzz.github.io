@@ -8193,8 +8193,11 @@ window.TOP50_DATA = {"dates": [20260101, 20260102, 20260103, 20260104, 20260105,
         if (!card) return;
         var code = card.getAttribute('data-code');
         var sel = document.getElementById('scmFilterCode');
-        if (sel){ sel.value = code; }
-        if (typeof scmApplyFilter === 'function') scmApplyFilter();
+        if (sel){
+          sel.value = code;
+          // scmApplyFilter is inside the IIFE scope, not global -> trigger via change event
+          try { sel.dispatchEvent(new Event('change', {bubbles:true})); } catch(err){ }
+        }
       });
     }
     scmLastList = list;
