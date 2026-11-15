@@ -2041,6 +2041,16 @@ var pJS=function(e,a){var t=document.querySelector("#"+e+" > .particles-js-canva
         <span class="sc-period-item">DAY: <b id="scDayLabel"></b></span>
         <span class="sc-period-item">MTD: <b id="scMtdLabel"></b></span>
       </div>
+      <div class="sc-quickjump">
+        <label for="scQuickJump" style="font-size:12px;color:var(--muted);margin-right:6px;">Bảng:</label>
+        <select id="scQuickJump" style="padding:4px 8px;border-radius:6px;border:1px solid var(--border);background:var(--surface);color:var(--text);font-size:12px;">
+          <option value="">-- chọn nhanh --</option>
+          <option value="scNgayTable">BY DAY</option>
+          <option value="scDayTable">BY Yesterday</option>
+          <option value="scMtdTable">MTD</option>
+          <option value="scTopTable">TOP 10</option>
+        </select>
+      </div>
     </div>
 
     <div class="kpi-grid cols4" id="scKpis">
@@ -9609,5 +9619,44 @@ window.renderThietBi = function(){ try { render(); } catch(e){} };
   sync();
 })();
 </script>
+
+<style>
+  #backToTopBtn{position:fixed; bottom:24px; right:24px; width:44px; height:44px; border-radius:50%;
+    background:var(--accent); color:#fff; border:none; font-size:20px; cursor:pointer; z-index:1500;
+    box-shadow:0 4px 12px rgba(0,0,0,.25); display:none; align-items:center; justify-content:center;}
+  #backToTopBtn:hover{filter:brightness(1.1);}
+</style>
+<button id="backToTopBtn" title="Lên đầu trang" aria-label="Lên đầu trang">↑</button>
+<script>
+(function(){
+  var btn = document.getElementById('backToTopBtn');
+  if (!btn) return;
+  window.addEventListener('scroll', function(){ btn.style.display = (window.scrollY > 300) ? 'flex' : 'none'; });
+  btn.addEventListener('click', function(){ window.scrollTo({top:0, behavior:'smooth'}); });
+})();
+</script>
+
+
+<script>
+(function(){
+  function initScQuickJump(){
+    var sel = document.getElementById('scQuickJump');
+    if (!sel || sel._bound) return;
+    sel._bound = true;
+    sel.addEventListener('change', function(){
+      var id = sel.value;
+      if (!id) return;
+      var el = document.getElementById(id);
+      if (el){ el.scrollIntoView({behavior:'smooth', block:'start'}); }
+      sel.value = '';
+    });
+  }
+  if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', initScQuickJump);
+  else initScQuickJump();
+  // re-bind on tab switch (pageSc shown later)
+  document.addEventListener('click', function(e){ if (e.target && e.target.getAttribute && e.target.getAttribute('data-tab') === 'sc') setTimeout(initScQuickJump, 50); });
+})();
+</script>
+
 </body>
 </html>
