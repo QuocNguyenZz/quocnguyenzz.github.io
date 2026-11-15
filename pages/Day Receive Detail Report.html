@@ -2598,7 +2598,7 @@ function buildSCFromWorkbook(wb){
     }
     return {cols: cols.map(function(c){ return c.code; }), rows: rows};
   }
-  var dayDate = bl_daySerialFix((sum[1] && sum[1][3] !== null && sum[1][3] !== undefined && sum[1][3] !== '') ? sum[1][3] : (sum[0] ? sum[0][3] : null));
+  var dayDate = bl_daySerialFix((function(){ for (var _r=0; _r<Math.min(sum.length,4); _r++){ var _row=sum[_r]; if(!_row) continue; for (var _c=0; _c<_row.length; _c++){ if (bl_trim(_row[_c]).toLowerCase()==='date:'){ var _v=_row[_c+1]; if (_v!==null && _v!==undefined && _v!=='') return _v; } } } return (sum[1] && sum[1][3] !== null && sum[1][3] !== undefined && sum[1][3] !== '') ? sum[1][3] : (sum[0] ? sum[0][3] : null); })());
   var mtdLabel = sum[28] ? normN(sum[28][3]) : '';
   var dayPivot = parseSumPivot(3, 4, 50);
   var mtdPivot = parseSumPivot(30, 31, 50);
@@ -2705,7 +2705,7 @@ function buildSCDayFromWorkbook(wb){
     return {cols: cols.map(function(c){ return c.code; }), rows: rows};
   }
   // Ngay bao cao: uu tien D2, sau do D1 (VBA -Module 5 ghi ngay vao D1 va xoa D2)
-  var dayDate = bl_toSerial((sum[1] && sum[1][3] !== null && sum[1][3] !== undefined && sum[1][3] !== '') ? sum[1][3] : (sum[0] ? sum[0][3] : null));
+  var dayDate = bl_toSerial((function(){ for (var _r=0; _r<Math.min(sum.length,4); _r++){ var _row=sum[_r]; if(!_row) continue; for (var _c=0; _c<_row.length; _c++){ if (bl_trim(_row[_c]).toLowerCase()==='date:'){ var _v=_row[_c+1]; if (_v!==null && _v!==undefined && _v!=='') return _v; } } } return (sum[1] && sum[1][3] !== null && sum[1][3] !== undefined && sum[1][3] !== '') ? sum[1][3] : (sum[0] ? sum[0][3] : null); })());
   var dayHdr = sum[3] || [];
   var dayHasCols = false;
   for (var dj = 3; dj < dayHdr.length; dj++){
