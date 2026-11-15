@@ -8039,9 +8039,9 @@ window.TOP50_DATA = {"dates": [20260101, 20260102, 20260103, 20260104, 20260105,
     var d = window.TOP50_DATA;
     if (!d || !d.dateMeta) return;
     var _isAll = (deptNo === 'ALL' || deptNo === null || deptNo === undefined || String(deptNo).toUpperCase() === 'ALL');
-    drmState = {deptNo: _isAll ? 'ALL' : String(deptNo), deptName: String(deptName || (_isAll ? 'Tong cong ty' : ''))};
+    drmState = {deptNo: _isAll ? 'ALL' : String(deptNo), deptName: String(deptName || (_isAll ? 'Tổng công ty' : ''))};
     document.getElementById('drmKicker').textContent = _isAll ? 'TOTAL' : ('DEPT \u2116 ' + deptNo);
-    document.getElementById('drmTitle').textContent = _isAll ? 'Tong cong ty' : String(deptName || '');
+    document.getElementById('drmTitle').textContent = _isAll ? 'Tổng công ty' : String(deptName || '');
     closeDrmDayDetail();
     // collect daily sales for this dept (hoac TONG cong ty neu deptNo === 'ALL')
     var daily = {}; // ymd -> sales_vat
@@ -9708,7 +9708,7 @@ window.renderThietBi = function(){ try { render(); } catch(e){} };
       el._wired = true;
       card.addEventListener('click', function(){
         if (typeof window.openDeptRankModal === 'function') {
-          window.openDeptRankModal('ALL', 'Tong cong ty');
+          window.openDeptRankModal('ALL', 'Tổng công ty');
         }
       });
     });
