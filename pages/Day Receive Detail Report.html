@@ -7920,7 +7920,8 @@ window.TOP50_DATA = {"dates": [20260101, 20260102, 20260103, 20260104, 20260105,
     var items = (meta && meta.items) ? meta.items : [];
     var deptNo = drmState.deptNo;
     var deptName = drmState.deptName;
-    var rows = items.filter(function(it){ return String(it[1]) === String(deptNo); })
+    var isAll3 = (deptNo === 'ALL' || deptNo === null || deptNo === undefined || String(deptNo).toUpperCase() === 'ALL');
+    var rows = (isAll3 ? items : items.filter(function(it){ return String(it[1]) === String(deptNo); }))
       .map(function(it){ return {art: it[0], qty: it[2], amt: it[3]}; })
       .sort(function(a,b){ return b.amt - a.amt; });
     // mark selected cell
@@ -8037,18 +8038,26 @@ window.TOP50_DATA = {"dates": [20260101, 20260102, 20260103, 20260104, 20260105,
     if (!modal) return;
     var d = window.TOP50_DATA;
     if (!d || !d.dateMeta) return;
-    drmState = {deptNo: String(deptNo), deptName: String(deptName || '')};
-    document.getElementById('drmKicker').textContent = 'DEPT № ' + deptNo;
-    document.getElementById('drmTitle').textContent = String(deptName || '');
+    var _isAll = (deptNo === 'ALL' || deptNo === null || deptNo === undefined || String(deptNo).toUpperCase() === 'ALL');
+    drmState = {deptNo: _isAll ? 'ALL' : String(deptNo), deptName: String(deptName || (_isAll ? 'Tong cong ty' : ''))};
+    document.getElementById('drmKicker').textContent = _isAll ? 'TOTAL' : ('DEPT \u2116 ' + deptNo);
+    document.getElementById('drmTitle').textContent = _isAll ? 'Tong cong ty' : String(deptName || '');
     closeDrmDayDetail();
-    // collect daily sales for this dept
+    // collect daily sales for this dept (hoac TONG cong ty neu deptNo === 'ALL')
     var daily = {}; // ymd -> sales_vat
     var dates = d.dates || [];
+    var isAll = (deptNo === 'ALL' || deptNo === null || deptNo === undefined || String(deptNo).toUpperCase() === 'ALL');
     dates.forEach(function(ymd){
       var meta = d.dateMeta[String(ymd)] || d.dateMeta[ymd];
       if (!meta) return;
-      var row = (meta.deptRows || []).find(function(r){ return String(r.dept_no) === String(deptNo); });
-      daily[ymd] = row ? (row.sales_vat || 0) : 0;
+      if (isAll) {
+        var _tot = 0;
+        (meta.deptRows || []).forEach(function(r){ _tot += (r.sales_vat || 0); });
+        daily[ymd] = _tot;
+      } else {
+        var row = (meta.deptRows || []).find(function(r){ return String(r.dept_no) === String(deptNo); });
+        daily[ymd] = row ? (row.sales_vat || 0) : 0;
+      }
     });
     var total = Object.keys(daily).reduce(function(s,k){ return s + (daily[k]||0); }, 0);
     var daysWithData = Object.keys(daily).filter(function(k){ return daily[k] !== 0; }).length;
@@ -9698,14 +9707,8 @@ window.renderThietBi = function(){ try { render(); } catch(e){} };
       card.classList.add('clickable-kpi');
       el._wired = true;
       card.addEventListener('click', function(){
-        var tbl = document.getElementById('topDeptRankTable');
-        if (!tbl) return;
-        var tr = tbl.querySelector('tr.dr-row');
-        if (!tr) return;
-        var dept = tr.getAttribute('data-dept');
-        var name = tr.getAttribute('data-name') || '';
-        if (typeof window.openDeptRankModal === 'function' && dept) {
-          window.openDeptRankModal(dept, name);
+        if (typeof window.openDeptRankModal === 'function') {
+          window.openDeptRankModal('ALL', 'Tong cong ty');
         }
       });
     });
