@@ -4213,11 +4213,9 @@ function renderSc(){
   var _todaySer = bl_todaySerial();
   var _ngDate = (ng && ng.dayDate !== null && ng.dayDate !== undefined && isFinite(Number(ng.dayDate)))
               ? Math.round(Number(ng.dayDate)) : null;
-  // Guard: ney SCDAY 'nhan' hom nay nhung SC (file chinh) van la ngay cu -> du lieu BY DAY thuc ra la ngay cu
-  // (VBA ghi D1 = hom nay du data chua cap nhat). Coi nhu chua co data hom nay.
-  var _scDate = (typeof SC_DATA !== 'undefined' && SC_DATA && SC_DATA.dayDate !== null && SC_DATA.dayDate !== undefined && isFinite(Number(SC_DATA.dayDate)))
-              ? Math.round(Number(SC_DATA.dayDate)) : null;
-  var _hasToday = (_ngDate !== null && _ngDate === _todaySer) && !(_scDate !== null && _scDate !== _ngDate);
+  // Hien thi data khi file co du lieu (dayRows > 0). Neu khong co data thi hien 'Chua co du lieu ngay ...'.
+  // Khong dung guard so sanh voi SC (file chinh) vi SC chi update 1 lan/ngay (07:30) trong khi BY DAY co the cap nhat sau.
+  var _hasToday = (ng && ng.dayRows && ng.dayRows.length > 0);
   $('scDayLabel').textContent = fmtDate(_todaySer);
   $('scMtdLabel').textContent = d.mtdLabel;
 
