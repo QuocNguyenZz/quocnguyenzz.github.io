@@ -4218,8 +4218,10 @@ function renderSc(){
   // hasTodayData duoc refresh_html.py set dua tren file CSV Ngay_BCADJ09E (rong -> false).
   // Neu khong co flag (data cu) thi fallback: dayDate phai bang hom nay.
   var _flag = (typeof SCDAY_DATA !== 'undefined' && SCDAY_DATA) ? SCDAY_DATA.hasTodayData : undefined;
+  // Uu tien flag hasTodayData (tu refresh_html.py, dua tren file CSV Ngay_BCADJ09E).
+  // Khong so sanh _ngDate voi _todaySer vi VBA ghi D1 = ngay hom nay+1 (lech 1 ngay).
   var _hasToday = (ng && ng.dayRows && ng.dayRows.length > 0) &&
-                  (_flag === undefined ? (_ngDate === _todaySer) : (_flag === true));
+                  (_flag === undefined || _flag === true);
   $('scDayLabel').textContent = fmtDate(_todaySer);
   $('scMtdLabel').textContent = d.mtdLabel;
 
