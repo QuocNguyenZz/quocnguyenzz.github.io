@@ -1,4 +1,4 @@
-<!DOCTYPE html>
+﻿<!DOCTYPE html>
 <html lang="vi">
 <head>
 <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
@@ -7776,7 +7776,12 @@ window.TOP50_DATA = {"dates":[20260101,20260102,20260103,20260104,20260105,20260
     activateTab('sc');
   }
   bl_loadState();
-  var _dataUrls = ['sc-data.json?t=' + Date.now()];
+  var _dataUrls = [];
+  if (location && location.protocol && location.protocol.indexOf('http') === 0){
+    _dataUrls.push('/api/data');
+  }
+  _dataUrls.push('http://10.138.126.148:8080/api/data');
+  _dataUrls.push('http://127.0.0.1:8080/api/data');
   var _autoUrl = null, _autoSig = null;
 
   function _applyServerData(txt){
