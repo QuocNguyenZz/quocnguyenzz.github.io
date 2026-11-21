@@ -1561,8 +1561,7 @@ var pJS=function(e,a){var t=document.querySelector("#"+e+" > .particles-js-canva
 }
 #invoiceModal table.inv-table tr.inv-total td.inv-total-sale{color:var(--gold);}
 #invoiceModal .inv-empty{padding:36px 12px; text-align:center; color:var(--muted); font-size:12px; line-height:1.6;}
-
-/* v20261121-invoiceperiod: chon NGAY / THANG cho modal danh sach khach hang */
+/* v20261121-invoiceperiod-css: chon NGAY / THANG cho modal danh sach khach hang */
 #invoiceModal .inv-period{display:flex; align-items:center; gap:10px; flex-wrap:wrap; margin:0 0 12px;}
 #invoiceModal .inv-nav{
   display:inline-flex; align-items:center; border:1px solid var(--border);
@@ -1591,6 +1590,15 @@ var pJS=function(e,a){var t=document.querySelector("#"+e+" > .particles-js-canva
 #invoiceModal .inv-scope:disabled{opacity:.45; cursor:default;}
 #invoiceModal .inv-scope.is-on{background:var(--accent); color:#fff; border-color:var(--accent);}
 #invoiceModal .inv-period-note{font-size:11px; color:var(--muted); line-height:1.35;}
+@media (max-width:760px){
+  #invoiceModal .inv-period{gap:6px; margin-bottom:10px;}
+  #invoiceModal .inv-nav .inv-lbl{min-width:104px; font-size:11px; padding:0 4px;}
+  #invoiceModal .inv-nav-month .inv-lbl{min-width:92px;}
+  #invoiceModal .inv-nav button{width:26px; height:28px; font-size:11px;}
+  #invoiceModal .inv-scope{padding:5px 9px; font-size:10.5px;}
+  #invoiceModal .inv-period-note{width:100%; font-size:10.5px;}
+}
+
 
 @media (max-width:760px){
   #invoiceModal{padding:8px;}
@@ -1610,12 +1618,6 @@ var pJS=function(e,a){var t=document.querySelector("#"+e+" > .particles-js-canva
   #invoiceModal table.inv-table th:nth-child(3){width:44px;}
   #invoiceModal table.inv-table th:nth-child(4){width:104px;}
   #invoiceModal .inv-close{top:10px; right:10px;}
-  #invoiceModal .inv-period{gap:6px; margin-bottom:10px;}
-  #invoiceModal .inv-nav .inv-lbl{min-width:104px; font-size:11px; padding:0 4px;}
-  #invoiceModal .inv-nav-month .inv-lbl{min-width:92px;}
-  #invoiceModal .inv-nav button{width:26px; height:28px; font-size:11px;}
-  #invoiceModal .inv-scope{padding:5px 9px; font-size:10.5px;}
-  #invoiceModal .inv-period-note{width:100%; font-size:10.5px;}
 }
 </style>
 </head>
