@@ -3894,9 +3894,13 @@ function renderTop50(){
   var _tkInv = $('tk_invoice');
   if (_tkInv) _tkInv.title = (inv.source === 'RPT18' ? 'Đếm số hóa đơn (Invoice No) trong file RPT18' : 'Số hóa đơn theo workbook TOP 50') + (inv.date ? ' - ngày ' + String(inv.date).slice(6,8) + '/' + String(inv.date).slice(4,6) + '/' + String(inv.date).slice(0,4) : '');
   var top3 = (meta.top50 || []).slice(0, 3);
+  /* v20261121-top3code: hien them ma hang (ART_NO) sau ten tung mat hang */
+  var _tkEsc = function(v){ return String(v == null ? '' : v).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;'); };
   var top3Html = top3.map(function(r, i){
-    var nm = String(r.name || '').slice(0, 28).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');
-    return (i+1) + '. ' + nm;
+    var _nm = String(r.name || '');
+    var nm = _tkEsc(_nm.length > 28 ? _nm.slice(0, 27).replace(/\s+$/, '') + '…' : _nm);
+    var cd = _tkEsc(r.art_no);
+    return (i+1) + '. ' + nm + (cd ? ' <span style="opacity:.72; font-weight:700; white-space:nowrap;">(' + cd + ')</span>' : '');
   }).join('<br>');
   $('tk_top3').innerHTML = top3Html || '-';
 
