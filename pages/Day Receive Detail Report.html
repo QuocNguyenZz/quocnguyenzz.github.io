@@ -1645,6 +1645,125 @@ var pJS=function(e,a){var t=document.querySelector("#"+e+" > .particles-js-canva
 /* v20261122-invcal-svg-css: icon lich SVG gon, ro rang */
 #invoiceModal .inv-cal-ico{display:inline-flex; align-items:center; color:var(--muted); line-height:1; opacity:.85;}
 #invoiceModal .inv-cal-svg{display:block; flex:0 0 auto;}
+
+/* v20261122-custcal-css: v4 - lich doanh so theo ngay cua 1 khach hang */
+#invoiceModal .inv-name-btn{
+  display:block; width:100%; margin:0; padding:0; border:0; background:none;
+  color:inherit; font:inherit; font-weight:700; line-height:inherit; text-align:left;
+  cursor:pointer; border-radius:4px;
+  text-decoration:underline dotted rgba(50,166,74,.55); text-underline-offset:3px;
+}
+#invoiceModal .inv-name-btn:hover{color:var(--accent); text-decoration:underline solid var(--accent); text-underline-offset:3px;}
+#invoiceModal .inv-name-btn:focus-visible{outline:2px solid var(--focus); outline-offset:2px;}
+#custCalModal{
+  display:none; position:fixed; inset:0; z-index:2100; background:var(--overlay);
+  -webkit-backdrop-filter:blur(5px); backdrop-filter:blur(5px);
+  align-items:flex-start; justify-content:center; overflow:auto;
+  padding:clamp(12px,3vw,34px) clamp(10px,2vw,18px);
+}
+#custCalModal.open{display:flex; animation:overlayIn 150ms ease;}
+#custCalModal .cc-panel{
+  position:relative; width:100%; max-width:880px; padding:24px 24px 20px;
+  background:var(--surface); border:1px solid var(--border); border-radius:16px;
+  box-shadow:var(--shadow);
+}
+#custCalModal.open .cc-panel{animation:panelIn 150ms ease both;}
+#custCalModal .cc-close{
+  position:absolute; top:14px; right:14px; width:34px; height:34px; border-radius:50%;
+  display:flex; align-items:center; justify-content:center;
+  border:1px solid var(--border); background:var(--surface-2);
+  color:var(--text-2); font-size:17px; line-height:1; cursor:pointer;
+  transition:background var(--t) ease, color var(--t) ease, border-color var(--t) ease;
+}
+#custCalModal .cc-close:hover{background:var(--red-bg); color:var(--red); border-color:var(--red-soft);}
+#custCalModal .cc-kicker{font-size:11px; font-weight:700; letter-spacing:.14em; text-transform:uppercase; color:var(--legend);}
+#custCalModal .cc-title{
+  font-size:clamp(19px,2.6vw,26px); font-weight:800; letter-spacing:-.01em;
+  margin:4px 0; color:var(--text); padding-right:36px; overflow-wrap:anywhere;
+}
+#custCalModal .cc-sub{font-size:12px; color:var(--muted); margin-bottom:14px; overflow-wrap:anywhere;}
+#custCalModal .cc-toolbar{display:flex; align-items:center; gap:10px; flex-wrap:wrap; margin:0 0 12px;}
+#custCalModal .cc-nav{
+  display:inline-flex; align-items:center; border:1px solid var(--border);
+  border-radius:10px; background:var(--surface-2); overflow:hidden;
+}
+#custCalModal .cc-nav button{
+  width:30px; height:30px; border:0; background:transparent; color:var(--text-2);
+  font-size:12px; line-height:1; cursor:pointer; display:inline-flex;
+  align-items:center; justify-content:center; transition:background var(--t) ease, color var(--t) ease;
+}
+#custCalModal .cc-nav button:hover:not(:disabled){background:var(--surface-3); color:var(--text);}
+#custCalModal .cc-nav button:focus-visible{outline:2px solid var(--focus); outline-offset:-2px;}
+#custCalModal .cc-nav button:disabled{opacity:.35; cursor:default;}
+#custCalModal .cc-month{
+  min-width:132px; text-align:center; font-size:12px; font-weight:800;
+  color:var(--text); padding:0 6px; white-space:nowrap;
+}
+#custCalModal .cc-hint{font-size:11px; color:var(--muted); line-height:1.35;}
+#custCalModal .cc-kpis{display:grid; grid-template-columns:repeat(4,minmax(0,1fr)); gap:10px; margin-bottom:14px;}
+#custCalModal .cc-kpi{
+  background:var(--surface-2); border:1px solid var(--border);
+  border-radius:12px; padding:11px 13px;
+}
+#custCalModal .cc-kpi .k{font-size:11px; font-weight:700; letter-spacing:.08em; text-transform:uppercase; color:var(--legend);}
+#custCalModal .cc-kpi .v{font-size:20px; font-weight:800; color:var(--text); margin:3px 0; font-variant-numeric:tabular-nums; overflow-wrap:anywhere;}
+#custCalModal .cc-kpi .n{font-size:11.5px; color:var(--muted); line-height:1.35;}
+#custCalModal .cc-card{
+  border:1px solid var(--border); border-radius:12px; background:var(--page);
+  padding:12px;
+}
+#custCalModal .cc-week,#custCalModal .cc-grid{
+  display:grid; grid-template-columns:repeat(7,minmax(0,1fr)); gap:6px;
+}
+#custCalModal .cc-week span{
+  text-align:center; font-size:10px; font-weight:800; letter-spacing:.08em;
+  text-transform:uppercase; color:var(--legend); padding:2px 0 6px;
+}
+#custCalModal .cc-day{
+  min-height:68px; margin:0; padding:6px 8px; border:1px solid var(--border);
+  border-radius:10px; background:var(--surface-2); color:var(--text);
+  display:flex; flex-direction:column; gap:1px; text-align:left; font:inherit;
+  font-variant-numeric:tabular-nums; overflow:hidden;
+}
+#custCalModal .cc-day.is-empty{background:transparent; border-color:transparent; min-height:68px;}
+#custCalModal .cc-day.is-future{opacity:.42; background:transparent; border-style:dashed;}
+#custCalModal .cc-day.is-zero{background:var(--surface-2); border-style:dashed;}
+#custCalModal .cc-day.is-zero .cc-v{color:var(--muted);}
+#custCalModal .cc-day.is-data.lv1{background:rgba(50,166,74,.08); border-color:rgba(50,166,74,.22);}
+#custCalModal .cc-day.is-data.lv2{background:rgba(50,166,74,.14); border-color:rgba(50,166,74,.30);}
+#custCalModal .cc-day.is-data.lv3{background:rgba(50,166,74,.20); border-color:rgba(50,166,74,.38);}
+#custCalModal .cc-day.is-data.lv4{background:rgba(50,166,74,.27); border-color:rgba(50,166,74,.48);}
+#custCalModal button.cc-day{cursor:pointer; transition:transform .12s ease, box-shadow .12s ease, border-color .12s ease;}
+#custCalModal button.cc-day:hover{transform:translateY(-1px); border-color:var(--accent); box-shadow:0 4px 12px rgba(6,37,16,.10);}
+#custCalModal button.cc-day:focus-visible{outline:2px solid var(--focus); outline-offset:2px;}
+#custCalModal .cc-day.is-today{box-shadow:inset 0 0 0 2px var(--accent);}
+#custCalModal .cc-day .cc-d{font-size:11px; font-weight:800; color:var(--text-2); line-height:1.15;}
+#custCalModal .cc-day.is-today .cc-d{color:var(--accent);}
+#custCalModal .cc-day .cc-v{font-size:12.5px; font-weight:800; margin-top:auto; line-height:1.2; overflow-wrap:anywhere;}
+#custCalModal .cc-day.is-data .cc-v{color:var(--good);}
+#custCalModal .cc-day.is-data.is-neg .cc-v{color:var(--red);}
+#custCalModal .cc-day .cc-n{font-size:10px; color:var(--muted); font-weight:600;}
+#custCalModal .cc-foot{font-size:11px; color:var(--muted); line-height:1.45; margin-top:10px;}
+@media (max-width:760px){
+  #custCalModal{padding:8px;}
+  #custCalModal .cc-panel{padding:18px 12px 14px; border-radius:12px;}
+  #custCalModal .cc-title{font-size:18px;}
+  #custCalModal .cc-kpis{grid-template-columns:repeat(2,minmax(0,1fr)); gap:8px;}
+  #custCalModal .cc-kpi{padding:9px 10px;}
+  #custCalModal .cc-kpi .v{font-size:15px;}
+  #custCalModal .cc-nav button{width:27px; height:28px; font-size:11px;}
+  #custCalModal .cc-month{min-width:108px; font-size:11px;}
+  #custCalModal .cc-card{padding:8px;}
+  #custCalModal .cc-week,#custCalModal .cc-grid{gap:4px;}
+  #custCalModal .cc-day{min-height:56px; padding:4px 3px; border-radius:8px;}
+  #custCalModal .cc-day.is-empty{min-height:56px;}
+  #custCalModal .cc-day .cc-d{font-size:10px;}
+  #custCalModal .cc-day .cc-v{font-size:9px; white-space:nowrap; letter-spacing:-.1px;}
+  #custCalModal .cc-day .cc-n{font-size:8.5px;}
+  #custCalModal .cc-week span{font-size:9.5px;}
+  #custCalModal .cc-close{top:10px; right:10px;}
+}
+/* v20261122-custcal-css-end */
 </style>
 </head>
 <body>
@@ -10415,6 +10534,32 @@ window.renderThietBi = function(){ try { render(); } catch(e){} };
       </div>
     </div>
   </div>
+
+  <!-- v20261122-custcal: lich doanh so theo ngay cua 1 khach hang -->
+  <div id="custCalModal" role="dialog" aria-modal="true" aria-labelledby="ccTitle">
+    <div class="cc-panel">
+      <button type="button" class="cc-close" id="ccClose" aria-label="Đóng">&times;</button>
+      <div class="cc-kicker">KHÁCH HÀNG · DOANH SỐ THEO NGÀY</div>
+      <div class="cc-title" id="ccTitle">—</div>
+      <div class="cc-sub" id="ccSub">—</div>
+      <div class="cc-toolbar">
+        <div class="cc-nav" role="group" aria-label="Chọn tháng">
+          <button type="button" id="ccPrev" aria-label="Tháng trước" title="Tháng trước">◀</button>
+          <span class="cc-month" id="ccMonth">Tháng —</span>
+          <button type="button" id="ccNext" aria-label="Tháng sau" title="Tháng sau">▶</button>
+        </div>
+        <span class="cc-hint">Chọn tháng để xem doanh số từng ngày</span>
+      </div>
+      <div class="cc-kpis" id="ccKpis"></div>
+      <div class="cc-card">
+        <div class="cc-week" aria-hidden="true">
+          <span>T2</span><span>T3</span><span>T4</span><span>T5</span><span>T6</span><span>T7</span><span>CN</span>
+        </div>
+        <div class="cc-grid" id="ccGrid" role="grid" aria-label="Doanh số theo ngày trong tháng"></div>
+      </div>
+      <div class="cc-foot" id="ccFoot"></div>
+    </div>
+  </div>
 <script>
 /* v20261121-invoiceperiod-js: modal danh sach khach hang + chon ngay/thang
    - Bam the "Total Invoice" o tab TOP 50 -> modal khach hang.
@@ -10424,7 +10569,10 @@ window.renderThietBi = function(){ try { render(); } catch(e){} };
    - Du lieu lich su: fetch('rpt18-customer-history.json?t=...') (cache tu
      rpt18_ytd.py). Neu khong tai duoc -> chi xem ngay hien tai nhu cu.
    - Sap xep theo doanh so (-VAT) giam dan; co tim kiem + tong cong.
-   - Du lieu ngay hien tai van co fallback TOP50_DATA.invoices.customers. */
+   - Du lieu ngay hien tai van co fallback TOP50_DATA.invoices.customers.
+   - v20261122-custcal-js: bam vao TEN khach hang -> mo LICH doanh so tung
+     ngay cua khach do trong thang dang xem (◀ ▶ doi thang, bam ngay co so
+     de nhay danh sach khach hang ve ngay do). */
 (function(){
   'use strict';
   var invState = {
@@ -10648,12 +10796,256 @@ window.renderThietBi = function(){ try { render(); } catch(e){} };
       sub: 'Ngày ' + invDay(invState.day) + ' · '
     };
   }
+  /* ===== v20261122-custcal-js: lich doanh so theo ngay cua 1 khach hang ===== */
+  var ccState = { open: false, cust: '', name: '', type: '', month: '', mobile: null };
+
+  function ccMonthOfToday(){
+    var d = new Date();
+    return '' + d.getFullYear() + invPad(d.getMonth() + 1);
+  }
+  function ccMonths(){
+    var months = invAvailableMonths();
+    if (months.length) return months;
+    var m = ccMonthOfToday();
+    return m ? [m] : [];
+  }
+  function ccDefaultMonth(){
+    var months = ccMonths();
+    var m = String(invState.month || '').slice(0, 6);
+    if (m) return m;
+    var pay = String(invYmd(invPayload().date));
+    if (pay.length === 8) return pay.slice(0, 6);
+    return months.length ? months[months.length - 1] : '';
+  }
+  function ccTargetRow(r){
+    if (!r) return false;
+    if (ccState.cust) return String(r.cust) === ccState.cust;
+    return !r.cust && r.name === ccState.name;
+  }
+  /* Doanh so cua khach trong 1 ngay: uu tien payload ngay hien tai (moi hon
+     cache lich su), sau do den cache theo ngay. */
+  function ccDayValue(ymd){
+    var day = String(ymd);
+    var payDay = String(invYmd(invPayload().date));
+    if (day && day === payDay){
+      var base = null;
+      invBaseRows().some(function(r){ if (ccTargetRow(r)){ base = r; return true; } return false; });
+      if (base) return { sale: base.sale, inv: base.inv, live: true };
+    }
+    var rec = (invState.hist && invState.hist.d) ? invState.hist.d[day] : null;
+    if (rec && Array.isArray(rec.r)){
+      for (var i = 0; i < rec.r.length; i++){
+        var x = rec.r[i];
+        if (x && String(x[0]) === ccState.cust){
+          return { sale: invN(x[2]), inv: invN(x[1]), live: false };
+        }
+      }
+    }
+    return { sale: 0, inv: 0, live: false };
+  }
+  function ccShort(v){
+    var n = invN(v);
+    if (!n) return '—';
+    var a = Math.abs(n);
+    if (a >= 1e9) return (n / 1e9).toFixed(2).replace(/\.?0+$/, '') + ' tỷ';
+    if (a >= 1e6) return (n / 1e6).toFixed(1).replace(/\.0$/, '') + ' tr';
+    return invFmt(n);
+  }
+  function ccCollect(ym){
+    var y = Number(String(ym).slice(0, 4));
+    var m = Number(String(ym).slice(4, 6));
+    var dim = (y && m) ? new Date(y, m, 0).getDate() : 30;
+    var offset = (y && m) ? (new Date(y, m - 1, 1).getDay() + 6) % 7 : 0;
+    var totalSale = 0, totalInv = 0, activeDays = 0, maxSale = 0, maxDay = 0;
+    var days = [];
+    for (var d = 1; d <= dim; d++){
+      var ymd = String(ym) + invPad(d);
+      var v = ccDayValue(ymd);
+      days.push({ d: d, ymd: Number(ymd), sale: v.sale, inv: v.inv, live: v.live });
+      if (v.sale !== 0){
+        totalSale += v.sale;
+        totalInv += v.inv;
+        activeDays++;
+        if (v.sale > maxSale){ maxSale = v.sale; maxDay = d; }
+      }
+    }
+    return { ymd: Number(ym), year: y, month: m, dim: dim, offset: offset,
+             days: days, totalSale: totalSale, totalInv: totalInv,
+             activeDays: activeDays, maxSale: maxSale, maxDay: maxDay };
+  }
+  function ccKpi(k, v, n){
+    return '<div class="cc-kpi"><div class="k">' + invEsc(k) + '</div>' +
+      '<div class="v">' + invEsc(v) + '</div><div class="n">' + invEsc(n) + '</div></div>';
+  }
+  function ccRender(){
+    var modal = document.getElementById('custCalModal');
+    if (!modal) return;
+    if (!ccState.month) ccState.month = ccDefaultMonth();
+    var ym = ccState.month;
+    var st = ccCollect(ym);
+    var title = document.getElementById('ccTitle');
+    if (title) title.textContent = ccState.name || ccState.cust || 'Khách hàng';
+    var sub = document.getElementById('ccSub');
+    if (sub){
+      var bits = [];
+      if (ccState.cust) bits.push('Mã KH ' + ccState.cust);
+      if (ccState.type) bits.push(ccState.type);
+      bits.push('Doanh số (-VAT) theo từng ngày · nguồn RPT18');
+      sub.textContent = bits.join(' · ');
+    }
+    var monLbl = document.getElementById('ccMonth');
+    if (monLbl) monLbl.textContent = 'Tháng ' + invMonthLabel(ym);
+
+    var months = ccMonths();
+    var mi = months.indexOf(String(ym));
+    if (mi < 0){ mi = 0; while (mi < months.length && months[mi] < String(ym)) mi++; }
+    var prev = document.getElementById('ccPrev');
+    var next = document.getElementById('ccNext');
+    if (prev) prev.disabled = !months.length || mi <= 0;
+    if (next) next.disabled = !months.length || mi >= months.length - 1;
+
+    var kpis = document.getElementById('ccKpis');
+    if (kpis){
+      var maxInv = st.maxDay ? ccDayValue(String(ym) + invPad(st.maxDay)).inv : 0;
+      kpis.innerHTML =
+        ccKpi('Tổng tháng', invVnd(st.totalSale), 'Tháng ' + invMonthLabel(ym) + ' · ' + invFmt(st.totalInv) + ' hóa đơn') +
+        ccKpi('Ngày có phát sinh', st.activeDays + '/' + st.dim, 'ngày có doanh số') +
+        ccKpi('Bình quân / ngày', invVnd(st.activeDays ? st.totalSale / st.activeDays : 0), 'chỉ tính ngày có phát sinh') +
+        ccKpi('Ngày cao nhất', st.maxSale ? invVnd(st.maxSale) : '—',
+              st.maxDay ? (invPad(st.maxDay) + '/' + invPad(st.month) + ' · ' + invFmt(maxInv) + ' hóa đơn')
+                        : 'chưa có dữ liệu');
+    }
+
+    var today = new Date();
+    var todayYmd = today.getFullYear() * 10000 + (today.getMonth() + 1) * 100 + today.getDate();
+    var grid = document.getElementById('ccGrid');
+    if (grid){
+      var h = '';
+      for (var e = 0; e < st.offset; e++) h += '<div class="cc-day is-empty" aria-hidden="true"></div>';
+      st.days.forEach(function(x){
+        var full = invDay(x.ymd) + ' · ' + invVnd(x.sale) + ' · ' + invFmt(x.inv) + ' hóa đơn';
+        if (x.ymd > todayYmd){
+          h += '<div class="cc-day is-future" role="gridcell"><span class="cc-d">' + invPad(x.d) + '</span></div>';
+          return;
+        }
+        if (!x.sale){
+          h += '<div class="cc-day is-zero" role="gridcell"><span class="cc-d">' + invPad(x.d) + '</span>' +
+            '<span class="cc-v">—</span></div>';
+          return;
+        }
+        var lv = st.maxSale ? Math.min(4, Math.max(1, Math.ceil(x.sale / st.maxSale * 4))) : 1;
+        var neg = x.sale < 0 ? ' is-neg' : '';
+        h += '<button type="button" class="cc-day is-data lv' + lv + neg + (x.ymd === todayYmd ? ' is-today' : '') + '"' +
+          ' data-ymd="' + x.ymd + '" role="gridcell" title="' + invEsc(full) + '">' +
+          '<span class="cc-d">' + invPad(x.d) + '</span>' +
+          '<span class="cc-v">' + invEsc(ccShort(x.sale)) + '</span>' +
+          '<span class="cc-n">' + invFmt(x.inv) + ' HĐ</span></button>';
+      });
+      grid.innerHTML = h;
+    }
+    var foot = document.getElementById('ccFoot');
+    if (foot){
+      if (!invState.hist){
+        foot.textContent = invState.histLoading ? 'Đang tải lịch sử ngày/tháng…'
+          : (invState.histError ? 'Không tải được lịch sử — chỉ hiển thị ngày hiện tại.'
+                                : 'Chưa có dữ liệu lịch sử.');
+      } else {
+        foot.textContent = 'Bấm một ngày có số để xem danh sách khách hàng của ngày đó · ' +
+          invMonthLabel(ym) + ' có ' + invFmt(st.activeDays) + ' ngày phát sinh';
+      }
+    }
+  }
+  function ccOpen(cust, name, type){
+    var modal = document.getElementById('custCalModal');
+    if (!modal) return;
+    ccState.open = true;
+    ccState.cust = String(cust === null || cust === undefined ? '' : cust).trim();
+    ccState.name = String(name === null || name === undefined ? '' : name).trim();
+    ccState.type = String(type === null || type === undefined ? '' : type).trim();
+    ccState.month = String(invState.month || '').slice(0, 6) || ccDefaultMonth();
+    modal.classList.add('open');
+    invSyncBody();
+    ccRender();
+    if (!invState.hist){
+      invState.histLoading = true;
+      ccRender();
+      invLoadHistory().then(function(){ ccRender(); });
+    }
+    setTimeout(function(){
+      var b = document.getElementById('ccClose');
+      if (b){ try { b.focus(); } catch (e) { /* ignore */ } }
+    }, 40);
+  }
+  function ccClose(){
+    var modal = document.getElementById('custCalModal');
+    if (modal) modal.classList.remove('open');
+    ccState.open = false;
+    invSyncBody();
+  }
+  function ccStepMonth(dir){
+    var months = ccMonths();
+    if (!months.length) return;
+    var cur = String(ccState.month);
+    var i = months.indexOf(cur);
+    if (i < 0){ i = 0; while (i < months.length && months[i] < cur) i++; }
+    var j = i + dir;
+    if (j < 0 || j >= months.length) return;
+    ccState.month = months[j];
+    ccRender();
+  }
+  function ccGoDay(ymd){
+    if (!ymd) return;
+    ccClose();
+    invPickDay(ymd);
+  }
+  function ccWire(){
+    var body = document.getElementById('invBody');
+    if (body && !body._ccWired){
+      body._ccWired = true;
+      body.addEventListener('click', function(e){
+        var b = e.target && e.target.closest ? e.target.closest('.inv-name-btn') : null;
+        if (!b) return;
+        e.preventDefault();
+        ccOpen(b.getAttribute('data-cust'), b.getAttribute('data-name'), b.getAttribute('data-type'));
+      });
+    }
+    var close = document.getElementById('ccClose');
+    if (close && !close._ccWired){
+      close._ccWired = true;
+      close.addEventListener('click', ccClose);
+    }
+    var modal = document.getElementById('custCalModal');
+    if (modal && !modal._ccWired){
+      modal._ccWired = true;
+      modal.addEventListener('click', function(e){ if (e.target === modal) ccClose(); });
+    }
+    var prev = document.getElementById('ccPrev');
+    if (prev && !prev._ccWired){
+      prev._ccWired = true;
+      prev.addEventListener('click', function(){ ccStepMonth(-1); });
+    }
+    var next = document.getElementById('ccNext');
+    if (next && !next._ccWired){
+      next._ccWired = true;
+      next.addEventListener('click', function(){ ccStepMonth(1); });
+    }
+    var grid = document.getElementById('ccGrid');
+    if (grid && !grid._ccWired){
+      grid._ccWired = true;
+      grid.addEventListener('click', function(e){
+        var b = e.target && e.target.closest ? e.target.closest('button.cc-day[data-ymd]') : null;
+        if (!b) return;
+        ccGoDay(Number(b.getAttribute('data-ymd')));
+      });
+    }
+  }
+
   function invKpi(k, v, n){
     return '<div class="inv-kpi"><div class="k">' + invEsc(k) + '</div>' +
       '<div class="v">' + invEsc(v) + '</div><div class="n">' + invEsc(n) + '</div></div>';
   }
   function invSyncBody(){
-    var any = !!document.querySelector('#scDeptModal.open, #deptRankModal.open, #minusModal.open, #invoiceModal.open');
+    var any = !!document.querySelector('#scDeptModal.open, #deptRankModal.open, #minusModal.open, #invoiceModal.open, #custCalModal.open');
     document.body.classList.toggle('modal-open', any);
     document.body.style.overflow = any ? 'hidden' : '';
   }
@@ -10762,6 +11154,14 @@ window.renderThietBi = function(){ try { render(); } catch(e){} };
       note.textContent = txt;
     }
   }
+  /* Ten khach hang = nut mo lich doanh so theo ngay (v20261122-custcal-js). */
+  function invNameCell(r){
+    return '<td class="inv-name"><button type="button" class="inv-name-btn"' +
+      ' data-cust="' + invEsc(r.cust) + '" data-name="' + invEsc(r.name) + '"' +
+      ' data-type="' + invEsc(r.type) + '"' +
+      ' title="Xem doanh số theo ngày trong tháng">' +
+      invEsc(r.name || '—') + '</button></td>';
+  }
   function invRender(){
     var p = invPeriod();
     var rows = p.rows;
@@ -10825,12 +11225,12 @@ window.renderThietBi = function(){ try { render(); } catch(e){} };
       h += '<tr data-search="' + invEsc(hay) + '">' +
         '<td class="inv-rank">' + (idx + 1) + '</td>';
       if (mobile){
-        h += '<td class="inv-name">' + invEsc(r.name || '—') + '</td>' +
+        h += invNameCell(r) +
           '<td class="num">' + invFmt(r.inv) + '</td>' +
           '<td class="num inv-sale">' + invVnd(r.sale) + '</td></tr>';
       } else {
         h += '<td class="inv-code">' + invEsc(r.cust || '—') + '</td>' +
-          '<td class="inv-name">' + invEsc(r.name || '—') + '</td>' +
+          invNameCell(r) +
           '<td class="inv-c-type"><span class="inv-type" title="' + invEsc(r.type) + '">' +
             invEsc(r.type || '—') + '</span></td>' +
           '<td class="num">' + invFmt(r.inv) + '</td>' +
@@ -10966,6 +11366,7 @@ window.renderThietBi = function(){ try { render(); } catch(e){} };
   function invOpen(){
     var modal = document.getElementById('invoiceModal');
     if (!modal) return;
+    ccClose();
     invState.q = '';
     var inp = document.getElementById('invSearch');
     if (inp) inp.value = '';
@@ -10981,6 +11382,7 @@ window.renderThietBi = function(){ try { render(); } catch(e){} };
     });
   }
   function invClose(){
+    ccClose();
     var modal = document.getElementById('invoiceModal');
     if (modal) modal.classList.remove('open');
     invSyncBody();
@@ -11066,17 +11468,31 @@ window.renderThietBi = function(){ try { render(); } catch(e){} };
   document.addEventListener('keydown', function(e){
     // Goi ca khi modal khong mo: handler Esc cua trang (dang ky truoc) co the
     // da dong modal va reset overflow, nhung body.modal-open co the con sot.
-    if (e.key === 'Escape') invClose();
-  });
+    if (e.key !== 'Escape') return;
+    // Lich khach hang dang mo -> Esc chi dong lich, giu modal danh sach ben duoi.
+    // Dung capture + stopImmediatePropagation vi handler Esc cua trang (bubble)
+    // se dong ca #invoiceModal ben duoi.
+    if (ccState.open){
+      e.preventDefault();
+      e.stopImmediatePropagation();
+      ccClose();
+      return;
+    }
+    invClose();
+  }, true);
   invWirePeriod();
+  ccWire();
   if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', invWire);
   else invWire();
+  if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', ccWire);
   document.addEventListener('click', function(e){
     if (e.target && e.target.getAttribute && e.target.getAttribute('data-tab') === 'top50'){
       setTimeout(invWire, 200);
+      setTimeout(ccWire, 200);
     }
   });
   function invRelayout(){
+    if (ccState.open) ccRender();
     if (!document.querySelector('#invoiceModal.open')) return;
     if (invIsMobile() === invState.mobile) return;
     invRender();
