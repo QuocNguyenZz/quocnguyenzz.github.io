@@ -1619,6 +1619,32 @@ var pJS=function(e,a){var t=document.querySelector("#"+e+" > .particles-js-canva
   #invoiceModal table.inv-table th:nth-child(4){width:104px;}
   #invoiceModal .inv-close{top:10px; right:10px;}
 }
+
+/* v20261122-invcal-css: o ngay/thang mo lich chon (native date/month picker) */
+#invoiceModal .inv-cal-wrap{
+  position:relative; display:inline-flex; align-items:center; gap:5px;
+  min-height:30px; padding:0 7px; border-radius:8px; cursor:pointer;
+}
+#invoiceModal .inv-cal-wrap:hover{background:var(--surface-3);}
+#invoiceModal .inv-cal-wrap:focus-within{outline:2px solid var(--focus); outline-offset:-2px;}
+#invoiceModal .inv-cal-wrap .inv-lbl{padding:0;}
+#invoiceModal .inv-cal-ico{display:inline-flex; align-items:center; color:var(--muted); line-height:1; opacity:.85;}
+#invoiceModal .inv-cal-svg{display:block; flex:0 0 auto;}
+#invoiceModal .inv-cal-wrap input[type="date"],
+#invoiceModal .inv-cal-wrap input[type="month"]{
+  position:absolute; inset:0; width:100%; height:100%; margin:0; padding:0;
+  border:0; background:transparent; opacity:0; cursor:pointer; font-size:16px;
+}
+#invoiceModal .inv-cal-wrap.inv-no-picker input{display:none;}
+#invoiceModal .inv-cal-wrap.inv-no-picker .inv-cal-ico{display:none;}
+@media (max-width:760px){
+  #invoiceModal .inv-cal-wrap{min-height:28px; padding:0 4px; gap:3px;}
+  #invoiceModal .inv-cal-ico{font-size:9px;}
+}
+
+/* v20261122-invcal-svg-css: icon lich SVG gon, ro rang */
+#invoiceModal .inv-cal-ico{display:inline-flex; align-items:center; color:var(--muted); line-height:1; opacity:.85;}
+#invoiceModal .inv-cal-svg{display:block; flex:0 0 auto;}
 </style>
 </head>
 <body>
@@ -10343,16 +10369,23 @@ window.renderThietBi = function(){ try { render(); } catch(e){} };
       <div class="inv-kicker">TOTAL INVOICE · RPT18</div>
       <div class="inv-title" id="invTitle">Danh sách khách hàng</div>
       <div class="inv-sub" id="invSub">Khách hàng theo doanh số (-VAT)</div>
-      <div class="inv-kpis" id="invKpis"></div>
       <div class="inv-period" id="invPeriod" aria-label="Chọn ngày hoặc tháng">
         <div class="inv-nav" role="group" aria-label="Chọn ngày">
           <button type="button" id="invDayPrev" aria-label="Ngày trước" title="Ngày trước">◀</button>
-          <span class="inv-lbl" id="invDayLabel">Ngày —</span>
+          <label class="inv-cal-wrap" title="Bấm để chọn ngày từ lịch">
+            <span class="inv-lbl" id="invDayLabel">Ngày —</span>
+            <span class="inv-cal-ico" aria-hidden="true"><svg class="inv-cal-svg" viewBox="0 0 16 16" width="11" height="11" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><rect x="2.2" y="3.4" width="11.6" height="10.2" rx="1.6"></rect><path d="M2.2 6.4h11.6M5.2 1.8v3M10.8 1.8v3"></path></svg></span>
+            <input type="date" id="invDayInput" aria-label="Chọn ngày từ lịch">
+          </label>
           <button type="button" id="invDayNext" aria-label="Ngày sau" title="Ngày sau">▶</button>
         </div>
         <div class="inv-nav inv-nav-month" role="group" aria-label="Chọn tháng">
           <button type="button" id="invMonthPrev" aria-label="Tháng trước" title="Tháng trước">◀</button>
-          <span class="inv-lbl" id="invMonthLabel">Tháng —</span>
+          <label class="inv-cal-wrap" title="Bấm để chọn tháng từ lịch">
+            <span class="inv-lbl" id="invMonthLabel">Tháng —</span>
+            <span class="inv-cal-ico" aria-hidden="true"><svg class="inv-cal-svg" viewBox="0 0 16 16" width="11" height="11" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><rect x="2.2" y="3.4" width="11.6" height="10.2" rx="1.6"></rect><path d="M2.2 6.4h11.6M5.2 1.8v3M10.8 1.8v3"></path></svg></span>
+            <input type="month" id="invMonthInput" aria-label="Chọn tháng từ lịch">
+          </label>
           <button type="button" id="invMonthNext" aria-label="Tháng sau" title="Tháng sau">▶</button>
         </div>
         <button type="button" class="inv-scope" id="invScopeBtn" title="Chuyển giữa xem theo ngày và cả tháng">Xem cả tháng</button>
@@ -10384,7 +10417,9 @@ window.renderThietBi = function(){ try { render(); } catch(e){} };
 <script>
 /* v20261121-invoiceperiod-js: modal danh sach khach hang + chon ngay/thang
    - Bam the "Total Invoice" o tab TOP 50 -> modal khach hang.
-   - Nut ◀ ▶ de chon NGAY; ◀ ▶ de chon THANG; nut "Xem ca thang" doi pham vi.
+   - Bam vao o NGAY / THANG de mo LICH chon (date/month picker cua trinh duyet),
+     van giu nut ◀ ▶ de nhay nhanh tung ngay / tung thang.
+   - Nut "Xem ca thang" doi pham vi ngay <-> thang.
    - Du lieu lich su: fetch('rpt18-customer-history.json?t=...') (cache tu
      rpt18_ytd.py). Neu khong tai duoc -> chi xem ngay hien tai nhu cu.
    - Sap xep theo doanh so (-VAT) giam dan; co tim kiem + tong cong.
@@ -10419,6 +10454,31 @@ window.renderThietBi = function(){ try { render(); } catch(e){} };
   function invYmd(v){
     var s = String(v === null || v === undefined ? '' : v).replace(/\D/g, '');
     return s.length >= 8 ? Number(s.slice(0, 8)) : 0;
+  }
+  /* Gia tri cho <input type="date"> / <input type="month">. */
+  function invDayInputValue(ymd){
+    var s = String(ymd === null || ymd === undefined ? '' : ymd).replace(/\D/g, '');
+    return s.length === 8 ? s.slice(0, 4) + '-' + s.slice(4, 6) + '-' + s.slice(6, 8) : '';
+  }
+  function invMonthInputValue(ym){
+    var s = String(ym === null || ym === undefined ? '' : ym).replace(/\D/g, '');
+    return s.length >= 6 ? s.slice(0, 4) + '-' + s.slice(4, 6) : '';
+  }
+  function invSupportsMonth(){
+    try {
+      var i = document.createElement('input');
+      i.type = 'month';
+      return i.type === 'month';
+    } catch (e) { return false; }
+  }
+  /* Mo lich native (Chrome/Edge). Neu trinh duyet khong ho tro showPicker
+     thi de trinh duyet tu mo khi bam vao input. */
+  function invOpenPicker(el){
+    if (!el) return;
+    if (typeof el.showPicker === 'function'){
+      try { el.showPicker(); return; } catch (e) { /* fall through */ }
+    }
+    try { el.focus(); } catch (e) { /* ignore */ }
   }
   function invMonthLabel(ym){
     var s = String(ym === null || ym === undefined ? '' : ym).replace(/\D/g, '');
@@ -10629,17 +10689,47 @@ window.renderThietBi = function(){ try { render(); } catch(e){} };
     if (dayLbl) dayLbl.textContent = invState.day ? ('Ngày ' + invDay(invState.day)) : 'Ngày —';
     if (monLbl) monLbl.textContent = invState.month ? ('Tháng ' + invMonthLabel(invState.month)) : 'Tháng —';
 
+    /* Dong bo o lich (input date/month) + gioi han ngay/thang co du lieu. */
+    var dayInput = document.getElementById('invDayInput');
+    var monInput = document.getElementById('invMonthInput');
+    if (dayInput){
+      dayInput.value = invState.day ? invDayInputValue(invState.day) : '';
+      if (days.length){
+        dayInput.min = invDayInputValue(days[0]);
+        dayInput.max = invDayInputValue(days[days.length - 1]);
+      } else {
+        dayInput.removeAttribute('min');
+        dayInput.removeAttribute('max');
+      }
+    }
+    if (monInput){
+      monInput.value = invState.month ? invMonthInputValue(invState.month) : '';
+      if (months.length){
+        monInput.min = invMonthInputValue(months[0]);
+        monInput.max = invMonthInputValue(months[months.length - 1]);
+      } else {
+        monInput.removeAttribute('min');
+        monInput.removeAttribute('max');
+      }
+    }
+
     var di = days.indexOf(invState.day);
-    // Ngay hien tai co the chua nam trong cache lich su -> coi nhu vi tri
-    // cuoi cung de nut "Ngay truoc" van bam duoc.
-    if (di < 0 && invState.day === invYmd(invPayload().date)) di = days.length;
+    // Ngay dang chon co the chua nam trong cache lich su (ngay hien tai hoac
+    // ngay nguoi dung tu chon) -> chen vao dung vi tri theo thu tu ngay.
+    if (di < 0){
+      di = 0;
+      while (di < days.length && days[di] < invState.day) di++;
+    }
     if (dayPrev) dayPrev.disabled = !hasHist || !days.length || di <= 0;
     if (dayNext) dayNext.disabled = !hasHist || !days.length || di < 0 || di >= days.length - 1;
 
     var mi = months.indexOf(String(invState.month));
-    // Thang hien tai co the chua nam trong cache -> coi nhu vi tri cuoi.
-    var payMonth = invYmd(invPayload().date) ? String(invYmd(invPayload().date)).slice(0, 6) : '';
-    if (mi < 0 && payMonth && String(invState.month) === payMonth) mi = months.length;
+    // Thang dang chon co the chua nam trong cache (thang hien tai hoac thang
+    // nguoi dung tu chon) -> chen theo thu tu thang de ◀ ▶ van bam duoc.
+    if (mi < 0){
+      mi = 0;
+      while (mi < months.length && months[mi] < String(invState.month)) mi++;
+    }
     if (monPrev) monPrev.disabled = !hasHist || !months.length || mi <= 0;
     if (monNext) monNext.disabled = !hasHist || !months.length || mi < 0 || mi >= months.length - 1;
 
@@ -10766,8 +10856,11 @@ window.renderThietBi = function(){ try { render(); } catch(e){} };
     var days = invAvailableDays();
     if (days.length){
       var i = days.indexOf(invState.day);
-      // Ngay hien tai chua co trong cache -> dat sau ngay cuoi cung.
-      if (i < 0) i = days.length;
+      // Ngay dang chon chua co trong cache -> chen theo thu tu ngay.
+      if (i < 0){
+        i = 0;
+        while (i < days.length && days[i] < invState.day) i++;
+      }
       var j = i + dir;
       if (j < 0 || j >= days.length) return;
       invState.day = days[j];
@@ -10788,8 +10881,11 @@ window.renderThietBi = function(){ try { render(); } catch(e){} };
     if (!months.length) return;
     var m = String(invState.month || '');
     var i = months.indexOf(m);
-    // Thang hien tai chua co trong cache -> dat sau thang cuoi cung.
-    if (i < 0) i = months.length;
+    // Thang dang chon chua co trong cache -> chen theo thu tu thang.
+    if (i < 0){
+      i = 0;
+      while (i < months.length && months[i] < m) i++;
+    }
     var j = i + dir;
     if (j < 0 || j >= months.length) return;
     invState.month = months[j];
@@ -10798,6 +10894,30 @@ window.renderThietBi = function(){ try { render(); } catch(e){} };
     });
     if (days.length) invState.day = days[0];
     invState.scope = 'month';
+    invRender();
+  }
+  /* Chon ngay tu o lich: luon chuyen ve pham vi NGAY. */
+  function invPickDay(v){
+    var ymd = invYmd(v);
+    if (!ymd) return;
+    invState.day = ymd;
+    invState.month = String(ymd).slice(0, 6);
+    invState.scope = 'day';
+    invRender();
+  }
+  /* Chon thang tu o lich: chuyen sang pham vi THANG, chon ngay dau tien co
+     du lieu trong thang de cac nhan ngay/thang dong bo. */
+  function invPickMonth(v){
+    var ym = String(v === null || v === undefined ? '' : v).replace(/\D/g, '').slice(0, 6);
+    if (ym.length !== 6) return;
+    invState.month = ym;
+    invState.scope = 'month';
+    var first = 0;
+    invAvailableDays().some(function(d){
+      if (String(d).slice(0, 6) === ym){ first = d; return true; }
+      return false;
+    });
+    invState.day = first || Number(ym + '01');
     invRender();
   }
   function invSetScope(scope){
@@ -10901,6 +11021,33 @@ window.renderThietBi = function(){ try { render(); } catch(e){} };
       scope.addEventListener('click', function(){
         invSetScope(invState.scope === 'month' ? 'day' : 'month');
       });
+    }
+
+    /* O lich chon ngay: bam vao mo date picker native. */
+    var dayInput = document.getElementById('invDayInput');
+    if (dayInput && !dayInput._invWired){
+      dayInput._invWired = true;
+      dayInput.addEventListener('change', function(){ invPickDay(this.value); });
+      dayInput.addEventListener('click', function(){ invOpenPicker(this); });
+      dayInput.addEventListener('keydown', function(e){
+        if (e.key === 'Enter' || e.key === ' '){ e.preventDefault(); invOpenPicker(this); }
+      });
+    }
+
+    /* O lich chon thang: trinh duyet khong ho tro type=month (vd Safari iOS)
+       thi an input, van dung nut ◀ ▶ nhu cu. */
+    var monInput = document.getElementById('invMonthInput');
+    if (monInput && !monInput._invWired){
+      monInput._invWired = true;
+      if (!invSupportsMonth()){
+        if (monInput.parentNode) monInput.parentNode.classList.add('inv-no-picker');
+      } else {
+        monInput.addEventListener('change', function(){ invPickMonth(this.value); });
+        monInput.addEventListener('click', function(){ invOpenPicker(this); });
+        monInput.addEventListener('keydown', function(e){
+          if (e.key === 'Enter' || e.key === ' '){ e.preventDefault(); invOpenPicker(this); }
+        });
+      }
     }
   }
 
