@@ -1562,6 +1562,36 @@ var pJS=function(e,a){var t=document.querySelector("#"+e+" > .particles-js-canva
 #invoiceModal table.inv-table tr.inv-total td.inv-total-sale{color:var(--gold);}
 #invoiceModal .inv-empty{padding:36px 12px; text-align:center; color:var(--muted); font-size:12px; line-height:1.6;}
 
+/* v20261121-invoiceperiod: chon NGAY / THANG cho modal danh sach khach hang */
+#invoiceModal .inv-period{display:flex; align-items:center; gap:10px; flex-wrap:wrap; margin:0 0 12px;}
+#invoiceModal .inv-nav{
+  display:inline-flex; align-items:center; border:1px solid var(--border);
+  border-radius:10px; background:var(--surface-2); overflow:hidden;
+}
+#invoiceModal .inv-nav button{
+  width:30px; height:30px; border:0; background:transparent; color:var(--text-2);
+  font-size:12px; line-height:1; cursor:pointer; display:inline-flex;
+  align-items:center; justify-content:center; transition:background var(--t) ease, color var(--t) ease;
+}
+#invoiceModal .inv-nav button:hover:not(:disabled){background:var(--surface-3); color:var(--text);}
+#invoiceModal .inv-nav button:focus-visible{outline:2px solid var(--focus); outline-offset:-2px;}
+#invoiceModal .inv-nav button:disabled{opacity:.35; cursor:default;}
+#invoiceModal .inv-nav .inv-lbl{
+  min-width:138px; text-align:center; font-size:12px; font-weight:800;
+  color:var(--text); padding:0 6px; white-space:nowrap;
+}
+#invoiceModal .inv-nav-month .inv-lbl{min-width:112px;}
+#invoiceModal .inv-scope{
+  border:1px solid var(--border); border-radius:999px; padding:6px 12px;
+  background:var(--surface-2); color:var(--text-2); font:inherit; font-size:11px;
+  font-weight:800; letter-spacing:.02em; cursor:pointer;
+  transition:background var(--t) ease, color var(--t) ease, border-color var(--t) ease;
+}
+#invoiceModal .inv-scope:hover:not(:disabled){background:var(--surface-3); color:var(--text);}
+#invoiceModal .inv-scope:disabled{opacity:.45; cursor:default;}
+#invoiceModal .inv-scope.is-on{background:var(--accent); color:#fff; border-color:var(--accent);}
+#invoiceModal .inv-period-note{font-size:11px; color:var(--muted); line-height:1.35;}
+
 @media (max-width:760px){
   #invoiceModal{padding:8px;}
   #invoiceModal .inv-panel{padding:18px 12px 14px; border-radius:12px;}
@@ -1580,6 +1610,12 @@ var pJS=function(e,a){var t=document.querySelector("#"+e+" > .particles-js-canva
   #invoiceModal table.inv-table th:nth-child(3){width:44px;}
   #invoiceModal table.inv-table th:nth-child(4){width:104px;}
   #invoiceModal .inv-close{top:10px; right:10px;}
+  #invoiceModal .inv-period{gap:6px; margin-bottom:10px;}
+  #invoiceModal .inv-nav .inv-lbl{min-width:104px; font-size:11px; padding:0 4px;}
+  #invoiceModal .inv-nav-month .inv-lbl{min-width:92px;}
+  #invoiceModal .inv-nav button{width:26px; height:28px; font-size:11px;}
+  #invoiceModal .inv-scope{padding:5px 9px; font-size:10.5px;}
+  #invoiceModal .inv-period-note{width:100%; font-size:10.5px;}
 }
 </style>
 </head>
@@ -10306,6 +10342,20 @@ window.renderThietBi = function(){ try { render(); } catch(e){} };
       <div class="inv-title" id="invTitle">Danh sách khách hàng</div>
       <div class="inv-sub" id="invSub">Khách hàng theo doanh số (-VAT)</div>
       <div class="inv-kpis" id="invKpis"></div>
+      <div class="inv-period" id="invPeriod" aria-label="Chọn ngày hoặc tháng">
+        <div class="inv-nav" role="group" aria-label="Chọn ngày">
+          <button type="button" id="invDayPrev" aria-label="Ngày trước" title="Ngày trước">◀</button>
+          <span class="inv-lbl" id="invDayLabel">Ngày —</span>
+          <button type="button" id="invDayNext" aria-label="Ngày sau" title="Ngày sau">▶</button>
+        </div>
+        <div class="inv-nav inv-nav-month" role="group" aria-label="Chọn tháng">
+          <button type="button" id="invMonthPrev" aria-label="Tháng trước" title="Tháng trước">◀</button>
+          <span class="inv-lbl" id="invMonthLabel">Tháng —</span>
+          <button type="button" id="invMonthNext" aria-label="Tháng sau" title="Tháng sau">▶</button>
+        </div>
+        <button type="button" class="inv-scope" id="invScopeBtn" title="Chuyển giữa xem theo ngày và cả tháng">Xem cả tháng</button>
+        <span class="inv-period-note" id="invPeriodNote"></span>
+      </div>
       <div class="inv-filter">
         <input type="search" id="invSearch" placeholder="Tìm mã / tên / loại khách hàng…" autocomplete="off" aria-label="Tìm khách hàng">
         <span class="inv-count" id="invCount"></span>
@@ -10330,13 +10380,20 @@ window.renderThietBi = function(){ try { render(); } catch(e){} };
     </div>
   </div>
 <script>
-/* v20261121-invoicecustomers: modal danh sach khach hang (KPI Total Invoice)
+/* v20261121-invoiceperiod-js: modal danh sach khach hang + chon ngay/thang
    - Bam the "Total Invoice" o tab TOP 50 -> modal khach hang.
+   - Nut ◀ ▶ de chon NGAY; ◀ ▶ de chon THANG; nut "Xem ca thang" doi pham vi.
+   - Du lieu lich su: fetch('rpt18-customer-history.json?t=...') (cache tu
+     rpt18_ytd.py). Neu khong tai duoc -> chi xem ngay hien tai nhu cu.
    - Sap xep theo doanh so (-VAT) giam dan; co tim kiem + tong cong.
-   - Du lieu lay tu TOP50_DATA.invoices.customers (refresh_html.py nap tu RPT18). */
+   - Du lieu ngay hien tai van co fallback TOP50_DATA.invoices.customers. */
 (function(){
   'use strict';
-  var invState = { q: '', mobile: null };
+  var invState = {
+    q: '', mobile: null, scope: 'day', day: 0, month: '',
+    hist: null, histLoading: false, histError: ''
+  };
+  var invHistPromise = null;
   var invMQ = (window.matchMedia ? window.matchMedia('(max-width:760px)') : null);
   function invIsMobile(){ return invMQ ? invMQ.matches : (window.innerWidth <= 760); }
 
@@ -10352,15 +10409,25 @@ window.renderThietBi = function(){ try { render(); } catch(e){} };
     var s = (Math.round(invN(v) * 1000) / 10).toLocaleString('en-US', { maximumFractionDigits: 1 });
     return s + '%';
   }
+  function invPad(n){ return (n < 10 ? '0' : '') + n; }
   function invDay(v){
     var s = String(v === null || v === undefined ? '' : v).replace(/\D/g, '');
     return s.length === 8 ? s.slice(6, 8) + '/' + s.slice(4, 6) + '/' + s.slice(0, 4) : '';
+  }
+  function invYmd(v){
+    var s = String(v === null || v === undefined ? '' : v).replace(/\D/g, '');
+    return s.length >= 8 ? Number(s.slice(0, 8)) : 0;
+  }
+  function invMonthLabel(ym){
+    var s = String(ym === null || ym === undefined ? '' : ym).replace(/\D/g, '');
+    return s.length >= 6 ? s.slice(4, 6) + '/' + s.slice(0, 4) : '—';
   }
   function invPayload(){
     var d = window.TOP50_DATA || {};
     return d.invoices || {};
   }
-  function invRows(){
+  /* Fallback: danh sach khach hang cua NGAY hien tai da nhung trong TOP50_DATA. */
+  function invBaseRows(){
     var inv = invPayload();
     var list = Array.isArray(inv.customers) ? inv.customers : [];
     return list.map(function(r){
@@ -10377,6 +10444,113 @@ window.renderThietBi = function(){ try { render(); } catch(e){} };
           || a.name.localeCompare(b.name, 'vi')
           || a.cust.localeCompare(b.cust);
       });
+  }
+  function invHistRows(rec){
+    var hist = invState.hist || {};
+    var tab = hist.c || {};
+    var list = (rec && Array.isArray(rec.r)) ? rec.r : [];
+    var out = [];
+    list.forEach(function(x){
+      if (!x) return;
+      var cust = String(x[0] === null || x[0] === undefined ? '' : x[0]).trim();
+      if (!cust) return;
+      var meta = tab[cust] || [];
+      out.push({
+        cust: cust,
+        name: String(meta[0] || '').trim(),
+        type: String(meta[1] || '').trim(),
+        inv: invN(x[1]),
+        sale: invN(x[2])
+      });
+    });
+    out.sort(function(a, b){
+      return (b.sale - a.sale)
+        || a.name.localeCompare(b.name, 'vi')
+        || a.cust.localeCompare(b.cust);
+    });
+    return out;
+  }
+  function invAvailableDays(){
+    var h = invState.hist;
+    if (!h) return [];
+    if (Array.isArray(h.dates) && h.dates.length){
+      return h.dates.map(invYmd).filter(Boolean).sort(function(a, b){ return a - b; });
+    }
+    return Object.keys(h.d || {}).map(invYmd).filter(Boolean).sort(function(a, b){ return a - b; });
+  }
+  function invAvailableMonths(){
+    var h = invState.hist;
+    if (!h) return [];
+    if (Array.isArray(h.months) && h.months.length){
+      return h.months.map(String).sort();
+    }
+    return Object.keys(h.m || {}).map(String).sort();
+  }
+  function invDefaultDay(){
+    var pay = invPayload();
+    var d = invYmd(pay.date);
+    var days = invAvailableDays();
+    if (d && (!days.length || days.indexOf(d) >= 0)) return d;
+    if (days.length) return days[days.length - 1];
+    return d || 0;
+  }
+  function invClampPeriod(){
+    var days = invAvailableDays();
+    var months = invAvailableMonths();
+    if (days.length && days.indexOf(invState.day) < 0){
+      invState.day = days[days.length - 1];
+    }
+    if (!invState.day && days.length) invState.day = days[days.length - 1];
+    if (invState.day) invState.month = String(invState.day).slice(0, 6);
+    if (months.length && months.indexOf(String(invState.month)) < 0){
+      invState.month = months[months.length - 1];
+    }
+  }
+  function invResetPeriod(){
+    invState.day = invDefaultDay();
+    invState.month = invState.day ? String(invState.day).slice(0, 6) : '';
+    invState.scope = 'day';
+    invClampPeriod();
+  }
+  function invPeriod(){
+    var h = invState.hist;
+    var pay = invPayload();
+    if (!h){
+      var rows0 = invBaseRows();
+      var s0 = 0, n0 = 0;
+      rows0.forEach(function(r){ s0 += r.sale; n0 += r.inv; });
+      return {
+        rows: rows0, totalInv: n0, totalSale: s0, scope: 'day',
+        note: 'Chưa tải được lịch sử ngày/tháng.',
+        sub: (pay.date ? 'Ngày ' + invDay(pay.date) + ' · ' : '')
+      };
+    }
+    if (invState.scope === 'month'){
+      var recM = (h.m || {})[String(invState.month)] || null;
+      var rowsM = invHistRows(recM);
+      var sm = 0;
+      rowsM.forEach(function(r){ sm += r.sale; });
+      return {
+        rows: rowsM,
+        totalInv: recM ? invN(recM.n) : 0,
+        totalSale: recM ? invN(recM.s) : sm,
+        scope: 'month',
+        note: recM ? ((recM.nd || 0) + ' ngày có dữ liệu') : 'Không có dữ liệu tháng này',
+        sub: 'Tháng ' + invMonthLabel(invState.month) + ' · '
+      };
+    }
+    var recD = (h.d || {})[String(invState.day)] || null;
+    var rowsD = invHistRows(recD);
+    var sd = 0;
+    rowsD.forEach(function(r){ sd += r.sale; });
+    return {
+      rows: rowsD,
+      totalInv: recD ? invN(recD.n) : 0,
+      totalSale: recD ? invN(recD.s) : sd,
+      scope: 'day',
+      note: recD ? ((recD.rows || rowsD.length) + ' dòng item-line') : 'Không có dữ liệu ngày này',
+      sub: 'Ngày ' + invDay(invState.day) + ' · '
+    };
   }
   function invKpi(k, v, n){
     return '<div class="inv-kpi"><div class="k">' + invEsc(k) + '</div>' +
@@ -10404,25 +10578,71 @@ window.renderThietBi = function(){ try { render(); } catch(e){} };
                           : (trs.length + ' khách hàng');
     }
   }
+  function invUpdateNav(){
+    var dayLbl = document.getElementById('invDayLabel');
+    var monLbl = document.getElementById('invMonthLabel');
+    var dayPrev = document.getElementById('invDayPrev');
+    var dayNext = document.getElementById('invDayNext');
+    var monPrev = document.getElementById('invMonthPrev');
+    var monNext = document.getElementById('invMonthNext');
+    var scopeBtn = document.getElementById('invScopeBtn');
+    var note = document.getElementById('invPeriodNote');
+    var days = invAvailableDays();
+    var months = invAvailableMonths();
+    var hasHist = !!invState.hist;
+
+    if (dayLbl) dayLbl.textContent = invState.day ? ('Ngày ' + invDay(invState.day)) : 'Ngày —';
+    if (monLbl) monLbl.textContent = invState.month ? ('Tháng ' + invMonthLabel(invState.month)) : 'Tháng —';
+
+    var di = days.indexOf(invState.day);
+    if (dayPrev) dayPrev.disabled = !hasHist || !days.length || di <= 0;
+    if (dayNext) dayNext.disabled = !hasHist || !days.length || di < 0 || di >= days.length - 1;
+
+    var mi = months.indexOf(String(invState.month));
+    if (monPrev) monPrev.disabled = !hasHist || !months.length || mi <= 0;
+    if (monNext) monNext.disabled = !hasHist || !months.length || mi < 0 || mi >= months.length - 1;
+
+    if (scopeBtn){
+      scopeBtn.disabled = !hasHist || !months.length;
+      scopeBtn.classList.toggle('is-on', invState.scope === 'month');
+      scopeBtn.textContent = invState.scope === 'month' ? 'Xem theo ngày' : 'Xem cả tháng';
+    }
+    if (note){
+      var txt = '';
+      if (!hasHist){
+        txt = invState.histLoading ? 'Đang tải lịch sử ngày/tháng…'
+              : (invState.histError ? 'Không tải được lịch sử — chỉ xem ngày hiện tại.'
+                                    : 'Chưa có dữ liệu lịch sử.');
+      } else if (invState.scope === 'month'){
+        var recM = (invState.hist.m || {})[String(invState.month)];
+        txt = recM ? ((recM.nd || 0) + ' ngày · ' + (recM.rows || 0) + ' dòng')
+                   : 'Tháng này chưa có dữ liệu.';
+      } else {
+        var recD = (invState.hist.d || {})[String(invState.day)];
+        txt = recD ? ((recD.rows || 0) + ' dòng item-line') : 'Ngày này chưa có dữ liệu.';
+      }
+      note.textContent = txt;
+    }
+  }
   function invRender(){
-    var inv = invPayload();
-    var rows = invRows();
-    var totalSale = 0, totalInv = 0;
-    rows.forEach(function(r){ totalSale += r.sale; totalInv += r.inv; });
-    var day = invDay(inv.date);
+    var p = invPeriod();
+    var rows = p.rows;
+    var totalSale = p.totalSale;
+    var totalInv = p.totalInv;
 
     var sub = document.getElementById('invSub');
     if (sub){
-      sub.textContent = (day ? 'Ngày ' + day + ' · ' : '') +
+      sub.textContent = (p.sub || '') +
         'doanh số (-VAT) từ RPT18 · sắp xếp theo doanh số giảm dần';
     }
 
     var kpis = document.getElementById('invKpis');
     if (kpis){
+      var per = p.scope === 'month' ? 'trong tháng' : 'trong ngày';
       kpis.innerHTML =
-        invKpi('Khách hàng', invFmt(rows.length), 'trong ngày') +
+        invKpi('Khách hàng', invFmt(rows.length), per) +
         invKpi('Hóa đơn', invFmt(totalInv), 'distinct Invoice No') +
-        invKpi('Doanh số (-VAT)', invVnd(totalSale), 'tổng khách hàng') +
+        invKpi('Doanh số (-VAT)', invVnd(totalSale), p.scope === 'month' ? 'tổng tháng' : 'tổng ngày') +
         invKpi('Bình quân / KH', invVnd(rows.length ? totalSale / rows.length : 0), 'doanh số mỗi khách');
     }
 
@@ -10444,14 +10664,17 @@ window.renderThietBi = function(){ try { render(); } catch(e){} };
           '<th class="num inv-c-share">TỶ TRỌNG</th></tr>';
     }
 
+    invUpdateNav();
+
     var body = document.getElementById('invBody');
     if (!body) return;
     if (!rows.length){
-      var hasData = Array.isArray(inv.customers);
+      var msg = invState.hist
+        ? (p.scope === 'month' ? 'Không có khách hàng nào trong tháng này.'
+                               : 'Không có khách hàng nào trong ngày này.')
+        : 'Chưa có dữ liệu khách hàng.<br>Dữ liệu sẽ được nạp ở lần refresh kế tiếp từ RPT18.';
       body.innerHTML = '<tr><td colspan="' + (mobile ? 4 : 7) + '"><div class="inv-empty">' +
-        (hasData ? 'Không có khách hàng nào trong ngày này.'
-                 : 'Chưa có dữ liệu khách hàng.<br>Dữ liệu sẽ được nạp ở lần refresh kế tiếp từ RPT18.') +
-        '</div></td></tr>';
+        msg + '</div></td></tr>';
       var cnt0 = document.getElementById('invCount');
       if (cnt0) cnt0.textContent = '0 khách hàng';
       return;
@@ -10492,15 +10715,100 @@ window.renderThietBi = function(){ try { render(); } catch(e){} };
     body.innerHTML = h;
     invApplyFilter();
   }
+  function invStepDay(dir){
+    var days = invAvailableDays();
+    if (days.length){
+      var i = days.indexOf(invState.day);
+      if (i < 0) i = dir > 0 ? -1 : days.length;
+      var j = i + dir;
+      if (j < 0 || j >= days.length) return;
+      invState.day = days[j];
+      invState.month = String(invState.day).slice(0, 6);
+    } else {
+      if (!invState.day) return;
+      var s = String(invState.day);
+      var dt = new Date(Number(s.slice(0, 4)), Number(s.slice(4, 6)) - 1, Number(s.slice(6, 8)));
+      dt.setDate(dt.getDate() + dir);
+      invState.day = dt.getFullYear() * 10000 + (dt.getMonth() + 1) * 100 + dt.getDate();
+      invState.month = String(invState.day).slice(0, 6);
+    }
+    invState.scope = 'day';
+    invRender();
+  }
+  function invStepMonth(dir){
+    var months = invAvailableMonths();
+    if (!months.length) return;
+    var m = String(invState.month || '');
+    var i = months.indexOf(m);
+    if (i < 0) i = dir > 0 ? -1 : months.length;
+    var j = i + dir;
+    if (j < 0 || j >= months.length) return;
+    invState.month = months[j];
+    var days = invAvailableDays().filter(function(d){
+      return String(d).slice(0, 6) === invState.month;
+    });
+    if (days.length) invState.day = days[0];
+    invState.scope = 'month';
+    invRender();
+  }
+  function invSetScope(scope){
+    if (scope === 'month'){
+      if (!invAvailableMonths().length) return;
+      invState.scope = 'month';
+      invClampPeriod();
+    } else {
+      invState.scope = 'day';
+      if (!invState.day){
+        var days = invAvailableDays();
+        if (days.length) invState.day = days[days.length - 1];
+      }
+      if (invState.day) invState.month = String(invState.day).slice(0, 6);
+    }
+    invRender();
+  }
+  function invLoadHistory(){
+    if (invState.hist) return Promise.resolve(invState.hist);
+    if (invHistPromise) return invHistPromise;
+    invState.histLoading = true;
+    var url = 'rpt18-customer-history.json?t=' + Date.now();
+    invHistPromise = fetch(url, { cache: 'no-store' })
+      .then(function(r){
+        if (!r.ok) throw new Error('HTTP ' + r.status);
+        return r.json();
+      })
+      .then(function(j){
+        if (!j || !j.d) throw new Error('JSON rỗng');
+        invState.hist = j;
+        invState.histError = '';
+        return j;
+      })
+      .catch(function(e){
+        invState.histError = String(e && e.message ? e.message : e);
+        return null;
+      })
+      .then(function(j){
+        invState.histLoading = false;
+        invHistPromise = null;
+        return j;
+      });
+    return invHistPromise;
+  }
   function invOpen(){
     var modal = document.getElementById('invoiceModal');
     if (!modal) return;
     invState.q = '';
     var inp = document.getElementById('invSearch');
     if (inp) inp.value = '';
+    if (window.__RPT18_HISTORY && !invState.hist) invState.hist = window.__RPT18_HISTORY;
+    invResetPeriod();
+    if (!invState.hist) invState.histLoading = true;
     invRender();
     modal.classList.add('open');
     invSyncBody();
+    invLoadHistory().then(function(h){
+      if (h) invClampPeriod();
+      invRender();
+    });
   }
   function invClose(){
     var modal = document.getElementById('invoiceModal');
@@ -10524,6 +10832,28 @@ window.renderThietBi = function(){ try { render(); } catch(e){} };
       if (e.key === 'Enter' || e.key === ' '){ e.preventDefault(); invOpen(); }
     });
   }
+  function invWirePeriod(){
+    var pairs = [
+      ['invDayPrev', function(){ invStepDay(-1); }],
+      ['invDayNext', function(){ invStepDay(1); }],
+      ['invMonthPrev', function(){ invStepMonth(-1); }],
+      ['invMonthNext', function(){ invStepMonth(1); }]
+    ];
+    pairs.forEach(function(p){
+      var el = document.getElementById(p[0]);
+      if (el && !el._invWired){
+        el._invWired = true;
+        el.addEventListener('click', p[1]);
+      }
+    });
+    var scope = document.getElementById('invScopeBtn');
+    if (scope && !scope._invWired){
+      scope._invWired = true;
+      scope.addEventListener('click', function(){
+        invSetScope(invState.scope === 'month' ? 'day' : 'month');
+      });
+    }
+  }
 
   var closeBtn = document.getElementById('invClose');
   if (closeBtn) closeBtn.addEventListener('click', invClose);
@@ -10541,6 +10871,7 @@ window.renderThietBi = function(){ try { render(); } catch(e){} };
     // da dong modal va reset overflow, nhung body.modal-open co the con sot.
     if (e.key === 'Escape') invClose();
   });
+  invWirePeriod();
   if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', invWire);
   else invWire();
   document.addEventListener('click', function(e){
