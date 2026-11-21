@@ -4403,14 +4403,25 @@ function scNumCell(v){
   return '<td class="num">' + fmtVnd(v) + '</td>';
 }
 
-/* 11/11/2026 (user): KHONG hien thi VA KHONG tinh vao GRAND TOTAL cac reason code nay.
-   - An cot: BY DAY / BY Yesterday / MTD / TOP 10 + legend.
-   - GRAND TOTAL (bang, KPI, chart, cot tong cua TOP 10) = total - tong cac code bi an.
-   - Modal chi tiet van hien day du (KPI + danh sach dong) de doi soat voi Symphony.
+/* 22/11/2026 (user): BO cac reason code khong co y nghia / khong co gia tri khoi MOI noi
+   hien thi Stock Correction (bang, legend, chart, KPI, modal chi tiet, danh sach dong):
+   - 0   = NO REASON
+   - 120 = MUTATION IN    \
+   - 230 = MUTATION OUT   /  cap bu tru, tong = 0, lam loan cot/bieu do
+   - 972 = Reception modif (chi dieu chinh gia tri, QTY = 0)
+   Chi giu lai cac code con lai CO phat sinh gia tri (khac 0) trong ky dang xem.
+   GRAND TOTAL (bang, KPI, chart, cot tong TOP 10) = total - tong cac code bi an,
+   nho vay tong luon khop voi cac cot dang hien.
    Muon an them code khac thi them so vao mang. */
-var SC_HIDE_COLS = [972];
+var SC_HIDE_COLS = [0, 120, 230, 972];
 function _scVisibleCols(cols){
   return (cols || []).filter(function(c){ return SC_HIDE_COLS.indexOf(Number(c)) === -1; });
+}
+function _scVisibleDetail(rows){
+  return (rows || []).filter(function(r){
+    return r && (r.reason_code === null || r.reason_code === undefined ||
+                 SC_HIDE_COLS.indexOf(Number(r.reason_code)) === -1);
+  });
 }
 function scHiddenSum(r){
   var rc = (r && r.rc) || {}, s = 0;
@@ -4421,10 +4432,9 @@ function scTotal(r){
   if (!r) return 0;
   return num(r.total) - scHiddenSum(r);
 }
-/* TOP 10: GRAND TOTAL khong tinh code 0 (NO REASON) va 120 (MUTATION IN) de khop voi cac cot dang hien. */
+/* TOP 10 dung cung cong thuc voi cac bang khac (truoc day tru them 0/120 lan 2). */
 function scTotalTop(r){
-  if (!r) return 0;
-  return num(r.total) - scHiddenSum(r) - num(((r.rc || {}))[0]) - num(((r.rc || {}))[120]);
+  return scTotal(r);
 }
 function sumScTotal(rows){
   var s = 0;
@@ -4559,7 +4569,7 @@ function renderSc(){
     // 923/924 non-zero nen bi loc sach -> bang BY DAY trong (0 dong). Nay dung
     // toan bo dayCols (moi reason code co trong SCDAY_DATA) de giu cac dong co
     // bat ky gia tri non-zero nao, chi an cac dong hoan toan bang 0.
-    var _zc = (ng && Array.isArray(ng.dayCols) && ng.dayCols.length) ? ng.dayCols.slice() : [2, 3, 6, 925];
+    var _zc = _scVisibleCols((ng && Array.isArray(ng.dayCols) && ng.dayCols.length) ? ng.dayCols : [2, 3, 6, 925]);
     ngRows = ngRows.filter(function(r){
       for (var zi = 0; zi < _zc.length; zi++){
         if (Number((r.rc || {})[_zc[zi]]) || 0) return true;
@@ -4576,17 +4586,17 @@ function renderSc(){
 
   $('sc_dayTotal').textContent = _hasToday ? fmtVnd(sumScTotal(ngRows)) : '\u2014';
   $('sc_mtdTotal').textContent = fmtVnd(sumScTotal(scFilter.mtdRows));
-  $('sc_dayItems').textContent = _hasToday ? fmtInt(ngDetail.length) : '\u2014';
-  $('sc_mtdItems').textContent = fmtInt(scFilter.mtdDetail.length);
+  $('sc_dayItems').textContent = _hasToday ? fmtInt(_scVisibleDetail(ngDetail).length) : '\u2014';
+  $('sc_mtdItems').textContent = fmtInt(_scVisibleDetail(scFilter.mtdDetail).length);
 
   /* SC_HIDE_COLS / _scVisibleCols / scTotal(): khai bao o pham vi global (gan scPivotTable). */
 
   // An cac cot reason_code khong co gia tri (tong = 0 tren toan bo du lieu) — user yeu cau 09/11.
+  // 22/11: _scVisibleCols da loai 0/120/230/972, chi con loc cot toan 0.
   function _scNonZeroCols(cols, rows){
     cols = _scVisibleCols(cols);
     var rset = rows || [];
     var out = cols.filter(function(c){
-      if (c === 0) return false;   // an cot code 0 (NO REASON) theo yeu cau user 09/11
       return rset.some(function(r){ return Number((r.rc || {})[c]) !== 0; });
     });
     return out.length ? out : cols;
@@ -4594,19 +4604,13 @@ function renderSc(){
   var ngCols = _scNonZeroCols(ng ? ng.dayCols : [], ng ? ng.dayRows : []);
   var dayCols = _scNonZeroCols(d.dayCols, d.dayRows);
   var mtdCols = _scNonZeroCols(d.mtdCols, d.mtdRows);
-  /* Cot reason cua bang TOP 10: an cac cot TOAN 0 (vd 230 / 972 khong phat sinh trong ky)
-     cho bang gon — nhung GIU cot 0 (NO REASON) vi day la phan lon gia tri dieu chinh
-     cua BAKERY / BUTCHERY / PRODUCE... Neu tat ca deu 0 thi giu nguyen danh sach cot. */
+  /* Cot reason cua bang TOP 10: chi giu code con phat sinh gia tri trong ky
+     (0/120/230/972 da bi _scVisibleCols loai). Neu tat ca deu 0 thi giu danh sach da loc. */
   var _topRows = scFilter.top10.filter(function(r){ return !r.subtotal; });
-  /* 11/11: an them code 0 (NO REASON) va 120 (MUTATION IN) trong bang TOP 10 theo yeu cau user. */
-  var TOP_HIDE_COLS = [0, 120];
   var topCols = _scVisibleCols(d.scCols).filter(function(c){
-    if (TOP_HIDE_COLS.indexOf(Number(c)) !== -1) return false;
     return _topRows.some(function(r){ return Number((r.rc || {})[c]) !== 0; });
   });
-  if (!topCols.length) topCols = _scVisibleCols(d.scCols).filter(function(c){
-    return TOP_HIDE_COLS.indexOf(Number(c)) === -1;
-  });
+  if (!topCols.length) topCols = _scVisibleCols(d.scCols);
   var legTop = rcLegend(topCols);
   var legNg = (_hasToday && ng) ? rcLegendWith(ng.reasonNames, ngCols) : '';
   var legDay = rcLegend(dayCols);
@@ -4695,7 +4699,9 @@ function buildScReasonFilter(){
   }
   var sel = $('scReasonFilter');
   sel.innerHTML = '<option value="all">All Reasons / Tất cả lý do</option>';
-  Object.keys(seen).map(Number).sort(function(a,b){ return a-b; }).forEach(function(c){
+  Object.keys(seen).map(Number).filter(function(c){
+    return SC_HIDE_COLS.indexOf(Number(c)) === -1;   /* 22/11: khong dua code bi an vao bo loc */
+  }).sort(function(a,b){ return a-b; }).forEach(function(c){
     var o = document.createElement('option');
     o.value = c; o.textContent = c + ' · ' + scReasonLabel(c);
     sel.appendChild(o);
@@ -4713,6 +4719,7 @@ function renderScDetail(){
 
   var filtered = rows.filter(function(r){
     if (num(r.cost) === 0) return false;
+    if (SC_HIDE_COLS.indexOf(Number(r.reason_code)) !== -1) return false;   /* 22/11: bo 0/120/230/972 */
     var okRc = rc === 'all' || r.reason_code === Number(rc);
     if (!okRc) return false;
     if (qd && String(scTxt(r.dept)).toLowerCase().indexOf(qd) < 0 &&
@@ -4726,7 +4733,7 @@ function renderScDetail(){
       supp.indexOf(q) >= 0;
   });
 
-  $('scDetailCount').textContent = filtered.length + ' / ' + rows.filter(function(r){ return num(r.cost) !== 0; }).length + ' dòng';
+  $('scDetailCount').textContent = filtered.length + ' / ' + _scVisibleDetail(rows).filter(function(r){ return num(r.cost) !== 0; }).length + ' dòng';
   var sumCost = sumBy(filtered, 'cost');
   var html = '';
   filtered.forEach(function(r){
@@ -8854,23 +8861,12 @@ window.TOP50_DATA = {"dates":[20260901,20260902,20260903,20260904,20260905,20260
     var ng = (typeof scDayActive === 'function') ? scDayActive() : window.SCDAY_DATA;
     var d = isNgay ? ng : ((typeof scActive === 'function') ? scActive() : window.SC_DATA);
     if (!d) return;
-    // Ma ly do hien trong modal: lay tu cols cua nguon. Chi loai 120/230 (MUTATION, tu huy nhau).
-    // Code 0 (NO REASON) GIU LAI de khong thieu thong tin (vd dept 550 chi co code 0).
+    // 22/11/2026 (user): modal chi hien reason code CON gia tri.
+    // 0 (NO REASON) / 120 / 230 (MUTATION) / 972 (Reception modif) da bi SC_HIDE_COLS loai.
     var _modalCols = isNgay ? (d.dayCols || []) : (isMtd ? (d.mtdCols || d.dayCols || []) : (d.dayCols || []));
-    var modalCodes = _modalCols.filter(function(c){ return c !== 120 && c !== 230; });
-    if (!modalCodes.length) modalCodes = [2, 3, 6, 925];
-    // 11/11: nap day du cac reason code vao filter (truoc day chi co 4 code co dinh).
-    var _codeSel = document.getElementById('scmFilterCode');
-    if (_codeSel){
-      var _opts = '<option value="all">Tất cả reason code</option>';
-      modalCodes.slice().sort(function(a, b){ return a - b; }).forEach(function(c){
-        _opts += '<option value="' + c + '">' + c + ' · ' + escHtml(scmReasonName(c, d)) + '</option>';
-      });
-      _codeSel.innerHTML = _opts;
-    }
+    var modalCodes = _scVisibleCols(_modalCols);
+    if (!modalCodes.length) modalCodes = _scVisibleCols([2, 3, 6, 925]);
     var sub = document.getElementById('scmSub');
-    if (sub) sub.textContent = (isNgay ? 'Stock Correction BY DAY' : (isMtd ? 'Stock Correction MTD' : 'Stock Correction BY Yesterday')) +
-      ' \u00b7 chi ti\u1ebft l\u00fd do code ' + modalCodes.join(' / ');
     var rows = (isMtd && d && d.mtdDetail) ? d.mtdDetail : (d && d.dayDetail ? d.dayDetail : []);
     var list = rows.filter(function(r){
       if (Number(r.dept) !== Number(deptNo)) return false;
@@ -8891,13 +8887,25 @@ window.TOP50_DATA = {"dates":[20260901,20260902,20260903,20260904,20260905,20260
       var a = Number(r.amount) || 0;
       sums[r.reason_code] += a; counts[r.reason_code]++; total += a;
     });
+    /* Chi giu cac code thuc su co dong phat sinh (co value) trong nganh hang nay. */
+    var valueCodes = modalCodes.filter(function(c){ return counts[c] > 0; });
+    var _codeSel = document.getElementById('scmFilterCode');
+    if (_codeSel){
+      var _opts = '<option value="all">Tất cả reason code</option>';
+      valueCodes.slice().sort(function(a, b){ return a - b; }).forEach(function(c){
+        _opts += '<option value="' + c + '">' + c + ' · ' + escHtml(scmReasonName(c, d)) + '</option>';
+      });
+      _codeSel.innerHTML = _opts;
+    }
+    if (sub) sub.textContent = (isNgay ? 'Stock Correction BY DAY' : (isMtd ? 'Stock Correction MTD' : 'Stock Correction BY Yesterday')) +
+      (valueCodes.length ? (' \u00b7 chi ti\u1ebft l\u00fd do code ' + valueCodes.join(' / ')) : ' \u00b7 kh\u00f4ng c\u00f3 d\u00f2ng chi ti\u1ebft');
     var kpis = '';
-    modalCodes.forEach(function(c){
+    valueCodes.forEach(function(c){
       kpis += '<div class="scm-kpi" data-code="' + c + '" style="cursor:pointer;" title="Bam de loc code ' + c + '"><div class="k">' + c + ' · ' + escHtml(scmReasonName(c, d)) + '</div>' +
         '<div class="v">' + fmtVnd(sums[c]) + '</div>' +
         '<div class="n">' + fmtInt(counts[c]) + ' dòng</div></div>';
     });
-    kpis += '<div class="scm-kpi total"><div class="k">Tổng ' + modalCodes.join('+') + '</div>' +
+    kpis += '<div class="scm-kpi total"><div class="k">Tổng ' + (valueCodes.length ? valueCodes.join('+') : '\u2014') + '</div>' +
       '<div class="v">' + fmtVnd(total) + '</div>' +
       '<div class="n">' + fmtInt(list.length) + ' dòng chi tiết</div></div>';
     document.getElementById('scmKpis').innerHTML = kpis;
@@ -8929,7 +8937,7 @@ window.TOP50_DATA = {"dates":[20260901,20260902,20260903,20260904,20260905,20260
     document.getElementById('scmTableTitle').textContent = 'CHI TIẾT DÒNG (' + fmtInt(list.length) + ')';
         var body = document.getElementById('scmBody');
     if (!list.length){
-      body.innerHTML = '<tr><td colspan="6"><div class="scm-empty">Không có dòng chi tiết nào với code ' + _mc.join(' / ') + ' cho ngành hàng này.</div></td></tr>';
+      body.innerHTML = '<tr><td colspan="6"><div class="scm-empty">Không có dòng chi tiết nào với code ' + modalCodes.join(' / ') + ' cho ngành hàng này.</div></td></tr>';
     } else {
       scmRenderBody(list, d, sums, total);
     }
@@ -9036,10 +9044,10 @@ window.TOP50_DATA = {"dates":[20260901,20260902,20260903,20260904,20260905,20260
      (list || []).forEach(function(r){
        if (r && r.reason_code !== null && r.reason_code !== undefined) _seen[r.reason_code] = 1;
      });
-     var _mc = Object.keys(_seen).map(Number).filter(function(c){ return c !== 120 && c !== 230; })
+     var _mc = _scVisibleCols(Object.keys(_seen).map(Number))
        .sort(function(a, b){ return a - b; });
-     if (!_mc.length) _mc = (d && d.dayCols) ? d.dayCols.filter(function(c){ return c !== 120 && c !== 230; }) : [0, 2, 3, 6, 925];
-     if (!_mc.length) _mc = [0, 2, 3, 6, 925];
+     if (!_mc.length) _mc = _scVisibleCols((d && d.dayCols) ? d.dayCols : [2, 3, 6, 925]);
+     if (!_mc.length) _mc = [2, 3, 6, 925];
     if (scmSortKey === null){
       var h = '';
       _mc.forEach(function(c){
@@ -9274,7 +9282,7 @@ window.TOP50_DATA = {"dates":[20260901,20260902,20260903,20260904,20260905,20260
     for (var i = 0; i < dd.length; i++){
       var r = dd[i];
       if (Number(r.dept) !== Number(deptNo)) continue;
-      if (r.reason_code === 0 || r.reason_code === 120 || r.reason_code === 230) continue;
+      if (SC_HIDE_COLS.indexOf(Number(r.reason_code)) !== -1) continue;   /* 0/120/230/972 khong tinh la co du lieu */
       if ((Number(r.qty) || 0) === 0 && (Number(r.amount) || 0) === 0) continue;
       return true;
     }
