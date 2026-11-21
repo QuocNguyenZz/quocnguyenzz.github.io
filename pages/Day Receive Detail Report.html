@@ -10472,11 +10472,21 @@ window.renderThietBi = function(){ try { render(); } catch(e){} };
   }
   function invAvailableDays(){
     var h = invState.hist;
-    if (!h) return [];
-    if (Array.isArray(h.dates) && h.dates.length){
-      return h.dates.map(invYmd).filter(Boolean).sort(function(a, b){ return a - b; });
+    var days = [];
+    if (h){
+      if (Array.isArray(h.dates) && h.dates.length){
+        days = h.dates.map(invYmd).filter(Boolean);
+      } else {
+        days = Object.keys(h.d || {}).map(invYmd).filter(Boolean);
+      }
     }
-    return Object.keys(h.d || {}).map(invYmd).filter(Boolean).sort(function(a, b){ return a - b; });
+    // Ngay bao cao hien tai luon co du lieu (TOP50_DATA.invoices.customers),
+    // ke ca khi cache lich su chua kip cap nhat -> them vao cuoi danh sach.
+    var payDay = invYmd(invPayload().date);
+    if (payDay && days.indexOf(payDay) < 0){
+      if (!h || invBaseRows().length) days.push(payDay);
+    }
+    return days.sort(function(a, b){ return a - b; });
   }
   function invAvailableMonths(){
     var h = invState.hist;
@@ -10490,19 +10500,25 @@ window.renderThietBi = function(){ try { render(); } catch(e){} };
     var pay = invPayload();
     var d = invYmd(pay.date);
     var days = invAvailableDays();
-    if (d && (!days.length || days.indexOf(d) >= 0)) return d;
+    // Uu tien ngay bao cao hien tai (du cache lich su chua kip cap nhat).
+    if (d) return d;
     if (days.length) return days[days.length - 1];
-    return d || 0;
+    return 0;
   }
   function invClampPeriod(){
     var days = invAvailableDays();
     var months = invAvailableMonths();
-    if (days.length && days.indexOf(invState.day) < 0){
+    var payDay = invYmd(invPayload().date);
+    var payMonth = payDay ? String(payDay).slice(0, 6) : '';
+    // Giu ngay hien tai ke ca khi cache lich su chua co ngay do (van co
+    // danh sach khach hang nhung trong TOP50_DATA).
+    if (days.length && days.indexOf(invState.day) < 0 && invState.day !== payDay){
       invState.day = days[days.length - 1];
     }
     if (!invState.day && days.length) invState.day = days[days.length - 1];
     if (invState.day) invState.month = String(invState.day).slice(0, 6);
-    if (months.length && months.indexOf(String(invState.month)) < 0){
+    if (months.length && months.indexOf(String(invState.month)) < 0
+        && invState.month !== payMonth){
       invState.month = months[months.length - 1];
     }
   }
@@ -10541,6 +10557,23 @@ window.renderThietBi = function(){ try { render(); } catch(e){} };
     }
     var recD = (h.d || {})[String(invState.day)] || null;
     var rowsD = invHistRows(recD);
+    // Cache lich su co the cham 1 nhip so voi file RPT18 ngay: van hien
+    // danh sach khach hang cua ngay hien tai da nhung trong TOP50_DATA.
+    if (!recD && invState.day === invYmd(pay.date)){
+      var baseD = invBaseRows();
+      if (baseD.length){
+        var sB = 0, nB = 0;
+        baseD.forEach(function(r){ sB += r.sale; nB += r.inv; });
+        return {
+          rows: baseD,
+          totalInv: invN(pay.today) || nB,
+          totalSale: invN(pay.cust_total) || sB,
+          scope: 'day',
+          note: 'Dữ liệu ngày hiện tại (lịch sử chưa cập nhật)',
+          sub: 'Ngày ' + invDay(invState.day) + ' · '
+        };
+      }
+    }
     var sd = 0;
     rowsD.forEach(function(r){ sd += r.sale; });
     return {
@@ -10595,10 +10628,16 @@ window.renderThietBi = function(){ try { render(); } catch(e){} };
     if (monLbl) monLbl.textContent = invState.month ? ('Tháng ' + invMonthLabel(invState.month)) : 'Tháng —';
 
     var di = days.indexOf(invState.day);
+    // Ngay hien tai co the chua nam trong cache lich su -> coi nhu vi tri
+    // cuoi cung de nut "Ngay truoc" van bam duoc.
+    if (di < 0 && invState.day === invYmd(invPayload().date)) di = days.length;
     if (dayPrev) dayPrev.disabled = !hasHist || !days.length || di <= 0;
     if (dayNext) dayNext.disabled = !hasHist || !days.length || di < 0 || di >= days.length - 1;
 
     var mi = months.indexOf(String(invState.month));
+    // Thang hien tai co the chua nam trong cache -> coi nhu vi tri cuoi.
+    var payMonth = invYmd(invPayload().date) ? String(invYmd(invPayload().date)).slice(0, 6) : '';
+    if (mi < 0 && payMonth && String(invState.month) === payMonth) mi = months.length;
     if (monPrev) monPrev.disabled = !hasHist || !months.length || mi <= 0;
     if (monNext) monNext.disabled = !hasHist || !months.length || mi < 0 || mi >= months.length - 1;
 
@@ -10619,7 +10658,13 @@ window.renderThietBi = function(){ try { render(); } catch(e){} };
                    : 'Tháng này chưa có dữ liệu.';
       } else {
         var recD = (invState.hist.d || {})[String(invState.day)];
-        txt = recD ? ((recD.rows || 0) + ' dòng item-line') : 'Ngày này chưa có dữ liệu.';
+        if (recD){
+          txt = (recD.rows || 0) + ' dòng item-line';
+        } else if (invState.day === invYmd(invPayload().date) && invBaseRows().length){
+          txt = 'Dữ liệu ngày hiện tại (lịch sử chưa cập nhật)';
+        } else {
+          txt = 'Ngày này chưa có dữ liệu.';
+        }
       }
       note.textContent = txt;
     }
@@ -10719,7 +10764,8 @@ window.renderThietBi = function(){ try { render(); } catch(e){} };
     var days = invAvailableDays();
     if (days.length){
       var i = days.indexOf(invState.day);
-      if (i < 0) i = dir > 0 ? -1 : days.length;
+      // Ngay hien tai chua co trong cache -> dat sau ngay cuoi cung.
+      if (i < 0) i = days.length;
       var j = i + dir;
       if (j < 0 || j >= days.length) return;
       invState.day = days[j];
@@ -10740,7 +10786,8 @@ window.renderThietBi = function(){ try { render(); } catch(e){} };
     if (!months.length) return;
     var m = String(invState.month || '');
     var i = months.indexOf(m);
-    if (i < 0) i = dir > 0 ? -1 : months.length;
+    // Thang hien tai chua co trong cache -> dat sau thang cuoi cung.
+    if (i < 0) i = months.length;
     var j = i + dir;
     if (j < 0 || j >= months.length) return;
     invState.month = months[j];
