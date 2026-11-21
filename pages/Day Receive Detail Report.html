@@ -2351,7 +2351,7 @@ function refreshAll(){
       if (!r.ok) throw new Error('HTTP ' + r.status);
       return r.json();
     }).then(function(res){
-      return fetch(host + 'sc-data.json').then(function(r){ return r.json(); }).then(function(sv){
+      return fetch(host + 'sc-data.json?t=' + Date.now()).then(function(r){ return r.json(); }).then(function(sv){
         if (sv && typeof sv === 'object' && Object.keys(sv).length){
           for (var j=0;j<LS_KEYS.length;j++){
             var k = LS_KEYS[j];
@@ -2440,7 +2440,7 @@ function bl_postDataToServer(){
     }
     if (!Object.keys(payload).length) return;
     var xhr = new XMLHttpRequest();
-    xhr.open('POST', 'sc-data.json', true);
+    xhr.open('POST', 'sc-data.json?t=' + Date.now(), true);
     xhr.setRequestHeader('Content-Type', 'application/json');
     xhr.send(JSON.stringify(payload));
   } catch(e){}
