@@ -1485,363 +1485,441 @@ var pJS=function(e,a){var t=document.querySelector("#"+e+" > .particles-js-canva
 }
 #kpiInvoiceCard:hover .kpi-more{text-decoration:underline;}
 
-/* v20261123-invoiceui-css: v1 - modal "Danh sach khach hang" (ban muot, ro rang) */
+/* v20261124-invoiceui-css: v2 - "Bảng kê doanh thu" (giấy ấm, kẻ vàng, số liệu rõ) */
 #invoiceModal{
   display:none; position:fixed; inset:0; z-index:2000;
   background:var(--overlay);
-  -webkit-backdrop-filter:blur(6px) saturate(115%); backdrop-filter:blur(6px) saturate(115%);
+  -webkit-backdrop-filter:blur(7px) saturate(110%); backdrop-filter:blur(7px) saturate(110%);
   align-items:flex-start; justify-content:center; overflow:auto;
   padding:clamp(14px,3.2vw,40px) clamp(10px,2vw,20px);
-  --inv-tint:rgba(50,166,74,.055);
-  --inv-tint-2:rgba(50,166,74,.12);
-  --inv-hair:rgba(20,81,29,.09);
-  --inv-zebra:rgba(50,166,74,.028);
-  --inv-track:rgba(20,81,29,.18);
-  --inv-total-bg:#E4F3E9;
-  --inv-head-bg:#E9F5ED;
-  --inv-silver:#5A6470; --inv-silver-bg:rgba(90,100,112,.12);
-  --inv-bronze:#8A5A2B; --inv-bronze-bg:rgba(138,90,43,.13);
-  --inv-shadow:0 28px 64px -28px rgba(6,37,16,.42), 0 2px 8px rgba(6,37,16,.08);
+  --inv-paper:#FCFBF5;
+  --inv-paper-2:#F5F1E3;
+  --inv-ink:#0A2E14;
+  --inv-muted:#4C6052;
+  --inv-rule:rgba(20,81,29,.15);
+  --inv-rule-soft:rgba(20,81,29,.08);
+  --inv-gold:#7A5300;
+  --inv-gold-line:rgba(122,83,0,.38);
+  --inv-silver:#5A6470;
+  --inv-bronze:#8A5A2B;
+  --inv-top-bg:rgba(122,83,0,.045);
+  --inv-hover:rgba(30,121,44,.055);
+  --inv-bar:#1E792C;
+  --inv-shadow:0 44px 96px -44px rgba(6,37,16,.55), 0 2px 10px rgba(6,37,16,.08);
 }
 html[data-theme="dark"] #invoiceModal{
-  --inv-tint:rgba(201,162,39,.06);
-  --inv-tint-2:rgba(201,162,39,.13);
-  --inv-hair:rgba(237,230,216,.08);
-  --inv-zebra:rgba(201,162,39,.032);
-  --inv-track:rgba(237,230,216,.14);
-  --inv-total-bg:#1B1B22;
-  --inv-head-bg:#1F1F25;
-  --inv-silver:#B7B1A4; --inv-silver-bg:rgba(183,177,164,.14);
-  --inv-bronze:#D19A5E; --inv-bronze-bg:rgba(209,154,94,.15);
-  --inv-shadow:0 34px 80px -30px rgba(0,0,0,.85), 0 2px 10px rgba(0,0,0,.45);
+  --inv-paper:#131311;
+  --inv-paper-2:#1A1A16;
+  --inv-ink:#EFE9DC;
+  --inv-muted:#A69E8C;
+  --inv-rule:rgba(239,233,220,.14);
+  --inv-rule-soft:rgba(239,233,220,.07);
+  --inv-gold:#E3BE72;
+  --inv-gold-line:rgba(227,190,114,.34);
+  --inv-silver:#B7B1A4;
+  --inv-bronze:#D19A5E;
+  --inv-top-bg:rgba(227,190,114,.055);
+  --inv-hover:rgba(201,162,39,.07);
+  --inv-bar:#9CCB84;
+  --inv-shadow:0 46px 100px -40px rgba(0,0,0,.85), 0 2px 10px rgba(0,0,0,.45);
 }
 #invoiceModal.open{display:flex; animation:overlayIn 180ms ease both;}
 #invoiceModal .inv-panel{
   position:relative; width:100%; max-width:1060px; margin:0 auto;
   display:flex; flex-direction:column;
   max-height:calc(100vh - clamp(28px,6.4vw,80px));
-  padding:28px 30px 26px;
+  padding:30px 34px 20px;
   background:
-    radial-gradient(120% 80% at 6% 0%, var(--inv-tint-2), transparent 58%),
-    linear-gradient(180deg, var(--inv-tint), transparent 260px),
-    var(--surface);
-  border:1px solid var(--border);
-  border-radius:20px;
+    radial-gradient(120% 70% at 100% 0%, rgba(122,83,0,.05), transparent 56%),
+    var(--inv-paper);
+  border:1px solid var(--inv-rule);
+  border-radius:18px;
   box-shadow:var(--inv-shadow);
+  color:var(--inv-ink);
 }
-#invoiceModal .inv-panel::before{
-  content:''; position:absolute; top:0; left:26px; right:26px; height:2px;
-  border-radius:0 0 2px 2px; pointer-events:none;
-  background:linear-gradient(90deg, transparent, var(--accent-bar) 22%, var(--accent-bar) 78%, transparent);
-  opacity:.7;
+html[data-theme="dark"] #invoiceModal .inv-panel{
+  background:
+    radial-gradient(120% 70% at 100% 0%, rgba(227,190,114,.05), transparent 56%),
+    var(--inv-paper);
 }
-#invoiceModal.open .inv-panel{animation:panelIn 220ms cubic-bezier(.2,.75,.25,1);}
+#invoiceModal .inv-panel > *{flex-shrink:0;}
+#invoiceModal .inv-card{flex-shrink:1;}
+#invoiceModal.open .inv-panel{animation:panelIn 240ms cubic-bezier(.2,.75,.25,1);}
 #invoiceModal .inv-close{
-  position:absolute; top:16px; right:16px; width:36px; height:36px;
+  position:absolute; top:18px; right:18px; width:34px; height:34px;
   display:flex; align-items:center; justify-content:center;
-  border:1px solid var(--border-soft); border-radius:12px;
-  background:var(--page); color:var(--muted); font-size:17px; line-height:1;
+  border:1px solid var(--inv-rule); border-radius:50%;
+  background:transparent; color:var(--inv-muted); font-size:18px; line-height:1;
   cursor:pointer;
-  transition:background 140ms ease, color 140ms ease, border-color 140ms ease, transform 140ms ease;
+  transition:background 140ms ease, color 140ms ease, border-color 140ms ease;
 }
-#invoiceModal .inv-close:hover{background:var(--red-bg); color:var(--red); border-color:var(--red-soft); transform:rotate(90deg);}
-#invoiceModal .inv-close:focus-visible{outline:2px solid var(--focus); outline-offset:2px;}
+#invoiceModal .inv-close:hover{background:var(--inv-gold); border-color:var(--inv-gold); color:var(--inv-paper);}
+#invoiceModal .inv-close:focus-visible{outline:2px solid var(--inv-gold); outline-offset:2px;}
+
+/* ---------- Masthead: kicker + serif title + double rule ---------- */
 #invoiceModal .inv-kicker{
-  flex:0 0 auto;
-  display:flex; align-items:center; gap:8px;
-  font-size:10.5px; font-weight:800; letter-spacing:.18em; text-transform:uppercase;
-  color:var(--legend);
+  display:flex; align-items:center; gap:9px;
+  font-size:9.5px; font-weight:800; letter-spacing:.24em; text-transform:uppercase;
+  color:var(--inv-muted);
 }
 #invoiceModal .inv-kicker::before{
-  content:''; width:5px; height:5px; border-radius:2px; flex:0 0 auto;
-  background:var(--accent-bar); box-shadow:0 0 0 3px var(--inv-tint-2);
+  content:''; width:6px; height:6px; border-radius:50%; flex:0 0 auto;
+  background:var(--inv-gold);
 }
 #invoiceModal .inv-title{
-  flex:0 0 auto;
-  font-size:clamp(23px,2.8vw,30px); font-weight:800; letter-spacing:-.025em;
-  line-height:1.12; text-transform:none; margin:8px 0 6px;
-  padding-right:52px; color:var(--text); overflow-wrap:anywhere;
+  font-family:"Lora",Georgia,"Times New Roman",serif;
+  font-size:clamp(27px,3.1vw,37px); font-weight:600; letter-spacing:-.015em;
+  line-height:1.14; margin:10px 0 6px;
+  padding-right:56px; color:var(--inv-ink); overflow-wrap:anywhere;
 }
 #invoiceModal .inv-sub{
-  flex:0 0 auto;
-  font-size:12.5px; color:var(--muted); line-height:1.5; margin:0 0 18px;
-  max-width:80ch; overflow-wrap:anywhere;
+  font-size:12px; color:var(--inv-muted); line-height:1.55; margin:0 0 0;
+  max-width:82ch; overflow-wrap:anywhere;
 }
-#invoiceModal .inv-kpis{flex:0 0 auto; display:grid; grid-template-columns:repeat(4,minmax(0,1fr)); gap:12px; margin:0 0 16px;}
-#invoiceModal .inv-kpi{
-  position:relative; min-width:0; padding:12px 14px 13px;
-  background:var(--page); border:1px solid var(--border-soft); border-radius:14px;
-  transition:transform 160ms ease, border-color 160ms ease, box-shadow 160ms ease;
-}
-#invoiceModal .inv-kpi:hover{
-  transform:translateY(-2px); border-color:var(--g-04);
-  box-shadow:0 8px 20px -12px rgba(6,37,16,.28);
-}
-#invoiceModal .inv-kpi .k{
-  display:flex; align-items:center; gap:7px;
-  font-size:10px; font-weight:800; letter-spacing:.1em; text-transform:uppercase;
-  color:var(--legend); line-height:1.25;
-}
-#invoiceModal .inv-kpi .ico{
-  width:20px; height:20px; border-radius:6px; flex:0 0 auto;
-  display:inline-flex; align-items:center; justify-content:center;
-  background:var(--inv-tint-2); color:var(--accent);
-}
-#invoiceModal .inv-kpi .ico svg{width:12px; height:12px; display:block;}
-#invoiceModal .inv-kpi .v{
-  font-size:clamp(18px,2vw,24px); font-weight:800; letter-spacing:-.02em;
-  color:var(--text); margin:4px 0 0; line-height:1.15;
-  font-variant-numeric:tabular-nums; overflow-wrap:anywhere;
-}
-#invoiceModal .inv-kpi .n{font-size:11px; color:var(--muted); line-height:1.35; margin-top:2px;}
-#invoiceModal .inv-kpi.is-sale .ico{background:var(--gold-bg); color:var(--gold);}
-#invoiceModal .inv-kpi.is-sale .v{color:var(--gold);}
 
-/* Thanh chon NGAY / THANG */
+/* ---------- Statement summary: hero total + 3 micro stats ---------- */
+#invoiceModal .inv-kpis{
+  position:relative; display:flex; align-items:stretch; gap:0;
+  margin:16px 0 14px; padding:17px 0 15px;
+  border-top:2px solid var(--inv-ink);
+}
+#invoiceModal .inv-kpis::after{
+  content:''; position:absolute; top:4px; left:0; right:0; height:1px;
+  background:var(--inv-rule); pointer-events:none;
+}
+#invoiceModal .inv-hero{flex:0 0 40%; min-width:0; padding-right:26px;}
+#invoiceModal .inv-hero .k{
+  font-size:9px; font-weight:800; letter-spacing:.16em; text-transform:uppercase;
+  color:var(--inv-muted);
+}
+#invoiceModal .inv-hero .v{
+  font-family:"Lora",Georgia,"Times New Roman",serif;
+  font-size:clamp(25px,3.1vw,34px); font-weight:600; line-height:1.08;
+  letter-spacing:-.02em; color:var(--inv-gold);
+  margin:5px 0 2px; font-variant-numeric:lining-nums tabular-nums;
+  overflow-wrap:anywhere;
+}
+#invoiceModal .inv-hero .v .cur{font-size:.5em; font-weight:500; margin-left:3px; letter-spacing:0;}
+#invoiceModal .inv-hero .n{font-size:10.5px; color:var(--inv-muted); line-height:1.4;}
+#invoiceModal .inv-stats{
+  flex:1 1 auto; min-width:0;
+  display:grid; grid-template-columns:repeat(3,minmax(0,1fr)); align-items:stretch;
+}
+#invoiceModal .inv-stat{
+  display:flex; flex-direction:column; justify-content:center;
+  min-width:0; padding:0 0 0 22px; border-left:1px solid var(--inv-rule);
+}
+#invoiceModal .inv-stat .k{
+  font-size:8.5px; font-weight:800; letter-spacing:.13em; text-transform:uppercase;
+  color:var(--inv-muted); line-height:1.3;
+  white-space:nowrap; overflow:hidden; text-overflow:ellipsis;
+}
+#invoiceModal .inv-stat .v{
+  font-size:17px; font-weight:800; letter-spacing:-.01em; color:var(--inv-ink);
+  line-height:1.25; margin-top:4px; font-variant-numeric:tabular-nums;
+  overflow-wrap:anywhere;
+}
+#invoiceModal .inv-stat .n{
+  font-size:10px; color:var(--inv-muted); line-height:1.35; margin-top:1px;
+  white-space:nowrap; overflow:hidden; text-overflow:ellipsis;
+}
+
+/* ---------- Period toolbar: quiet chevrons, gold toggle ---------- */
 #invoiceModal .inv-period{
-  flex:0 0 auto;
-  display:flex; align-items:center; gap:8px; flex-wrap:wrap;
-  margin:0 0 16px; padding:8px;
-  background:var(--surface-2); border:1px solid var(--border-soft); border-radius:12px;
+  display:flex; align-items:center; gap:4px; flex-wrap:wrap;
+  margin:0 0 12px; padding:0 0 11px;
+  background:transparent; border:0; border-bottom:1px solid var(--inv-rule);
 }
 #invoiceModal .inv-nav{
-  display:inline-flex; align-items:center; height:34px;
-  border:1px solid var(--border-soft); border-radius:10px;
-  background:var(--page); overflow:hidden;
+  display:inline-flex; align-items:center; gap:1px; height:30px;
+  border:0; border-radius:0; background:transparent; overflow:visible;
+}
+#invoiceModal .inv-nav + .inv-nav{
+  margin-left:16px; padding-left:16px; border-left:1px solid var(--inv-rule);
 }
 #invoiceModal .inv-nav button{
-  width:32px; height:32px; flex:0 0 auto; border:0; background:transparent; color:var(--muted);
+  width:28px; height:28px; flex:0 0 auto; border:0; border-radius:50%;
+  background:transparent; color:var(--inv-muted);
   font-size:0; line-height:0; cursor:pointer;
   display:inline-flex; align-items:center; justify-content:center;
   transition:background 140ms ease, color 140ms ease;
 }
 #invoiceModal .inv-nav button::before{
-  content:''; width:7px; height:7px;
-  border-right:2px solid currentColor; border-bottom:2px solid currentColor;
-  border-radius:1px; transform:rotate(135deg); margin-left:3px;
+  content:''; width:6px; height:6px;
+  border-right:1.6px solid currentColor; border-bottom:1.6px solid currentColor;
+  border-radius:1px; transform:rotate(135deg); margin-left:2px;
 }
 #invoiceModal #invDayNext::before,
-#invoiceModal #invMonthNext::before{transform:rotate(-45deg); margin:0 3px 0 0;}
-#invoiceModal .inv-nav button:hover:not(:disabled){background:var(--inv-tint-2); color:var(--accent);}
-#invoiceModal .inv-nav button:focus-visible{outline:2px solid var(--focus); outline-offset:-3px;}
-#invoiceModal .inv-nav button:disabled{opacity:.3; cursor:default;}
+#invoiceModal #invMonthNext::before{transform:rotate(-45deg); margin:0 2px 0 0;}
+#invoiceModal .inv-nav button:hover:not(:disabled){background:var(--inv-paper-2); color:var(--inv-gold);}
+#invoiceModal .inv-nav button:focus-visible{outline:2px solid var(--inv-gold); outline-offset:-2px;}
+#invoiceModal .inv-nav button:disabled{opacity:.25; cursor:default;}
 #invoiceModal .inv-nav .inv-lbl{
-  min-width:140px; text-align:center; font-size:12px; font-weight:800;
-  color:var(--text); padding:0 6px; white-space:nowrap;
+  min-width:0; text-align:center; font-size:12px; font-weight:700;
+  color:var(--inv-ink); padding:0 4px; white-space:nowrap;
   font-variant-numeric:tabular-nums;
 }
-#invoiceModal .inv-nav-month .inv-lbl{min-width:114px;}
-#invoiceModal .inv-nav .inv-cal-wrap{min-height:30px; padding:0 6px; border-radius:7px;}
-#invoiceModal .inv-nav .inv-cal-wrap:hover{background:var(--inv-tint-2);}
-#invoiceModal .inv-nav .inv-cal-ico{color:var(--accent); opacity:.75;}
+#invoiceModal .inv-nav .inv-cal-wrap{min-height:28px; padding:0 5px; border-radius:6px;}
+#invoiceModal .inv-nav .inv-cal-wrap:hover{background:var(--inv-paper-2);}
+#invoiceModal .inv-nav .inv-cal-ico{color:var(--inv-muted); opacity:.7;}
 #invoiceModal .inv-scope{
-  height:34px; padding:0 14px; flex:0 0 auto;
-  border:1px solid var(--border-soft); border-radius:999px;
-  background:var(--page); color:var(--text-2);
-  font:inherit; font-size:11px; font-weight:800; letter-spacing:.02em; cursor:pointer;
+  height:26px; padding:0 11px; flex:0 0 auto;
+  border:1px solid var(--inv-gold-line); border-radius:999px;
+  background:transparent; color:var(--inv-gold);
+  font:inherit; font-size:9px; font-weight:800; letter-spacing:.12em; text-transform:uppercase;
+  cursor:pointer;
   transition:background 140ms ease, color 140ms ease, border-color 140ms ease;
 }
-#invoiceModal .inv-scope:hover:not(:disabled){background:var(--inv-tint-2); color:var(--accent); border-color:var(--g-04);}
-#invoiceModal .inv-scope:focus-visible{outline:2px solid var(--focus); outline-offset:2px;}
-#invoiceModal .inv-scope:disabled{opacity:.45; cursor:default;}
-#invoiceModal .inv-scope.is-on{background:var(--accent); color:var(--on-accent); border-color:var(--accent);}
+#invoiceModal .inv-scope:hover:not(:disabled){background:var(--inv-gold); border-color:var(--inv-gold); color:var(--inv-paper);}
+#invoiceModal .inv-scope:focus-visible{outline:2px solid var(--inv-gold); outline-offset:2px;}
+#invoiceModal .inv-scope:disabled{opacity:.4; cursor:default;}
+#invoiceModal .inv-scope.is-on{background:var(--inv-ink); border-color:var(--inv-ink); color:var(--inv-paper);}
 #invoiceModal .inv-period-note{
-  margin-left:auto; padding-right:4px;
-  font-size:10.5px; color:var(--muted); line-height:1.35;
+  margin-left:auto; padding-right:2px;
+  font-size:9.5px; letter-spacing:.02em; color:var(--inv-muted); line-height:1.35;
+  font-variant-numeric:tabular-nums;
 }
 
-/* Tim kiem + dem */
-#invoiceModal .inv-filter{flex:0 0 auto; position:relative; display:flex; align-items:center; gap:10px; margin:0 0 12px;}
+/* ---------- Search ---------- */
+#invoiceModal .inv-filter{position:relative; display:flex; align-items:center; gap:10px; margin:0 0 12px;}
 #invoiceModal .inv-filter::before{
-  content:''; position:absolute; left:13px; top:50%; width:14px; height:14px;
-  margin-top:-7px; background:currentColor; color:var(--muted); opacity:.6;
+  content:''; position:absolute; left:12px; top:50%; width:13px; height:13px;
+  margin-top:-6.5px; background:currentColor; color:var(--inv-muted); opacity:.65;
   pointer-events:none;
-  -webkit-mask:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 20 20' fill='none' stroke='black' stroke-width='1.8' stroke-linecap='round'%3E%3Ccircle cx='8.6' cy='8.6' r='5.4'/%3E%3Cpath d='m12.8 12.8 4 4'/%3E%3C/svg%3E") center/14px 14px no-repeat;
-  mask:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 20 20' fill='none' stroke='black' stroke-width='1.8' stroke-linecap='round'%3E%3Ccircle cx='8.6' cy='8.6' r='5.4'/%3E%3Cpath d='m12.8 12.8 4 4'/%3E%3C/svg%3E") center/14px 14px no-repeat;
+  -webkit-mask:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 20 20' fill='none' stroke='black' stroke-width='1.8' stroke-linecap='round'%3E%3Ccircle cx='8.6' cy='8.6' r='5.4'/%3E%3Cpath d='m12.8 12.8 4 4'/%3E%3C/svg%3E") center/13px 13px no-repeat;
+  mask:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 20 20' fill='none' stroke='black' stroke-width='1.8' stroke-linecap='round'%3E%3Ccircle cx='8.6' cy='8.6' r='5.4'/%3E%3Cpath d='m12.8 12.8 4 4'/%3E%3C/svg%3E") center/13px 13px no-repeat;
 }
 #invoiceModal .inv-filter input{
-  flex:1; min-width:0; height:38px; padding:0 12px 0 36px;
-  background:var(--page); color:var(--text);
-  border:1px solid var(--border-soft); border-radius:10px;
-  font-size:12.5px; font-family:inherit;
-  transition:border-color 140ms ease, box-shadow 140ms ease;
+  flex:1; min-width:0; height:36px; padding:0 12px 0 34px;
+  background:var(--inv-paper-2); color:var(--inv-ink);
+  border:1px solid transparent; border-radius:8px;
+  font-size:12px; font-family:inherit;
+  transition:border-color 140ms ease, box-shadow 140ms ease, background 140ms ease;
 }
-#invoiceModal .inv-filter input:hover{border-color:var(--border);}
-#invoiceModal .inv-filter input:focus{outline:none; border-color:var(--accent-bar); box-shadow:var(--ring);}
-#invoiceModal .inv-filter input::placeholder{color:var(--muted); opacity:.6;}
+#invoiceModal .inv-filter input:hover{border-color:var(--inv-rule);}
+#invoiceModal .inv-filter input:focus{outline:none; background:var(--inv-paper); border-color:var(--inv-gold-line); box-shadow:0 0 0 3px rgba(122,83,0,.10);}
+#invoiceModal .inv-filter input::placeholder{color:var(--inv-muted); opacity:.7;}
 #invoiceModal .inv-count{
-  flex:0 0 auto; padding:5px 11px; border-radius:999px;
-  background:var(--surface-2); border:1px solid var(--border-soft);
-  color:var(--text-2); font-size:10.5px; font-weight:800;
+  flex:0 0 auto; padding:4px 10px; border-radius:999px;
+  background:transparent; border:1px solid var(--inv-rule);
+  color:var(--inv-muted); font-size:9.5px; font-weight:700; letter-spacing:.03em;
   white-space:nowrap; font-variant-numeric:tabular-nums;
 }
 
-/* Bang khach hang */
+/* ---------- Ledger table ---------- */
 #invoiceModal .inv-card{
   display:flex; flex-direction:column; min-height:0; flex:1 1 auto;
-  border:1px solid var(--border-soft); border-radius:14px; overflow:hidden; background:var(--page);
+  border:0; border-radius:0; overflow:visible; background:transparent;
 }
-#invoiceModal .inv-card h4{
-  flex:0 0 auto;
-  margin:0; padding:12px 16px;
-  font-size:10.5px; font-weight:800; letter-spacing:.12em; text-transform:uppercase;
-  color:var(--text-2);
-  background:linear-gradient(180deg, var(--surface-2), var(--page));
-  border-bottom:1px solid var(--inv-hair);
+#invoiceModal .inv-card h4{display:none;}
+#invoiceModal .inv-tablewrap{
+  flex:1 1 auto; min-height:0; overflow:auto; overscroll-behavior:contain;
+  border-top:1px solid var(--inv-ink);
 }
-#invoiceModal .inv-tablewrap{flex:1 1 auto; min-height:0; max-height:none; overflow:auto; overscroll-behavior:contain;}
-#invoiceModal table.inv-table{width:100%; border-collapse:collapse; font-size:12.5px;}
+#invoiceModal table.inv-table{width:100%; border-collapse:collapse; font-size:12.5px; background:transparent;}
 #invoiceModal table.inv-table thead th{
   position:sticky; top:0; z-index:2;
-  background:var(--inv-head-bg); color:var(--muted);
-  text-align:left; padding:10px 14px;
-  font-size:10px; font-weight:800; letter-spacing:.1em; text-transform:uppercase;
-  white-space:nowrap; border-bottom:1px solid var(--border-soft);
+  background:var(--inv-paper); color:var(--inv-muted);
+  text-align:left; padding:10px 12px;
+  font-size:8.5px; font-weight:800; letter-spacing:.16em; text-transform:uppercase;
+  white-space:nowrap; border-bottom:1px solid var(--inv-rule);
 }
 #invoiceModal table.inv-table thead th.num,
 #invoiceModal table.inv-table td.num{text-align:right; white-space:nowrap;}
 #invoiceModal table.inv-table td{
-  padding:9px 14px; border-bottom:1px solid var(--row-line);
-  color:var(--text-2); vertical-align:middle;
+  padding:10px 12px; border-bottom:1px solid var(--inv-rule-soft);
+  color:var(--inv-ink); vertical-align:middle;
   font-variant-numeric:tabular-nums;
   transition:background 120ms ease;
 }
-#invoiceModal table.inv-table tbody tr:nth-child(even) td{background:var(--inv-zebra);}
-#invoiceModal table.inv-table tbody tr:hover td{background:var(--row-hover);}
-#invoiceModal table.inv-table tbody tr:hover td:first-child{box-shadow:inset 3px 0 0 var(--accent-bar);}
+#invoiceModal table.inv-table tbody tr:hover td{background:var(--inv-hover);}
 #invoiceModal table.inv-table tbody tr:last-child td{border-bottom:0;}
-#invoiceModal table.inv-table td.inv-rank{width:46px; text-align:center;}
+#invoiceModal table.inv-table td.inv-rank{width:44px; text-align:center;}
 #invoiceModal .rk{
-  display:inline-flex; align-items:center; justify-content:center;
-  min-width:24px; height:24px; padding:0 5px; border-radius:7px;
-  color:var(--legend); font-size:11.5px; font-weight:800;
-  background:var(--surface-2);
+  display:inline-block; min-width:0; height:auto; padding:0;
+  background:none !important; border-radius:0;
+  font-family:"Lora",Georgia,"Times New Roman",serif;
+  font-size:13px; font-weight:600; color:var(--inv-muted);
+  font-variant-numeric:tabular-nums;
 }
-#invoiceModal table.inv-table tbody tr:nth-child(1) .rk{background:var(--gold-bg); color:var(--gold);}
-#invoiceModal table.inv-table tbody tr:nth-child(2) .rk{background:var(--inv-silver-bg); color:var(--inv-silver);}
-#invoiceModal table.inv-table tbody tr:nth-child(3) .rk{background:var(--inv-bronze-bg); color:var(--inv-bronze);}
+#invoiceModal table.inv-table tbody tr.is-top1 td{background:var(--inv-top-bg);}
+#invoiceModal table.inv-table tbody tr.is-top2 td{background:var(--inv-top-bg);}
+#invoiceModal table.inv-table tbody tr.is-top3 td{background:var(--inv-top-bg);}
+#invoiceModal table.inv-table tbody tr.is-top1:hover td{background:var(--inv-hover);}
+#invoiceModal table.inv-table tbody tr.is-top2:hover td{background:var(--inv-hover);}
+#invoiceModal table.inv-table tbody tr.is-top3:hover td{background:var(--inv-hover);}
+#invoiceModal table.inv-table tbody tr.is-top1 td:first-child{box-shadow:inset 2px 0 0 var(--inv-gold);}
+#invoiceModal table.inv-table tbody tr.is-top2 td:first-child{box-shadow:inset 2px 0 0 var(--inv-silver);}
+#invoiceModal table.inv-table tbody tr.is-top3 td:first-child{box-shadow:inset 2px 0 0 var(--inv-bronze);}
+#invoiceModal table.inv-table tbody tr.is-top1 .rk{color:var(--inv-gold); font-size:17px; font-weight:700;}
+#invoiceModal table.inv-table tbody tr.is-top2 .rk{color:var(--inv-silver); font-size:15px;}
+#invoiceModal table.inv-table tbody tr.is-top3 .rk{color:var(--inv-bronze); font-size:15px;}
 #invoiceModal table.inv-table td.inv-code{
-  font-size:11.5px; color:var(--muted); white-space:nowrap; letter-spacing:.02em;
+  font-size:10.5px; color:var(--inv-muted); white-space:nowrap; letter-spacing:.05em;
 }
-#invoiceModal table.inv-table td.inv-name{color:var(--text); font-weight:700; line-height:1.35; overflow-wrap:anywhere;}
+#invoiceModal table.inv-table td.inv-name{
+  color:var(--inv-ink); font-weight:700; line-height:1.35; overflow-wrap:anywhere;
+}
 #invoiceModal .inv-name-code{display:none;}
-#invoiceModal table.inv-table td.inv-sale{color:var(--text); font-weight:800; font-size:13px;}
-#invoiceModal table.inv-table td.inv-share .inv-share-pct{display:block; font-size:11.5px; font-weight:700; color:var(--muted);}
+#invoiceModal table.inv-table td.inv-sale{font-weight:800; font-size:13px; color:var(--inv-ink);}
+#invoiceModal table.inv-table td.inv-share{width:108px;}
+#invoiceModal table.inv-table td.inv-share .inv-share-pct{
+  display:block; font-size:10px; font-weight:700; color:var(--inv-muted); letter-spacing:.03em;
+}
 #invoiceModal .inv-sharebar{
-  display:block; width:72px; height:5px; margin:5px 0 0 auto;
-  border-radius:99px; background:var(--inv-track); overflow:hidden;
+  display:block; width:100%; max-width:76px; height:3px; margin:5px 0 0 auto;
+  border-radius:0; background:var(--inv-rule); overflow:hidden;
 }
 #invoiceModal .inv-sharebar i{
-  display:block; height:100%; border-radius:99px;
-  background:linear-gradient(90deg, var(--accent-bar), var(--accent));
+  display:block; height:100%; border-radius:0;
+  background:var(--inv-bar);
 }
 #invoiceModal .inv-type{
   display:inline-block; max-width:170px; overflow:hidden; text-overflow:ellipsis; white-space:nowrap;
-  padding:3px 9px; border-radius:999px;
-  background:var(--inv-tint); border:1px solid var(--inv-hair); color:var(--text-2);
-  font-size:10px; font-weight:700; letter-spacing:.01em;
+  padding:0; border:0; border-radius:0; background:none;
+  color:var(--inv-muted);
+  font-size:8.5px; font-weight:800; letter-spacing:.1em; text-transform:uppercase;
 }
-#invoiceModal table.inv-table tfoot{position:sticky; bottom:0; z-index:3;}
-#invoiceModal table.inv-table tfoot tr.inv-total td{
-  position:sticky; bottom:0; z-index:3;
-  background:var(--inv-total-bg); color:var(--text); font-weight:800;
-  border-top:1px solid var(--border); border-bottom:0;
-  padding-top:11px; padding-bottom:11px;
-  box-shadow:0 -8px 16px -14px rgba(6,37,16,.45);
+#invoiceModal table.inv-single-type th.inv-c-type,
+#invoiceModal table.inv-single-type td.inv-c-type{display:none;}
+
+/* ---------- Statement total (outside the scroll area) ---------- */
+#invoiceModal .inv-total{
+  flex:0 0 auto; display:flex; align-items:baseline; gap:16px;
+  padding:13px 2px 2px; border-top:1px solid var(--inv-ink);
+  background:transparent;
 }
-#invoiceModal table.inv-table tfoot tr.inv-total td.inv-total-sale{color:var(--gold); font-size:13.5px;}
-#invoiceModal table.inv-table tr.inv-nores td{border-bottom:0; background:transparent;}
-#invoiceModal table.inv-table tr.inv-nores:hover td{background:transparent; box-shadow:none;}
+#invoiceModal .inv-total-label{
+  font-size:9px; font-weight:800; letter-spacing:.14em; text-transform:uppercase;
+  color:var(--inv-muted);
+}
+#invoiceModal .inv-total-meta{
+  font-size:10.5px; color:var(--inv-muted);
+  font-variant-numeric:tabular-nums;
+}
+#invoiceModal .inv-total-sale{
+  margin-left:auto;
+  font-family:"Lora",Georgia,"Times New Roman",serif;
+  font-size:23px; font-weight:600; letter-spacing:-.015em; color:var(--inv-gold);
+  font-variant-numeric:lining-nums tabular-nums; white-space:nowrap;
+}
+#invoiceModal .inv-total-sale .cur{font-size:.52em; font-weight:500; margin-left:2px;}
+#invoiceModal .inv-total-share{
+  min-width:44px; text-align:right; font-size:10.5px; font-weight:700; color:var(--inv-muted);
+}
+
+/* ---------- Empty / no-result ---------- */
+#invoiceModal table.inv-table tr.inv-nores td{border-bottom:0; background:transparent !important;}
 #invoiceModal .inv-empty{
-  padding:44px 16px; text-align:center; color:var(--muted);
-  font-size:12px; line-height:1.6;
+  padding:46px 16px; text-align:center; color:var(--inv-muted);
+  font-size:12px; line-height:1.65;
 }
 #invoiceModal .inv-empty::before{
-  content:''; display:block; width:34px; height:34px; margin:0 auto 10px;
-  background:currentColor; opacity:.3;
-  -webkit-mask:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='black' stroke-width='1.6' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M4 8.5 12 4l8 4.5v7L12 20l-8-4.5z'/%3E%3Cpath d='M4 8.5 12 13l8-4.5M12 13v7'/%3E%3C/svg%3E") center/contain no-repeat;
-  mask:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='black' stroke-width='1.6' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M4 8.5 12 4l8 4.5v7L12 20l-8-4.5z'/%3E%3Cpath d='M4 8.5 12 13l8-4.5M12 13v7'/%3E%3C/svg%3E") center/contain no-repeat;
+  content:''; display:block; width:30px; height:30px; margin:0 auto 10px;
+  background:currentColor; opacity:.35;
+  -webkit-mask:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='black' stroke-width='1.5' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M5 4.5h14v15H5z'/%3E%3Cpath d='M5 9h14M9.5 4.5v4.5M9.5 13h5M9.5 16.5h3'/%3E%3C/svg%3E") center/contain no-repeat;
+  mask:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='black' stroke-width='1.5' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M5 4.5h14v15H5z'/%3E%3Cpath d='M5 9h14M9.5 4.5v4.5M9.5 13h5M9.5 16.5h3'/%3E%3C/svg%3E") center/contain no-repeat;
 }
-/* Thanh cuon mong trong bang */
-#invoiceModal .inv-tablewrap{scrollbar-width:thin; scrollbar-color:var(--g-04) transparent;}
+#invoiceModal .inv-tablewrap{scrollbar-width:thin; scrollbar-color:var(--inv-rule) transparent;}
 #invoiceModal .inv-tablewrap::-webkit-scrollbar{width:9px; height:9px;}
-#invoiceModal .inv-tablewrap::-webkit-scrollbar-thumb{background:var(--g-04); border-radius:99px; border:3px solid var(--page);}
-#invoiceModal .inv-tablewrap::-webkit-scrollbar-thumb:hover{background:var(--g-05);}
+#invoiceModal .inv-tablewrap::-webkit-scrollbar-thumb{background:var(--inv-rule); border-radius:99px; border:3px solid var(--inv-paper);}
+#invoiceModal .inv-tablewrap::-webkit-scrollbar-thumb:hover{background:var(--inv-gold-line);}
 
-/* ---------- Dien thoai: modal thanh sheet toan man hinh ---------- */
+/* ---------- Phone: full-height statement ---------- */
 @media (max-width:760px){
   #invoiceModal{padding:0; align-items:stretch;}
   #invoiceModal .inv-panel{
     display:block; max-width:none; max-height:none; min-height:100%; margin:0;
     border:0; border-radius:0; box-shadow:none; overflow:auto;
-    padding:calc(18px + env(safe-area-inset-top)) 14px calc(24px + env(safe-area-inset-bottom));
+    padding:calc(18px + env(safe-area-inset-top)) 16px calc(20px + env(safe-area-inset-bottom));
     background:
-      radial-gradient(120% 70% at 6% 0%, var(--inv-tint-2), transparent 52%),
-      linear-gradient(180deg, var(--inv-tint), transparent 200px),
-      var(--surface);
+      radial-gradient(120% 60% at 100% 0%, rgba(122,83,0,.05), transparent 52%),
+      var(--inv-paper);
   }
-  #invoiceModal .inv-panel::before{left:14px; right:14px;}
-  #invoiceModal.open .inv-panel{animation:panelIn 200ms cubic-bezier(.2,.75,.25,1);}
-  #invoiceModal .inv-close{position:fixed; z-index:5; top:calc(12px + env(safe-area-inset-top)); right:12px; width:34px; height:34px; border-radius:10px; box-shadow:0 4px 14px -4px rgba(6,37,16,.25);}
-  #invoiceModal .inv-kicker{font-size:9.5px; letter-spacing:.14em; padding-right:42px;}
-  #invoiceModal .inv-title{font-size:23px; margin:7px 0 5px; padding-right:42px;}
-  #invoiceModal .inv-sub{font-size:11.5px; margin-bottom:14px;}
-  #invoiceModal .inv-kpis{grid-template-columns:repeat(2,minmax(0,1fr)); gap:8px; margin-bottom:12px;}
-  #invoiceModal .inv-kpi{padding:10px 11px; border-radius:12px;}
-  #invoiceModal .inv-kpi:hover{transform:none;}
-  #invoiceModal .inv-kpi .k{font-size:9px; letter-spacing:.08em; gap:5px;}
-  #invoiceModal .inv-kpi .ico{width:18px; height:18px; border-radius:5px;}
-  #invoiceModal .inv-kpi .ico svg{width:11px; height:11px;}
-  #invoiceModal .inv-kpi .v{font-size:16.5px; margin-top:3px;}
-  #invoiceModal .inv-kpi .n{font-size:10px;}
-  #invoiceModal .inv-period{gap:6px; padding:7px; margin-bottom:12px; border-radius:11px;}
-  #invoiceModal .inv-nav{flex:1 1 46%; min-width:0; height:32px; justify-content:space-between;}
-  #invoiceModal .inv-nav button{width:26px; height:30px;}
-  #invoiceModal .inv-nav .inv-lbl{min-width:0; flex:1 1 auto; font-size:10.5px; padding:0 2px;}
-  #invoiceModal .inv-nav-month .inv-lbl{min-width:0;}
-  #invoiceModal .inv-scope{height:32px; padding:0 10px; font-size:10px;}
-  #invoiceModal .inv-period-note{width:auto; flex:1 1 58px; margin:0 2px 0 auto; padding:0; font-size:10px; text-align:right;}
+  #invoiceModal .inv-close{
+    position:fixed; z-index:5; top:calc(12px + env(safe-area-inset-top)); right:12px;
+    width:32px; height:32px; border-radius:50%;
+    background:var(--inv-paper); box-shadow:0 4px 14px -6px rgba(6,37,16,.35);
+  }
+  #invoiceModal .inv-kicker{font-size:8.5px; letter-spacing:.18em; padding-right:42px;}
+  #invoiceModal .inv-title{font-size:25px; margin:8px 0 5px; padding-right:42px;}
+  #invoiceModal .inv-sub{font-size:11px; margin-bottom:0;}
+  #invoiceModal .inv-kpis{display:block; margin:14px 0 12px; padding:14px 0 12px;}
+  #invoiceModal .inv-hero{flex:none; width:auto; padding:0 0 12px; border-bottom:1px solid var(--inv-rule);}
+  #invoiceModal .inv-hero .k{font-size:8px;}
+  #invoiceModal .inv-hero .v{font-size:29px; margin-top:4px;}
+  #invoiceModal .inv-hero .n{font-size:9.5px;}
+  #invoiceModal .inv-stats{grid-template-columns:repeat(3,minmax(0,1fr)); padding-top:11px;}
+  #invoiceModal .inv-stat{padding:0 0 0 10px;}
+  #invoiceModal .inv-stat .k{font-size:7px; letter-spacing:.05em; white-space:normal; line-height:1.35;}
+  #invoiceModal .inv-stat .v{font-size:12.5px; margin-top:3px;}
+  #invoiceModal .inv-stat .n{display:none;}
+  #invoiceModal .inv-period{gap:2px 6px; padding:0 0 10px; margin-bottom:10px;}
+  #invoiceModal .inv-nav{flex:1 1 46%; min-width:0; height:30px; justify-content:space-between;}
+  #invoiceModal .inv-nav + .inv-nav{margin-left:0; padding-left:0; border-left:0;}
+  #invoiceModal .inv-nav button{width:26px; height:28px;}
+  #invoiceModal .inv-nav .inv-lbl{font-size:10.5px; flex:1 1 auto; padding:0 1px;}
+  #invoiceModal .inv-scope{height:26px; padding:0 9px; font-size:8px;}
+  #invoiceModal .inv-period-note{flex:1 1 100%; margin:4px 0 0; padding:0; text-align:right; font-size:9px;}
   #invoiceModal .inv-filter{gap:8px; margin-bottom:10px;}
-  #invoiceModal .inv-filter::before{left:12px; width:13px; height:13px; margin-top:-6.5px;}
-  #invoiceModal .inv-filter input{height:36px; padding-left:33px; font-size:12px;}
-  #invoiceModal .inv-count{padding:4px 8px; font-size:9.5px;}
-  #invoiceModal .inv-card{display:block; flex:0 0 auto; border-radius:12px;}
-  #invoiceModal .inv-card h4{padding:10px 11px; font-size:9px; letter-spacing:.08em;}
-  #invoiceModal .inv-tablewrap{max-height:none; overflow:visible;}
-  #invoiceModal table.inv-table{font-size:11px; table-layout:fixed;}
-  #invoiceModal table.inv-table thead th{padding:8px 6px; font-size:8.5px; letter-spacing:.04em; line-height:1.25; white-space:normal; position:static;}
+  #invoiceModal .inv-filter::before{left:11px; width:12px; height:12px; margin-top:-6px;}
+  #invoiceModal .inv-filter input{height:34px; padding-left:31px; font-size:11.5px;}
+  #invoiceModal .inv-count{padding:3px 8px; font-size:9px;}
+  #invoiceModal .inv-tablewrap{overflow:visible; max-height:none;}
+  #invoiceModal table.inv-table{font-size:10.5px; table-layout:fixed;}
+  #invoiceModal table.inv-table thead th{padding:8px 6px; font-size:7.5px; letter-spacing:.08em; white-space:normal; position:static;}
   #invoiceModal table.inv-table td{padding:9px 6px;}
   #invoiceModal table.inv-table th.inv-c-rank,
-  #invoiceModal table.inv-table td.inv-rank{width:26px;}
-  #invoiceModal table.inv-table thead th:nth-child(3){width:44px;}
-  #invoiceModal table.inv-table thead th:nth-child(4){width:104px;}
-  #invoiceModal .rk{min-width:20px; height:20px; font-size:10px; border-radius:6px; padding:0 3px;}
+  #invoiceModal table.inv-table td.inv-rank{width:24px;}
+  #invoiceModal table.inv-table thead th:nth-child(3){width:36px;}
+  #invoiceModal table.inv-table thead th:nth-child(4){width:96px;}
+  #invoiceModal .rk{font-size:12px;}
+  #invoiceModal table.inv-table tbody tr.is-top1 .rk{font-size:15px;}
+  #invoiceModal table.inv-table tbody tr.is-top2 .rk,
+  #invoiceModal table.inv-table tbody tr.is-top3 .rk{font-size:13px;}
   #invoiceModal table.inv-table td.inv-name{font-weight:700; line-height:1.3;}
   #invoiceModal .inv-name-txt{display:block;}
-  #invoiceModal .inv-name-code{display:block; font-size:9px; font-weight:600; color:var(--muted); letter-spacing:.02em; margin-top:2px;}
-  #invoiceModal table.inv-table td.inv-sale{font-size:11px;}
-  #invoiceModal table.inv-table tfoot{position:static;}
-  #invoiceModal table.inv-table tfoot tr.inv-total td{position:static; padding-top:10px; padding-bottom:10px; font-size:10.5px;}
-  #invoiceModal table.inv-table tfoot tr.inv-total td.inv-total-sale{font-size:11px;}
+  #invoiceModal .inv-name-code{display:block; font-size:8.5px; font-weight:600; color:var(--inv-muted); letter-spacing:.02em; margin-top:2px;}
+  #invoiceModal table.inv-table td.inv-sale{font-size:10.5px;}
+  #invoiceModal .inv-total{
+    display:grid; grid-template-columns:minmax(0,1fr) auto;
+    gap:1px 10px; padding-top:11px;
+  }
+  #invoiceModal .inv-total-label{grid-column:1; grid-row:1; font-size:8px;}
+  #invoiceModal .inv-total-meta{grid-column:1; grid-row:2; font-size:9.5px;}
+  #invoiceModal .inv-total-sale{grid-column:2; grid-row:1 / span 2; align-self:center; font-size:18px; margin-left:0;}
+  #invoiceModal .inv-total-share{display:none;}
 }
-/* Man hinh thap (laptop 600-700px): nen header de bang co cho cuon. */
+/* Điện thoại rất hẹp (<=360px): giữ 3 số liệu trên 1 hàng, không xuống dòng. */
+@media (max-width:360px){
+  #invoiceModal .inv-kicker{font-size:8px; letter-spacing:.14em;}
+  #invoiceModal .inv-title{font-size:22px;}
+  #invoiceModal .inv-hero .v{font-size:26px;}
+  #invoiceModal .inv-stat .k{font-size:6.5px; letter-spacing:.02em;}
+  #invoiceModal .inv-stat .v{font-size:11px; letter-spacing:-.02em; white-space:nowrap;}
+}
+/* Laptop thấp: nén header để bảng còn chỗ cuộn. */
 @media (min-width:761px) and (max-height:700px){
   #invoiceModal{padding:14px 16px;}
-  #invoiceModal .inv-panel{max-height:calc(100vh - 28px); padding:20px 24px 18px;}
-  #invoiceModal .inv-title{font-size:24px; margin:6px 0 4px;}
+  #invoiceModal .inv-panel{max-height:calc(100vh - 28px); padding:22px 26px 16px;}
+  #invoiceModal .inv-title{font-size:26px; margin:7px 0 3px;}
   #invoiceModal .inv-sub{display:none;}
-  #invoiceModal .inv-kpis{gap:10px; margin-bottom:10px;}
-  #invoiceModal .inv-kpi{padding:9px 12px;}
-  #invoiceModal .inv-kpi .v{font-size:19px;}
-  #invoiceModal .inv-kpi .n{font-size:10px;}
-  #invoiceModal .inv-period{margin-bottom:10px; padding:6px;}
-  #invoiceModal .inv-filter{margin-bottom:8px;}
-  #invoiceModal .inv-filter input{height:34px;}
-  #invoiceModal .inv-card h4{padding:9px 14px;}
-  #invoiceModal table.inv-table thead th{padding:8px 14px;}
-  #invoiceModal table.inv-table td{padding:7px 14px;}
+  #invoiceModal .inv-kpis{margin:12px 0 10px; padding:13px 0 11px;}
+  #invoiceModal .inv-hero .v{font-size:26px;}
+  #invoiceModal .inv-stat .v{font-size:15px;}
+  #invoiceModal .inv-period{margin-bottom:9px; padding-bottom:8px;}
+  #invoiceModal .inv-filter{margin-bottom:9px;}
+  #invoiceModal .inv-filter input{height:33px;}
+  #invoiceModal table.inv-table thead th{padding:8px 12px;}
+  #invoiceModal table.inv-table td{padding:8px 12px;}
+  #invoiceModal .inv-total{padding-top:10px;}
 }
-/* v20261123-invoiceui-css-end */
+@media (prefers-reduced-motion:reduce){
+  #invoiceModal, #invoiceModal.open .inv-panel{animation:none !important;}
+  #invoiceModal *{transition:none !important;}
+}
+/* v20261124-invoiceui-css-end */
+
 /* v20261122-invcal-css: o ngay/thang mo lich chon (native date/month picker) */
 #invoiceModal .inv-cal-wrap{
   position:relative; display:inline-flex; align-items:center; gap:5px;
@@ -1868,146 +1946,253 @@ html[data-theme="dark"] #invoiceModal{
 #invoiceModal .inv-cal-ico{display:inline-flex; align-items:center; color:var(--muted); line-height:1; opacity:.85;}
 #invoiceModal .inv-cal-svg{display:block; flex:0 0 auto;}
 
-/* v20261122-custcal-css: v6 - lich doanh so theo ngay cua 1 khach hang */
+/* v20261122-custcal-css: v7 - lịch doanh số khách hàng, cùng ngôn ngữ "bảng kê" */
 #invoiceModal .inv-name-btn{
   display:block; width:100%; margin:0; padding:0; border:0; background:none;
   color:inherit; font:inherit; font-weight:700; line-height:inherit; text-align:left;
-  cursor:pointer; border-radius:4px; text-decoration:none;
+  cursor:pointer; border-radius:2px; text-decoration:none;
   transition:color 120ms ease;
 }
-#invoiceModal .inv-name-btn:hover{color:var(--accent); text-decoration:underline; text-decoration-thickness:1.5px; text-underline-offset:3px;}
-#invoiceModal .inv-name-btn:focus-visible{outline:2px solid var(--focus); outline-offset:2px;}
+#invoiceModal .inv-name-btn:hover{color:var(--inv-gold); text-decoration:underline; text-decoration-thickness:1.5px; text-underline-offset:3px;}
+#invoiceModal .inv-name-btn:focus-visible{outline:2px solid var(--inv-gold); outline-offset:2px;}
 #invoiceModal .inv-name-code{text-decoration:none;}
+
 #custCalModal{
   display:none; position:fixed; inset:0; z-index:2100; background:var(--overlay);
-  -webkit-backdrop-filter:blur(6px) saturate(115%); backdrop-filter:blur(6px) saturate(115%);
+  -webkit-backdrop-filter:blur(7px) saturate(110%); backdrop-filter:blur(7px) saturate(110%);
   align-items:flex-start; justify-content:center; overflow:auto;
   padding:clamp(14px,3.2vw,40px) clamp(10px,2vw,20px);
-  --cc-tint:rgba(50,166,74,.12);
+  --cc-paper:#FCFBF5;
+  --cc-paper-2:#F5F1E3;
+  --cc-ink:#0A2E14;
+  --cc-muted:#4C6052;
+  --cc-rule:rgba(20,81,29,.15);
+  --cc-gold:#7A5300;
+  --cc-gold-line:rgba(122,83,0,.38);
+  --cc-shadow:0 44px 96px -44px rgba(6,37,16,.55), 0 2px 10px rgba(6,37,16,.08);
+  --cc-l1:rgba(30,121,44,.07);
+  --cc-l2:rgba(30,121,44,.13);
+  --cc-l3:rgba(30,121,44,.20);
+  --cc-l4:rgba(30,121,44,.28);
 }
-html[data-theme="dark"] #custCalModal{--cc-tint:rgba(201,162,39,.14);}
-#custCalModal.open{display:flex; animation:overlayIn 180ms ease;}
+html[data-theme="dark"] #custCalModal{
+  --cc-paper:#131311;
+  --cc-paper-2:#1A1A16;
+  --cc-ink:#EFE9DC;
+  --cc-muted:#A69E8C;
+  --cc-rule:rgba(239,233,220,.14);
+  --cc-gold:#E3BE72;
+  --cc-gold-line:rgba(227,190,114,.34);
+  --cc-shadow:0 46px 100px -40px rgba(0,0,0,.85), 0 2px 10px rgba(0,0,0,.45);
+  --cc-l1:rgba(156,203,132,.07);
+  --cc-l2:rgba(156,203,132,.12);
+  --cc-l3:rgba(156,203,132,.18);
+  --cc-l4:rgba(156,203,132,.25);
+}
+#custCalModal.open{display:flex; animation:overlayIn 180ms ease both;}
 #custCalModal .cc-panel{
-  position:relative; width:100%; max-width:880px; padding:26px 26px 22px;
-  background:var(--surface); border:1px solid var(--border); border-radius:20px;
-  box-shadow:0 28px 64px -28px rgba(6,37,16,.42), 0 2px 8px rgba(6,37,16,.08);
+  position:relative; width:100%; max-width:900px; margin:0 auto;
+  padding:28px 30px 22px;
+  background:
+    radial-gradient(120% 70% at 100% 0%, rgba(122,83,0,.05), transparent 56%),
+    var(--cc-paper);
+  border:1px solid var(--cc-rule); border-radius:18px;
+  box-shadow:var(--cc-shadow); color:var(--cc-ink);
 }
-#custCalModal.open .cc-panel{animation:panelIn 220ms cubic-bezier(.2,.75,.25,1) both;}
+html[data-theme="dark"] #custCalModal .cc-panel{
+  background:
+    radial-gradient(120% 70% at 100% 0%, rgba(227,190,114,.05), transparent 56%),
+    var(--cc-paper);
+}
+#custCalModal.open .cc-panel{animation:panelIn 240ms cubic-bezier(.2,.75,.25,1) both;}
 #custCalModal .cc-close{
-  position:absolute; top:16px; right:16px; width:36px; height:36px; border-radius:12px;
+  position:absolute; top:18px; right:18px; width:34px; height:34px; border-radius:50%;
   display:flex; align-items:center; justify-content:center;
-  border:1px solid var(--border-soft); background:var(--page);
-  color:var(--muted); font-size:17px; line-height:1; cursor:pointer;
-  transition:background 140ms ease, color 140ms ease, border-color 140ms ease, transform 140ms ease;
+  border:1px solid var(--cc-rule); background:transparent;
+  color:var(--cc-muted); font-size:18px; line-height:1; cursor:pointer;
+  transition:background 140ms ease, color 140ms ease, border-color 140ms ease;
 }
-#custCalModal .cc-close:hover{background:var(--red-bg); color:var(--red); border-color:var(--red-soft); transform:rotate(90deg);}
-#custCalModal .cc-close:focus-visible{outline:2px solid var(--focus); outline-offset:2px;}
+#custCalModal .cc-close:hover{background:var(--cc-gold); border-color:var(--cc-gold); color:var(--cc-paper);}
+#custCalModal .cc-close:focus-visible{outline:2px solid var(--cc-gold); outline-offset:2px;}
 #custCalModal .cc-kicker{
-  display:flex; align-items:center; gap:8px;
-  font-size:10.5px; font-weight:800; letter-spacing:.18em; text-transform:uppercase; color:var(--legend);
+  display:flex; align-items:center; gap:9px;
+  font-size:9.5px; font-weight:800; letter-spacing:.24em; text-transform:uppercase; color:var(--cc-muted);
 }
 #custCalModal .cc-kicker::before{
-  content:''; width:5px; height:5px; border-radius:2px; flex:0 0 auto;
-  background:var(--accent-bar); box-shadow:0 0 0 3px var(--cc-tint);
+  content:''; width:6px; height:6px; border-radius:50%; flex:0 0 auto; background:var(--cc-gold);
 }
 #custCalModal .cc-title{
-  font-size:clamp(20px,2.6vw,26px); font-weight:800; letter-spacing:-.02em;
-  margin:7px 0 5px; color:var(--text); padding-right:48px; overflow-wrap:anywhere;
+  font-family:"Lora",Georgia,"Times New Roman",serif;
+  font-size:clamp(21px,2.6vw,29px); font-weight:600; letter-spacing:-.015em;
+  line-height:1.2; margin:9px 0 5px; color:var(--cc-ink);
+  padding-right:52px; overflow-wrap:anywhere;
 }
-#custCalModal .cc-sub{font-size:12px; color:var(--muted); margin-bottom:16px; overflow-wrap:anywhere;}
-#custCalModal .cc-toolbar{display:flex; align-items:center; gap:10px; flex-wrap:wrap; margin:0 0 14px;}
+#custCalModal .cc-sub{font-size:11.5px; color:var(--cc-muted); line-height:1.5; margin:0 0 14px; overflow-wrap:anywhere;}
+#custCalModal .cc-toolbar{
+  display:flex; align-items:center; gap:10px; flex-wrap:wrap;
+  margin:0 0 0; padding:0 0 11px; border-bottom:1px solid var(--cc-rule);
+}
 #custCalModal .cc-nav{
-  display:inline-flex; align-items:center; height:34px;
-  border:1px solid var(--border-soft); border-radius:10px;
-  background:var(--page); overflow:hidden;
+  display:inline-flex; align-items:center; gap:1px; height:30px;
+  border:0; border-radius:0; background:transparent; overflow:visible;
 }
 #custCalModal .cc-nav button{
-  width:32px; height:32px; flex:0 0 auto; border:0; background:transparent; color:var(--muted);
+  width:28px; height:28px; flex:0 0 auto; border:0; border-radius:50%;
+  background:transparent; color:var(--cc-muted);
   font-size:0; line-height:0; cursor:pointer; display:inline-flex;
   align-items:center; justify-content:center; transition:background 140ms ease, color 140ms ease;
 }
 #custCalModal .cc-nav button::before{
-  content:''; width:7px; height:7px;
-  border-right:2px solid currentColor; border-bottom:2px solid currentColor;
-  border-radius:1px; transform:rotate(135deg); margin-left:3px;
+  content:''; width:6px; height:6px;
+  border-right:1.6px solid currentColor; border-bottom:1.6px solid currentColor;
+  border-radius:1px; transform:rotate(135deg); margin-left:2px;
 }
-#custCalModal #ccNext::before{transform:rotate(-45deg); margin:0 3px 0 0;}
-#custCalModal .cc-nav button:hover:not(:disabled){background:var(--cc-tint); color:var(--accent);}
-#custCalModal .cc-nav button:focus-visible{outline:2px solid var(--focus); outline-offset:-3px;}
-#custCalModal .cc-nav button:disabled{opacity:.3; cursor:default;}
+#custCalModal #ccNext::before{transform:rotate(-45deg); margin:0 2px 0 0;}
+#custCalModal .cc-nav button:hover:not(:disabled){background:var(--cc-paper-2); color:var(--cc-gold);}
+#custCalModal .cc-nav button:focus-visible{outline:2px solid var(--cc-gold); outline-offset:-2px;}
+#custCalModal .cc-nav button:disabled{opacity:.25; cursor:default;}
 #custCalModal .cc-month{
-  min-width:132px; text-align:center; font-size:12px; font-weight:800;
-  color:var(--text); padding:0 6px; white-space:nowrap;
+  min-width:0; text-align:center; font-family:"Lora",Georgia,serif;
+  font-size:15px; font-weight:600; letter-spacing:-.01em;
+  color:var(--cc-ink); padding:0 6px; white-space:nowrap;
 }
-#custCalModal .cc-hint{font-size:11px; color:var(--muted); line-height:1.35;}
-#custCalModal .cc-kpis{display:grid; grid-template-columns:repeat(4,minmax(0,1fr)); gap:10px; margin-bottom:14px;}
+#custCalModal .cc-hint{font-size:10px; color:var(--cc-muted); line-height:1.35; margin-left:auto;}
+#custCalModal .cc-kpis{
+  display:grid; grid-template-columns:repeat(4,minmax(0,1fr)); gap:0;
+  margin:0 0 14px; padding:14px 0;
+  border-bottom:2px solid var(--cc-ink); position:relative;
+}
+#custCalModal .cc-kpis::after{
+  content:''; position:absolute; left:0; right:0; bottom:4px; height:1px;
+  background:var(--cc-rule); pointer-events:none;
+}
 #custCalModal .cc-kpi{
-  background:var(--page); border:1px solid var(--border-soft);
-  border-radius:14px; padding:11px 13px; min-width:0;
+  background:transparent; border:0; border-left:1px solid var(--cc-rule);
+  border-radius:0; padding:0 0 0 18px; min-width:0;
 }
-#custCalModal .cc-kpi .k{font-size:10px; font-weight:800; letter-spacing:.1em; text-transform:uppercase; color:var(--legend);}
-#custCalModal .cc-kpi .v{font-size:clamp(17px,1.9vw,21px); font-weight:800; letter-spacing:-.02em; color:var(--text); margin:3px 0; font-variant-numeric:tabular-nums; overflow-wrap:anywhere;}
-#custCalModal .cc-kpi .n{font-size:11px; color:var(--muted); line-height:1.35;}
-#custCalModal .cc-card{
-  border:1px solid var(--border); border-radius:12px; background:var(--page);
-  padding:12px;
+#custCalModal .cc-kpi:first-child{border-left:0; padding-left:0;}
+#custCalModal .cc-kpi .k{
+  font-size:8.5px; font-weight:800; letter-spacing:.13em; text-transform:uppercase;
+  color:var(--cc-muted); line-height:1.3;
 }
-#custCalModal .cc-week,#custCalModal .cc-grid{
-  display:grid; grid-template-columns:repeat(7,minmax(0,1fr)); gap:6px;
+#custCalModal .cc-kpi .v{
+  font-size:17px; font-weight:800; letter-spacing:-.01em; color:var(--cc-ink);
+  margin:4px 0 1px; font-variant-numeric:tabular-nums; overflow-wrap:anywhere;
+}
+#custCalModal .cc-kpi:first-child .v{
+  font-family:"Lora",Georgia,serif; font-weight:600; font-size:21px;
+  letter-spacing:-.015em; color:var(--cc-gold);
+}
+#custCalModal .cc-kpi .n{font-size:10px; color:var(--cc-muted); line-height:1.35;}
+#custCalModal .cc-card{border:0; border-radius:0; background:transparent; padding:0;}
+#custCalModal .cc-week{
+  display:grid; grid-template-columns:repeat(7,minmax(0,1fr)); gap:5px;
+  padding-bottom:6px; border-bottom:1px solid var(--cc-ink);
+}
+#custCalModal .cc-grid{
+  display:grid; grid-template-columns:repeat(7,minmax(0,1fr)); gap:5px;
+  margin-top:6px;
 }
 #custCalModal .cc-week span{
-  text-align:center; font-size:10px; font-weight:800; letter-spacing:.08em;
-  text-transform:uppercase; color:var(--legend); padding:2px 0 6px;
+  text-align:center; font-size:8.5px; font-weight:800; letter-spacing:.14em;
+  text-transform:uppercase; color:var(--cc-muted); padding:0;
 }
 #custCalModal .cc-day{
-  min-height:68px; margin:0; padding:6px 8px; border:1px solid var(--border);
-  border-radius:10px; background:var(--surface-2); color:var(--text);
+  min-height:72px; margin:0; padding:7px 8px;
+  border:0; border-radius:7px; background:var(--cc-paper-2); color:var(--cc-ink);
   display:flex; flex-direction:column; gap:1px; text-align:left; font:inherit;
   font-variant-numeric:tabular-nums; overflow:hidden;
+  transition:background 140ms ease, box-shadow 140ms ease;
 }
-#custCalModal .cc-day.is-empty{background:transparent; border-color:transparent; min-height:68px;}
-#custCalModal .cc-day.is-future{opacity:.42; background:transparent; border-style:dashed;}
-#custCalModal .cc-day.is-zero{background:var(--surface-2); border-style:dashed;}
-#custCalModal .cc-day.is-zero .cc-v{color:var(--muted);}
-#custCalModal .cc-day.is-data.lv1{background:rgba(50,166,74,.08); border-color:rgba(50,166,74,.22);}
-#custCalModal .cc-day.is-data.lv2{background:rgba(50,166,74,.14); border-color:rgba(50,166,74,.30);}
-#custCalModal .cc-day.is-data.lv3{background:rgba(50,166,74,.20); border-color:rgba(50,166,74,.38);}
-#custCalModal .cc-day.is-data.lv4{background:rgba(50,166,74,.27); border-color:rgba(50,166,74,.48);}
-#custCalModal button.cc-day{cursor:pointer; transition:transform .12s ease, box-shadow .12s ease, border-color .12s ease;}
-#custCalModal button.cc-day:hover{transform:translateY(-1px); border-color:var(--accent); box-shadow:0 4px 12px rgba(6,37,16,.10);}
-#custCalModal button.cc-day:focus-visible{outline:2px solid var(--focus); outline-offset:2px;}
-#custCalModal .cc-day.is-today{box-shadow:inset 0 0 0 2px var(--accent);}
-#custCalModal .cc-day .cc-d{font-size:11px; font-weight:800; color:var(--text-2); line-height:1.15;}
-#custCalModal .cc-day.is-today .cc-d{color:var(--accent);}
-#custCalModal .cc-day .cc-v{font-size:12.5px; font-weight:800; margin-top:auto; line-height:1.2; overflow-wrap:anywhere;}
-#custCalModal .cc-day.is-data .cc-v{color:var(--good);}
+#custCalModal .cc-day.is-empty{background:transparent; min-height:72px;}
+#custCalModal .cc-day.is-future{opacity:.38; background:transparent; box-shadow:inset 0 0 0 1px var(--cc-rule);}
+#custCalModal .cc-day.is-zero{background:transparent; box-shadow:inset 0 0 0 1px var(--cc-rule);}
+#custCalModal .cc-day.is-zero .cc-v{color:var(--cc-muted);}
+#custCalModal .cc-day.is-data.lv1{background:var(--cc-l1);}
+#custCalModal .cc-day.is-data.lv2{background:var(--cc-l2);}
+#custCalModal .cc-day.is-data.lv3{background:var(--cc-l3);}
+#custCalModal .cc-day.is-data.lv4{background:var(--cc-l4);}
+#custCalModal button.cc-day{cursor:pointer;}
+#custCalModal button.cc-day:hover{box-shadow:inset 0 0 0 1px var(--cc-gold-line), 0 6px 16px -12px rgba(6,37,16,.5);}
+#custCalModal button.cc-day:focus-visible{outline:2px solid var(--cc-gold); outline-offset:1px;}
+#custCalModal .cc-day.is-today{box-shadow:inset 0 0 0 1.5px var(--cc-gold);}
+#custCalModal .cc-day .cc-d{
+  font-size:9.5px; font-weight:800; color:var(--cc-muted);
+  letter-spacing:.04em; line-height:1.2; font-variant-numeric:tabular-nums;
+}
+#custCalModal .cc-day.is-today .cc-d{color:var(--cc-gold);}
+#custCalModal .cc-day .cc-v{
+  font-size:12.5px; font-weight:800; margin-top:auto; line-height:1.2;
+  color:var(--cc-ink); overflow-wrap:anywhere;
+}
+#custCalModal .cc-day.is-data .cc-v{color:var(--cc-ink);}
 #custCalModal .cc-day.is-data.is-neg .cc-v{color:var(--red);}
-#custCalModal .cc-day .cc-n{font-size:10px; color:var(--muted); font-weight:600;}
-#custCalModal .cc-foot{font-size:11px; color:var(--muted); line-height:1.45; margin-top:10px;}
+#custCalModal .cc-day .cc-n{font-size:9px; color:var(--cc-muted); font-weight:600; letter-spacing:.02em;}
+#custCalModal .cc-foot{
+  font-size:10.5px; color:var(--cc-muted); line-height:1.5;
+  margin-top:12px; padding-top:10px; border-top:1px solid var(--cc-rule);
+}
 @media (max-width:760px){
-  #custCalModal{padding:10px;}
-  #custCalModal .cc-panel{padding:20px 14px 16px; border-radius:16px;}
-  #custCalModal .cc-kicker{font-size:9.5px; letter-spacing:.14em;}
-  #custCalModal .cc-title{font-size:19px; padding-right:44px;}
-  #custCalModal .cc-sub{font-size:11.5px; margin-bottom:12px;}
-  #custCalModal .cc-kpis{grid-template-columns:repeat(2,minmax(0,1fr)); gap:8px;}
-  #custCalModal .cc-kpi{padding:9px 10px; border-radius:12px;}
-  #custCalModal .cc-kpi .v{font-size:15px;}
-  #custCalModal .cc-nav{height:32px;}
-  #custCalModal .cc-nav button{width:28px; height:30px;}
-  #custCalModal .cc-month{min-width:108px; font-size:11px;}
-  #custCalModal .cc-card{padding:8px;}
-  #custCalModal .cc-week,#custCalModal .cc-grid{gap:4px;}
-  #custCalModal .cc-day{min-height:56px; padding:4px 3px; border-radius:8px;}
-  #custCalModal .cc-day.is-empty{min-height:56px;}
-  #custCalModal .cc-day .cc-d{font-size:10px;}
+  #custCalModal{padding:0; align-items:stretch;}
+  #custCalModal .cc-panel{
+    display:flex; flex-direction:column; min-height:100%; max-width:none; margin:0;
+    padding:calc(18px + env(safe-area-inset-top)) 14px calc(18px + env(safe-area-inset-bottom));
+    border:0; border-radius:0; box-shadow:none; overflow:auto;
+    background:
+      radial-gradient(120% 60% at 100% 0%, rgba(122,83,0,.05), transparent 52%),
+      var(--cc-paper);
+  }
+  #custCalModal .cc-close{
+    position:fixed; z-index:5; top:calc(12px + env(safe-area-inset-top)); right:12px;
+    width:32px; height:32px; background:var(--cc-paper);
+    box-shadow:0 4px 14px -6px rgba(6,37,16,.35);
+  }
+  #custCalModal .cc-kicker{font-size:8.5px; letter-spacing:.18em; padding-right:42px;}
+  #custCalModal .cc-title{font-size:21px; padding-right:42px; margin-top:7px;}
+  #custCalModal .cc-sub{font-size:10.5px; margin-bottom:11px; padding-right:34px;}
+  #custCalModal .cc-toolbar{padding-bottom:9px;}
+  #custCalModal .cc-nav button{width:26px; height:28px;}
+  #custCalModal .cc-month{font-size:13px;}
+  #custCalModal .cc-hint{display:none;}
+  #custCalModal .cc-kpis{grid-template-columns:repeat(2,minmax(0,1fr)); gap:10px 0; padding:12px 0; margin-bottom:11px;}
+  #custCalModal .cc-kpi{padding:0 0 0 10px;}
+  #custCalModal .cc-kpi:nth-child(3){padding-left:0; border-left:0;}
+  #custCalModal .cc-kpi .k{font-size:7.5px; letter-spacing:.06em;}
+  #custCalModal .cc-kpi .v{font-size:13.5px; margin-top:3px;}
+  #custCalModal .cc-kpi:first-child .v{font-size:16px;}
+  #custCalModal .cc-kpi .n{font-size:8.5px; white-space:nowrap; overflow:hidden; text-overflow:ellipsis;}
+  #custCalModal .cc-card{padding:0;}
+  #custCalModal .cc-week,#custCalModal .cc-grid{gap:3px;}
+  #custCalModal .cc-week span{font-size:7.5px; letter-spacing:.04em; padding-bottom:5px;}
+  #custCalModal .cc-day{min-height:58px; padding:5px 4px; border-radius:6px;}
+  #custCalModal .cc-day.is-empty{min-height:58px;}
+  #custCalModal .cc-day .cc-d{font-size:8.5px;}
   #custCalModal .cc-day .cc-v{font-size:9px; white-space:nowrap; letter-spacing:-.1px;}
-  #custCalModal .cc-day .cc-n{font-size:8.5px;}
-  #custCalModal .cc-week span{font-size:9.5px;}
-  #custCalModal .cc-close{top:12px; right:12px; width:34px; height:34px; border-radius:10px;}
+  #custCalModal .cc-day .cc-n{font-size:7.5px;}
+  #custCalModal .cc-foot{font-size:9.5px; margin-top:10px;}
+}
+@media (prefers-reduced-motion:reduce){
+  #custCalModal, #custCalModal.open .cc-panel{animation:none !important;}
+  #custCalModal *{transition:none !important;}
+}
+/* Laptop thấp: nén để cả tháng vừa màn hình. */
+@media (min-width:761px) and (max-height:820px){
+  #custCalModal{padding:16px;}
+  #custCalModal .cc-panel{padding:22px 24px 14px;}
+  #custCalModal .cc-title{font-size:24px; margin:7px 0 3px;}
+  #custCalModal .cc-sub{margin-bottom:9px;}
+  #custCalModal .cc-toolbar{padding-bottom:8px;}
+  #custCalModal .cc-kpis{padding:10px 0; margin-bottom:10px;}
+  #custCalModal .cc-kpi .v{font-size:15px;}
+  #custCalModal .cc-kpi:first-child .v{font-size:18px;}
+  #custCalModal .cc-day{min-height:56px; padding:5px 7px;}
+  #custCalModal .cc-day.is-empty{min-height:56px;}
+  #custCalModal .cc-day .cc-v{font-size:11.5px;}
+  #custCalModal .cc-foot{margin-top:8px; padding-top:8px;}
 }
 /* v20261122-custcal-css-end */
 </style>
+<link href="https://fonts.googleapis.com/css2?family=Lora:wght@500;600;700&display=swap" rel="stylesheet">
 </head>
 <body>
   <!-- Nhac Noel -->
@@ -10893,7 +11078,10 @@ window.renderThietBi = function(){ try { render(); } catch(e){} };
      de nhay danh sach khach hang ve ngay do).
    - v20261123-invoiceui-js: giao dien muot hon - the KPI co icon, hang xep
      hang co huy hieu top 3, cot TY TRONG co thanh do dang, ten khach hang
-     tren dien thoai hien kem ma KH. */
+     tren dien thoai hien kem ma KH.
+   - v20261124-invoiceui-js: "bang ke doanh thu" - tong doanh so la nhan vat
+     chinh (chu serif), 3 so lieu phu, bang ke kieu so cai, dong tong cong
+     nam ngoai vung cuon, top 3 danh dau bang vet vang/bac/dong. */
 (function(){
   'use strict';
   var invState = {
@@ -11361,16 +11549,11 @@ window.renderThietBi = function(){ try { render(); } catch(e){} };
     }
   }
 
-  var invIcons = {
-    cust: '<svg viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><circle cx="8" cy="7" r="2.6"></circle><path d="M3.4 16.2c0-2.5 2.1-4.2 4.6-4.2s4.6 1.7 4.6 4.2"></path><path d="M13.2 5.1a2.4 2.4 0 0 1 0 4.6M14.6 12.4c1.6.5 2.7 1.9 2.7 3.8"></path></svg>',
-    inv: '<svg viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M5 2.7h7.1L15 5.6v11.7l-2.5-1.2-2.5 1.2-2.5-1.2L5 16.1z"></path><path d="M7.3 6.6h5.4M7.3 9.6h5.4M7.3 12.6h3.2"></path></svg>',
-    sale: '<svg viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><rect x="2.8" y="4.6" width="14.4" height="11" rx="2.2"></rect><path d="M2.8 8.4h14.4M13.8 12.4h1.3"></path></svg>',
-    avg: '<svg viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M3.4 16.4V9.8M8 16.4V4.6M12.6 16.4v-4.4M17.2 16.4V7.4"></path></svg>'
-  };
-  function invKpi(k, v, n, kind){
-    var ico = invIcons[kind] || '';
-    return '<div class="inv-kpi' + (kind ? ' is-' + kind : '') + '">' +
-      '<div class="k"><span class="ico" aria-hidden="true">' + ico + '</span>' + invEsc(k) + '</div>' +
+  /* Tong tien kieu bang ke: so + ky hieu "đ" nho, de len chu serif. */
+  function invMoney(v){ return invFmt(v) + '<span class="cur">đ</span>'; }
+  /* 3 so lieu phu ben canh tong doanh so. */
+  function invStat(k, v, n){
+    return '<div class="inv-stat"><div class="k">' + invEsc(k) + '</div>' +
       '<div class="v">' + invEsc(v) + '</div><div class="n">' + invEsc(n) + '</div></div>';
   }
   function invSyncBody(){
@@ -11411,8 +11594,8 @@ window.renderThietBi = function(){ try { render(); } catch(e){} };
     } else if (nores){
       nores.style.display = 'none';
     }
-    var tf = document.querySelector('#invoiceModal table.inv-table tfoot');
-    if (tf) tf.style.display = showNo ? 'none' : '';
+    var foot = document.getElementById('invTotal');
+    if (foot) foot.style.display = showNo ? 'none' : '';
   }
   function invUpdateNav(){
     var dayLbl = document.getElementById('invDayLabel');
@@ -11518,16 +11701,19 @@ window.renderThietBi = function(){ try { render(); } catch(e){} };
       (r.cust ? '<span class="inv-name-code">' + invEsc(r.cust) + '</span>' : '') +
       '</button></td>';
   }
-  /* <tfoot> giu dong "Tong cong" luon o day bang khi cuon. */
-  function invTfoot(){
-    var table = document.querySelector('#invoiceModal table.inv-table');
-    if (!table) return null;
-    var tf = table.querySelector('tfoot');
-    if (!tf){
-      tf = document.createElement('tfoot');
-      table.appendChild(tf);
+  /* Dong "Tong cong" nam NGOAI vung cuon (chan bang ke), khong de len cac
+     dong du lieu cuoi cung nhu <tfoot> sticky truoc day. */
+  function invTotalBox(){
+    var card = document.querySelector('#invoiceModal .inv-card');
+    if (!card) return null;
+    var box = document.getElementById('invTotal');
+    if (!box){
+      box = document.createElement('div');
+      box.id = 'invTotal';
+      box.className = 'inv-total';
+      card.appendChild(box);
     }
-    return tf;
+    return box;
   }
   function invRender(){
     var p = invPeriod();
@@ -11538,17 +11724,24 @@ window.renderThietBi = function(){ try { render(); } catch(e){} };
     var sub = document.getElementById('invSub');
     if (sub){
       sub.textContent = (p.sub || '') +
-        'doanh số (-VAT) từ RPT18 · sắp xếp theo doanh số giảm dần';
+        'doanh số (-VAT) từ RPT18 · xếp hạng theo doanh số giảm dần';
     }
 
     var kpis = document.getElementById('invKpis');
     if (kpis){
       var per = p.scope === 'month' ? 'trong tháng' : 'trong ngày';
+      var scopeTxt = p.scope === 'month' ? 'Tổng tháng' : 'Tổng ngày';
       kpis.innerHTML =
-        invKpi('Khách hàng', invFmt(rows.length), per, 'cust') +
-        invKpi('Hóa đơn', invFmt(totalInv), 'distinct Invoice No', 'inv') +
-        invKpi('Doanh số (-VAT)', invVnd(totalSale), p.scope === 'month' ? 'tổng tháng' : 'tổng ngày', 'sale') +
-        invKpi('Bình quân / KH', invVnd(rows.length ? totalSale / rows.length : 0), 'doanh số mỗi khách', 'avg');
+        '<div class="inv-hero">' +
+          '<div class="k">Doanh số (-VAT)</div>' +
+          '<div class="v">' + invMoney(totalSale) + '</div>' +
+          '<div class="n">' + scopeTxt + ' · ' + invFmt(rows.length) + ' khách hàng</div>' +
+        '</div>' +
+        '<div class="inv-stats">' +
+          invStat('Khách hàng', invFmt(rows.length), per) +
+          invStat('Hóa đơn', invFmt(totalInv), 'distinct Invoice No') +
+          invStat('Bình quân / KH', invVnd(rows.length ? totalSale / rows.length : 0), 'doanh số mỗi khách') +
+        '</div>';
     }
 
     var title = document.getElementById('invTableTitle');
@@ -11558,6 +11751,16 @@ window.renderThietBi = function(){ try { render(); } catch(e){} };
 
     var mobile = invIsMobile();
     invState.mobile = mobile;
+    /* Neu tat ca khach cung 1 loai (vd "Canteen") thi an cot LOAI KH cho do roi. */
+    var typeSet = {};
+    rows.forEach(function(r){
+      var t = String(r.type === null || r.type === undefined ? '' : r.type).trim();
+      if (t) typeSet[t] = 1;
+    });
+    var tableEl = document.querySelector('#invoiceModal table.inv-table');
+    if (tableEl){
+      tableEl.classList.toggle('inv-single-type', !mobile && Object.keys(typeSet).length <= 1);
+    }
     var thead = document.querySelector('#invoiceModal table.inv-table thead');
     if (thead){
       thead.innerHTML = mobile
@@ -11580,8 +11783,8 @@ window.renderThietBi = function(){ try { render(); } catch(e){} };
         : 'Chưa có dữ liệu khách hàng.<br>Dữ liệu sẽ được nạp ở lần refresh kế tiếp từ RPT18.';
       body.innerHTML = '<tr><td colspan="' + (mobile ? 4 : 7) + '"><div class="inv-empty">' +
         msg + '</div></td></tr>';
-      var tf0 = invTfoot();
-      if (tf0) tf0.innerHTML = '';
+      var tf0 = invTotalBox();
+      if (tf0){ tf0.innerHTML = ''; tf0.style.display = 'none'; }
       var cnt0 = document.getElementById('invCount');
       if (cnt0) cnt0.textContent = '0 khách hàng';
       return;
@@ -11592,7 +11795,8 @@ window.renderThietBi = function(){ try { render(); } catch(e){} };
       var share = totalSale ? r.sale / totalSale : 0;
       var shareW = Math.max(0, Math.min(100, share * 100));
       var hay = (r.cust + ' ' + r.name + ' ' + r.type).toLowerCase();
-      h += '<tr data-search="' + invEsc(hay) + '">' +
+      var rowCls = idx < 3 ? ' class="is-top' + (idx + 1) + '"' : '';
+      h += '<tr' + rowCls + ' data-search="' + invEsc(hay) + '">' +
         '<td class="inv-rank"><span class="rk">' + (idx + 1) + '</span></td>';
       if (mobile){
         h += invNameCell(r) +
@@ -11611,24 +11815,14 @@ window.renderThietBi = function(){ try { render(); } catch(e){} };
               shareW.toFixed(2) + '%"></i></span></td></tr>';
       }
     });
-    var totalRow = '';
-    if (mobile){
-      totalRow = '<tr class="inv-total"><td></td>' +
-        '<td>Tổng cộng · ' + invFmt(rows.length) + ' khách hàng</td>' +
-        '<td class="num">' + invFmt(totalInv) + '</td>' +
-        '<td class="num inv-total-sale">' + invVnd(totalSale) + '</td></tr>';
-    } else {
-      totalRow = '<tr class="inv-total"><td></td><td></td>' +
-        '<td>Tổng cộng · ' + invFmt(rows.length) + ' khách hàng</td><td></td>' +
-        '<td class="num">' + invFmt(totalInv) + '</td>' +
-        '<td class="num inv-total-sale">' + invVnd(totalSale) +
-        '</td><td class="num inv-share">100%</td></tr>';
-    }
+    var footHtml = '<span class="inv-total-label">Tổng cộng · ' + invFmt(rows.length) + ' khách hàng</span>' +
+      '<span class="inv-total-meta">' + invFmt(totalInv) + ' hóa đơn</span>' +
+      '<span class="inv-total-sale">' + invMoney(totalSale) + '</span>' +
+      '<span class="inv-total-share">100%</span>';
     body.innerHTML = h;
-    /* Tong cong dat trong <tfoot> (sticky bottom) de khong bi cac dong
-       du lieu ve de len khi bang cuon. */
-    var tf = invTfoot();
-    if (tf){ tf.innerHTML = totalRow; tf.style.display = ''; }
+    /* Tong cong nam ngoai vung cuon (xem invTotalBox). */
+    var tf = invTotalBox();
+    if (tf){ tf.innerHTML = footHtml; tf.style.display = ''; }
     invApplyFilter();
   }
   function invStepDay(dir){
